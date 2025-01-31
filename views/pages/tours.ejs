@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+     <%- include('../partials/head', { title: 'Our Tours - Morocco Tour Experts' }) %>
+</head>
+
+<body class="bg-gray-50">
+     <!-- Header -->
+     <%- include('../partials/header') %>
+
+
+          <!-- Main Content -->
+          <main class="min-h-screen pt-16">
+               <!-- Popular Tours Grid -->
+               <section id="tours" class="py-20 bg-gray-50">
+                    <div class="container mx-auto px-4">
+                         <h2 class="text-3xl md:text-4xl font-bold text-center mb-12" data-aos="fade-up">Our Adventure Tours</h2>
+                         <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                              <% tours.forEach(tour=> { %>
+                                   <a href="/tours/<%= tour.id %>" class="block group">
+                                        <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-out">
+                                             <!-- Image Container -->
+                                             <div class="relative">
+                                                  <div class="aspect-w-16 aspect-h-10 overflow-hidden">
+                                                       <img src="<%= tour.photos[0] %>" alt="<%= tour.title %>" class="w-full h-64 object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                                                  </div>
+
+                                                  <!-- Overlay Gradient -->
+                                                  <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-60"></div>
+
+                                                  <!-- Days Badge -->
+                                                  <div class="absolute top-4 right-4">
+                                                       <span class="px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full text-sm font-semibold text-gray-900 flex items-center gap-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                            </svg>
+                                                            <%= tour.itinerary.length %> Days
+                                                       </span>
+                                                  </div>
+                                             </div>
+
+                                             <!-- Content -->
+                                             <div class="p-6">
+                                                  <!-- Location -->
+                                                  <div class="flex items-center gap-2 mb-3">
+                                                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                       </svg>
+                                                       <span class="text-sm font-medium text-gray-600">Morocco</span>
+                                                  </div>
+
+                                                  <!-- Title -->
+                                                  <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-500 transition-colors">
+                                                       <%= tour.title %>
+                                                  </h3>
+
+                                                  <!-- Description -->
+                                                  <p class="text-gray-600 text-sm mb-6 line-clamp-2">
+                                                       <%= tour.description.substring(0, 150) %>...
+                                                  </p>
+
+                                                  <!-- Footer -->
+                                                  <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                                                       <div class="flex flex-col">
+                                                            <span class="text-sm text-gray-500">Starting from</span>
+                                                            <span class="text-2xl font-bold text-orange-500">
+                                                                 $<%= tour.price || '999' %>
+                                                            </span>
+                                                       </div>
+
+                                                       <span class="inline-flex items-center gap-2 text-sm font-semibold text-gray-900 group-hover:text-orange-500 transition-colors">
+                                                            Explore Details
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                                            </svg>
+                                                       </span>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                   </a>
+                                   <% }) %>
+                         </div>
+                    </div>
+               </section>
+          </main>
+
+          <!-- Footer -->
+          <%- include('../partials/footer') %>
+
+               <!-- Scripts -->
+               <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/10.0.4/swiper-bundle.min.js"></script>
+               <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+               <script>
+                    AOS.init({
+                         duration: 800,
+                         offset: 100,
+                         once: true
+                    });
+               </script>
+               <script src="/js/main.js"></script>
+</body>
+
+</html>

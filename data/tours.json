@@ -1,0 +1,359 @@
+[
+  {
+    "id": "6-days-desert-trek",
+    "title": "6 Days Desert Trek from Marrakech",
+    "description": "Experience the magic of the Sahara Desert with camel treks, overnight camping, and breathtaking Atlas Mountain landscapes",
+    "photos": [
+      "https://www.photo-pick.com/online/api/v1/albums/2ce5aa7a-efac-4eb3-8bc3-720286226b14.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/0bdedcec-86c0-463e-bd7e-1830780633e0.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/7b6a0e41-8f27-4f31-8af0-01f7de95dc82.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/cf96859a-cff3-4d6e-abf8-de7aa87f93f2.jpg"
+    ],
+    "price": 890,
+    "location": "Morocco",
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Marrakech - Ouarzazate - Plateau of Faija",
+        "description": "Morning departure from Marrakech, crossing the Tichka Pass. Visit Ouarzazate and continue to the Draa Valley. Discover ancient ksars and Zagora before reaching the Faija plateau to meet our camel drivers. Overnight in desert tents."
+      },
+      {
+        "day": 2,
+        "title": "Faija Plateau - Oued Lemhasser",
+        "description": "Trek through the Faija pass with panoramic views. Explore the mountainous desert with its black mountains and Bedouin settlements. Lunch at Regabi wells. Camp near wadi Lemhasser. 6 hours walking."
+      },
+      {
+        "day": 3,
+        "title": "Oued Lemhasser - Chegaga Dunes",
+        "description": "Traverse a beautiful desert valley and vast stone plateau. Witness magnificent views of the Chegaga dunes. Evening arrival at the dunes with stunning sunset views. Overnight in desert camp. 6 hours walking."
+      },
+      {
+        "day": 4,
+        "title": "Chegaga Dunes - Bougarn Dunes",
+        "description": "Explore Erg Chegaga's small dunes near Bani Mountain. Lunch under tamaris trees. Continue to the secluded Bouguern dunes. Evening campfire under the stars. 5.5 hours walking."
+      },
+      {
+        "day": 5,
+        "title": "Bougarn Dunes - Oued Naam Dunes",
+        "description": "Early start to watch the sunrise. Cross flat desert terrain and stone plateaus. Water refill at desert well. Evening at Oued Nâam dunes where nomad caravans gather. 5.5 hours walking."
+      },
+      {
+        "day": 6,
+        "title": "Oued Naam - Zagora - Marrakech",
+        "description": "Final desert morning. Farewell to camel drivers team. 4x4 drive to Ouarzazate, crossing High Atlas via Tizi-N-Tichka pass to Marrakech. 7-hour drive."
+      }
+    ]
+  },
+  {
+    "id": "7-days-discovery",
+    "title": "7 Days Morocco Discovery",
+    "description": "From Marrakech to Fes through desert landscapes, historic sites, and the blue pearl Chefchaouen",
+    "photos": [
+      "https://www.photo-pick.com/online/api/v1/albums/a1a4b3a4-223a-4ae2-ab6b-61ed0f5fc2f9.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/10693ddb-b884-4199-b64e-9048555a7aa5.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/f3a8dad2-6edf-4460-b74e-4d5d176774a9.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/1459b19e-7b80-4e6d-b22d-5ebe9448bd15.jpg"
+    ],
+    "price": 1099,
+    "location": "Morocco",
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Marrakech - Atlas Mountains - Dades Valley",
+        "description": "Cross High Atlas Mountains via Tizi N-Tichka. Visit UNESCO site Ait Ben Haddou and Ouarzazate film studios. Continue through Valley of Roses to Dades Valley. Overnight in hotel/kasbah."
+      },
+      {
+        "day": 2,
+        "title": "Dades Valley - Merzouga Desert",
+        "description": "Journey through Berber villages to Merzouga Desert. Visit Tinjdad and Erfoud. Camel trek into sand dunes. Watch sunset from high dunes. Overnight in desert camp with traditional music."
+      },
+      {
+        "day": 3,
+        "title": "Merzouga - Midelt - Fes",
+        "description": "Travel through Tafilalet palm grove and Ziz valley. Stop at Midelt for lunch. Visit cedar forests with Barbary apes. See Ifrane 'Little Switzerland' before arriving in Fes."
+      },
+      {
+        "day": 4,
+        "title": "Exploring Fez",
+        "description": "Full day exploring Fes medina with local guide. Visit ancient souks, tanneries, Al Quaraouiyine University, and artisan quarters. Experience traditional crafts and architecture."
+      },
+      {
+        "day": 5,
+        "title": "Fes - Chefchaouen",
+        "description": "Drive to the beautiful blue city of Chefchaouen in Rif Mountains. Explore its picturesque blue-washed streets and medina. Overnight in local riad."
+      },
+      {
+        "day": 6,
+        "title": "Chefchaouen - Volubilis - Meknes",
+        "description": "Visit Roman ruins of Volubilis and the imperial city of Meknes. Explore historic sites and traditional markets. Return to Chefchaouen."
+      },
+      {
+        "day": 7,
+        "title": "Return to Marrakech/Casablanca",
+        "description": "Morning in Chefchaouen before departing to your choice of Marrakech or Casablanca for departure."
+      }
+    ]
+  },
+  {
+    "id": "9-days-complete",
+    "title": "9 Days Morocco Complete Tour",
+    "description": "Comprehensive journey from Casablanca to Marrakech covering imperial cities and desert landscapes",
+    "photos": [
+      "https://www.photo-pick.com/online/api/v1/albums/5d6437c2-750e-434e-9045-9ee6968c5af6.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/22464cbe-ad52-4965-ab00-0487d5b3a835.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/50a1b8d1-fd91-4f82-a1b7-535b23193a31.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/c439fad3-2210-4128-a21f-d520775bd275.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/90af852d-4c3b-4aec-9431-26848fcb27f2.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/50e60f0a-4d46-43d3-81ab-ab4e0cace310.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/e140414a-64c2-4a88-aafb-a525feaec8f4.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/4d9ccdf1-3445-4075-9fd3-73fca4ea4201.jpg"
+    ],
+    "price": 1499,
+    "location": "Morocco",
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Welcome to Casablanca",
+        "description": "Arrival in Casablanca. Airport transfer to hotel. Free time to relax or explore the city depending on arrival time."
+      },
+      {
+        "day": 2,
+        "title": "Casablanca - Rabat - Chefchaouen",
+        "description": "Visit Hassan II Mosque. Explore Rabat's highlights including Bab Challah and Mohammed V Mausoleum. Continue to blue city of Chefchaouen."
+      },
+      {
+        "day": 3,
+        "title": "Chefchaouen - Volubilis - Fes",
+        "description": "Morning in Chefchaouen. Visit Roman ruins of Volubilis and imperial city of Meknes. Evening arrival in Fes."
+      },
+      {
+        "day": 4,
+        "title": "Exploring Fes",
+        "description": "Full day guided tour of Fes medina. Visit Royal Palace, ancient souks, tanneries, and historic madrasas. Experience local crafts and culture."
+      },
+      {
+        "day": 5,
+        "title": "Fes - Ifrane - Merzouga Desert",
+        "description": "Journey through Middle Atlas Mountains. Visit Ifrane and cedar forests. Cross Ziz Valley to Merzouga. Camel trek to desert camp."
+      },
+      {
+        "day": 6,
+        "title": "Merzouga - Todra Gorges - Dades Valley",
+        "description": "Desert sunrise. Visit Todra Gorges and enjoy scenic landscapes. Overnight in Dades Valley with stunning views."
+      },
+      {
+        "day": 7,
+        "title": "Dades - Ouarzazate - Marrakech",
+        "description": "Travel through Valley of Roses. Visit Ait Ben Haddou Kasbah. Cross High Atlas Mountains to Marrakech."
+      },
+      {
+        "day": 8,
+        "title": "Marrakech City Tour",
+        "description": "Explore Marrakech highlights: Majorelle Gardens, Koutoubia Mosque, Saadian Tombs, and traditional souks."
+      },
+      {
+        "day": 9,
+        "title": "Departure Day",
+        "description": "Transfer to airport for departure flight from either Casablanca or Marrakech."
+      }
+    ]
+  },
+  {
+    "id": "10-days-grand",
+    "title": "10 Days Morocco Grand Tour",
+    "description": "Complete exploration from Marrakech to Casablanca covering deserts, mountains, and historic cities",
+    "photos": [
+      "https://www.photo-pick.com/online/api/v1/albums/12ac98ed-194a-4750-b646-f1e186190b08.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/9aaf9f7c-63fa-4401-b449-eb205b0350eb.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/ae8dba00-908b-4f84-ae8d-7b05969309e8.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/88565e31-2152-4100-b953-ea27a7d0ddba.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/b491dfe6-103b-4849-8e72-584054f241e6.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/7b6a0e41-8f27-4f31-8af0-01f7de95dc82.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/cf96859a-cff3-4d6e-abf8-de7aa87f93f2.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/ddb73981-d1a1-4fc8-aeb3-97097bc9949b.jpg"
+    ],
+    "price": 1699,
+    "location": "Morocco",
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Welcome to Marrakech",
+        "description": "Airport transfer to accommodation. Free time to explore Jemaa el Fnaa square and the souks."
+      },
+      {
+        "day": 2,
+        "title": "Marrakech Guided Tour",
+        "description": "Full day exploring Marrakech with official guide. Visit Koutoubia Mosque, Medina, souks, Ali Ben Youssef Koranic school, and Majorelle Gardens."
+      },
+      {
+        "day": 3,
+        "title": "Marrakech - Ait Benhaddou - Dades Gorge",
+        "description": "Cross Atlas Mountains to UNESCO site Ait Ben Haddou. Visit Ouarzazate film studios. Continue to Valley of Roses and Dades Gorge."
+      },
+      {
+        "day": 4,
+        "title": "Dades - Todra - Merzouga Desert",
+        "description": "Visit Todra Gorge. Continue through Ziz Valley to Erfoud. Camel trek into Merzouga desert for overnight camp experience."
+      },
+      {
+        "day": 5,
+        "title": "Merzouga - Midelt - Fes",
+        "description": "Desert sunrise. Travel through Atlas Mountains with stops in Midelt and Azrou cedar forest. Arrive in Fes."
+      },
+      {
+        "day": 6,
+        "title": "Exploring Fes",
+        "description": "Guided tour of Fes including Royal Palace, Jewish quarter, ancient medina, and traditional craft demonstrations."
+      },
+      {
+        "day": 7,
+        "title": "Fes - Chefchaouen",
+        "description": "Travel to the blue city of Chefchaouen in the Rif Mountains. Afternoon exploring the unique blue-painted medina."
+      },
+      {
+        "day": 8,
+        "title": "Chefchaouen - Rabat - Casablanca",
+        "description": "Morning in Chefchaouen. Visit Rabat's main sights. Continue to Casablanca for overnight stay."
+      },
+      {
+        "day": 9,
+        "title": "Casablanca - Marrakech",
+        "description": "Visit Hassan II Mosque and Casablanca highlights. Afternoon return to Marrakech."
+      },
+      {
+        "day": 10,
+        "title": "Departure Day",
+        "description": "Transfer to Marrakech airport for departure flight."
+      }
+    ]
+  },
+  {
+    "id": "12-days-southern",
+    "title": "12 Days Southern Morocco Adventure",
+    "description": "In-depth exploration of Southern Morocco from Essaouira to Sahara Desert",
+    "photos": [
+      "https://www.photo-pick.com/online/api/v1/albums/6f114716-b895-4da9-9f13-710864e6f088.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/aeadc044-f513-4123-a48f-3b09d8924f74.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/9badd9fc-eaf9-4254-b454-21da476a2371.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/5a4f99d2-f737-4b58-b53c-d5f1bdf96f95.jpg"
+    ],
+    "price": 1999,
+    "location": "Morocco",
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Marrakech - Essaouira",
+        "description": "Drive through argan and olive groves to coastal Essaouira. Explore the port, ramparts, and colorful medina."
+      },
+      {
+        "day": 2,
+        "title": "Essaouira - Tiznit - Aglou Beach",
+        "description": "Scenic coastal drive past fishing villages to Aglou Beach."
+      },
+      {
+        "day": 3,
+        "title": "Oued Massa - Tiznit",
+        "description": "Visit Massa wadi bird reserve. Explore Tiznit medina and jewelry quarter."
+      },
+      {
+        "day": 4,
+        "title": "Mirleft - Sidi Ifni - Tighmert",
+        "description": "Coastal journey to Spanish-influenced Sidi Ifni. Night in Tighmert oasis."
+      },
+      {
+        "day": 5,
+        "title": "Tan Tan - Guelmim - Tighmert",
+        "description": "Explore Tan Tan beach and historic Guelmim market town."
+      },
+      {
+        "day": 6,
+        "title": "Guelmim - Tafraoute",
+        "description": "Journey to Anti-Atlas mountains and picturesque Tafraoute."
+      },
+      {
+        "day": 7,
+        "title": "Ait Mansour Gorges",
+        "description": "Full day exploring the spectacular Ait Mansour gorges."
+      },
+      {
+        "day": 8,
+        "title": "Tata - Foum Zguid",
+        "description": "Visit pink oasis of Tata. Continue to desert gateway Foum Zguid."
+      },
+      {
+        "day": 9,
+        "title": "Chigaga Desert",
+        "description": "Cross dried Iriqui lake to Chigaga dunes. Camel trek to desert camp."
+      },
+      {
+        "day": 10,
+        "title": "M'hamid - Zagora",
+        "description": "Desert track to M'hamid. Visit Tamgroute's Quranic library and pottery. Night in Zagora."
+      },
+      {
+        "day": 11,
+        "title": "Zagora - Ouarzazate",
+        "description": "Explore Draa Valley and Tamnougalte kasbah. Continue to Ouarzazate."
+      },
+      {
+        "day": 12,
+        "title": "Ait Ben Haddou - Marrakech",
+        "description": "Visit UNESCO site Ait Ben Haddou. Return to Marrakech via Atlas Mountains."
+      }
+    ]
+  },
+  {
+    "id": "7-days-imperial",
+    "title": "7 Days Imperial Cities & Blue Pearl",
+    "description": "Cultural journey through Morocco's imperial cities and Chefchaouen",
+    "photos": [
+      "https://www.photo-pick.com/online/api/v1/albums/cb269f16-7db9-47d3-9cc7-9daa6de06a1a.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/3028e1a2-c8d2-4b78-b2ab-bc364f84685e.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/88f15659-7f76-4333-baf8-1690b0a0e8ef.jpg",
+
+      "https://www.photo-pick.com/online/api/v1/albums/be48f646-e405-4fc3-958b-e66c00510962.jpg",
+      "https://www.photo-pick.com/online/api/v1/albums/88f15659-7f76-4333-baf8-1690b0a0e8ef.jpg",
+
+      "https://www.photo-pick.com/online/api/v1/albums/bfc047f1-00bf-4490-9ba4-84d81e9b5c58.jpg"
+    ],
+    "price": 1299,
+    "location": "Morocco",
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Casablanca - Rabat - Chefchaouen",
+        "description": "Visit Hassan II Mosque. Explore Rabat's sites including Chellah Necropolis and Kasbah des Oudaias. Evening in Chefchaouen."
+      },
+      {
+        "day": 2,
+        "title": "Chefchaouen - Volubilis - Meknes - Fes",
+        "description": "Morning in Chefchaouen. Visit Roman ruins of Volubilis and imperial city of Meknes. Continue to Fes."
+      },
+      {
+        "day": 3,
+        "title": "Exploring Fes Medina",
+        "description": "Full day guided tour of Fes including ancient medina, souks, tanneries, and historical monuments. Visit famous leather tanneries and artisan workshops."
+      },
+      {
+        "day": 4,
+        "title": "Fes - Merzouga Desert",
+        "description": "Cross Middle Atlas Mountains through Ifrane and cedar forests. Pass Ziz Valley to reach Merzouga. Sunset camel trek to desert camp."
+      },
+      {
+        "day": 5,
+        "title": "Merzouga - Todra - Dades",
+        "description": "Desert sunrise. Visit Todra Gorge and Dades Valley. Experience stunning mountain scenery and historic kasbahs."
+      },
+      {
+        "day": 6,
+        "title": "Dades - Ait Benhaddou - Marrakech",
+        "description": "Visit Rose Valley and Ait Benhaddou kasbah. Cross High Atlas Mountains to reach Marrakech."
+      },
+      {
+        "day": 7,
+        "title": "Marrakech - Departure",
+        "description": "Explore Marrakech's main square and souks. Transfer to airport for departure to Marrakech or Casablanca."
+      }
+    ]
+  }
+]

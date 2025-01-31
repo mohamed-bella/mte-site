@@ -1,0 +1,8 @@
+<%- include('../layouts/main-layout', { title: 'Contact Us' }) %>
+     <h2>Contact Us</h2>
+     <form action="/submit-form" method="POST">
+          <input type="text" name="name" placeholder="Your Name" required>
+          <input type="email" name="email" placeholder="Your Email" required>
+          <textarea name="message" placeholder="Your Message" required></textarea>
+          <button type="submit">Submit</button>
+     </form>

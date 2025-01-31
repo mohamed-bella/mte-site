@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <%- include('../partials/head', { title: 'Destinations - Morocco Tour Experts' }) %>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Header -->
+    <%- include('../partials/header') %>
+
+    <!-- Navigation -->
+    <%- include('../partials/nav') %>
+
+    <!-- Main Content -->
+    <main class="min-h-screen pt-16">
+        <!-- Destinations Grid -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12" data-aos="fade-up">Explore Morocco's Destinations</h2>
+                <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                    <% destinations.forEach(destination => { %>
+                    <div class="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300" data-aos="fade-up">
+                        <div class="relative overflow-hidden">
+                            <img 
+                                src="/images/destinations/<%= destination.image %>" 
+                                alt="<%= destination.name %>" 
+                                class="w-full h-64 object-cover group-hover:scale-105 transition duration-500"
+                            >
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-3">
+                                <a href="/destinations/<%= destination.id %>" class="text-gray-800 hover:text-primary transition-colors">
+                                    <%= destination.name %>
+                                </a>
+                            </h3>
+                            <p class="text-gray-600 line-clamp-3">
+                                <%= destination.description %>
+                            </p>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <%- include('../partials/footer') %>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/10.0.4/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            offset: 100,
+            once: true
+        });
+    </script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
