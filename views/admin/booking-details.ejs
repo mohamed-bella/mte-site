@@ -1,0 +1,212 @@
+<%- include('../partials/admin/header') %>
+     <%- include('../partials/admin/sidebar') %>
+
+          <div class="md:pl-64 flex flex-col flex-1">
+               <main class="flex-1">
+                    <div class="py-6">
+                         <!-- Page Header -->
+                         <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                              <div class="flex items-center justify-between">
+                                   <div>
+                                        <h1 class="text-2xl font-semibold text-gray-900">Booking Details</h1>
+                                        <p class="mt-1 text-sm text-gray-500">Reference ID: <%= booking._id %>
+                                        </p>
+                                   </div>
+                                   <div class="flex space-x-3">
+                                        <a href="/admin/bookings" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                             Back to Bookings
+                                        </a>
+                                        <!-- Status Update Button -->
+                                        <div class="relative" x-data="{ open: false }">
+                                             <button @click="open = !open" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700">
+                                                  Update Status
+                                                  <svg class="ml-2 -mr-1 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                       <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                  </svg>
+                                             </button>
+                                             <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                                                  <div class="py-1">
+                                                       <form action="/admin/bookings/<%= booking._id %>/status" method="POST">
+                                                            <button type="submit" name="status" value="confirmed" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                                 Mark as Confirmed
+                                                            </button>
+                                                            <button type="submit" name="status" value="cancelled" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                                 Mark as Cancelled
+                                                            </button>
+                                                       </form>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                   </div>
+                              </div>
+                         </div>
+
+                         <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                              <div class="mt-8">
+                                   <!-- Booking Status Banner -->
+                                   <div class="mb-8 rounded-md p-4 
+                        <%= booking.status === 'confirmed' ? 'bg-green-50' : 
+                            booking.status === 'pending' ? 'bg-yellow-50' : 
+                            'bg-red-50' %>">
+                                        <div class="flex">
+                                             <div class="flex-shrink-0">
+                                                  <svg class="h-5 w-5 
+                                    <%= booking.status === 'confirmed' ? 'text-green-400' : 
+                                        booking.status === 'pending' ? 'text-yellow-400' : 
+                                        'text-red-400' %>" viewBox="0 0 20 20" fill="currentColor">
+                                                       <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l22a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                  </svg>
+                                             </div>
+                                             <div class="ml-3">
+                                                  <h3 class="text-sm font-medium 
+                                    <%= booking.status === 'confirmed' ? 'text-green-800' : 
+                                        booking.status === 'pending' ? 'text-yellow-800' : 
+                                        'text-red-800' %>">
+                                                       Booking Status: <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+                                                  </h3>
+                                                  <div class="mt-2 text-sm 
+                                    <%= booking.status === 'confirmed' ? 'text-green-700' : 
+                                        booking.status === 'pending' ? 'text-yellow-700' : 
+                                        'text-red-700' %>">
+                                                       Last updated: <%= new Date(booking.updatedAt).toLocaleString() %>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                   </div>
+
+                                   <!-- Main Content Grid -->
+                                   <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                                        <!-- Customer Information -->
+                                        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                                             <div class="px-4 py-5 sm:px-6">
+                                                  <h3 class="text-lg font-medium text-gray-900">Customer Information</h3>
+                                             </div>
+                                             <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                                                  <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                                                       <div>
+                                                            <dt class="text-sm font-medium text-gray-500">Full Name</dt>
+                                                            <dd class="mt-1 text-sm text-gray-900">
+                                                                 <%= booking.firstName %>
+                                                                      <%= booking.lastName %>
+                                                            </dd>
+                                                       </div>
+                                                       <div>
+                                                            <dt class="text-sm font-medium text-gray-500">Email</dt>
+                                                            <dd class="mt-1 text-sm text-gray-900">
+                                                                 <a href="mailto:<%= booking.email %>" class="text-orange-600 hover:text-orange-500">
+                                                                      <%= booking.email %>
+                                                                 </a>
+                                                            </dd>
+                                                       </div>
+                                                       <div>
+                                                            <dt class="text-sm font-medium text-gray-500">Phone</dt>
+                                                            <dd class="mt-1 text-sm text-gray-900">
+                                                                 <%= booking.phone || 'Not provided' %>
+                                                            </dd>
+                                                       </div>
+                                                       <div>
+                                                            <dt class="text-sm font-medium text-gray-500">Booking Date</dt>
+                                                            <dd class="mt-1 text-sm text-gray-900">
+                                                                 <%= new Date(booking.createdAt).toLocaleDateString('en-US', { year: 'numeric' , month: 'long' , day: 'numeric' , hour: '2-digit' , minute: '2-digit' }) %>
+                                                            </dd>
+                                                       </div>
+                                                  </dl>
+                                             </div>
+                                        </div>
+
+                                        <!-- Tour Information -->
+                                        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                                             <div class="px-4 py-5 sm:px-6">
+                                                  <h3 class="text-lg font-medium text-gray-900">Tour Details</h3>
+                                             </div>
+                                             <div class="border-t border-gray-200">
+                                                  <div class="px-4 py-5 sm:px-6">
+                                                       <div class="flex items-center space-x-4">
+                                                            <img src="<%= booking.tour.mainImage %>" alt="<%= booking.tour.title %>" class="h-24 w-24 object-cover rounded-lg">
+                                                            <div>
+                                                                 <h4 class="text-lg font-medium text-gray-900">
+                                                                      <%= booking.tour.title %>
+                                                                 </h4>
+                                                                 <p class="text-sm text-gray-500">
+                                                                      <%= booking.tour.duration %> days • <%= booking.tour.startLocation %>
+                                                                 </p>
+                                                            </div>
+                                                       </div>
+                                                       <dl class="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                                                            <div>
+                                                                 <dt class="text-sm font-medium text-gray-500">Tour Date</dt>
+                                                                 <dd class="mt-1 text-sm text-gray-900">
+                                                                      <%= new Date(booking.date).toLocaleDateString('en-US', { year: 'numeric' , month: 'long' , day: 'numeric' }) %>
+                                                                 </dd>
+                                                            </div>
+                                                            <div>
+                                                                 <dt class="text-sm font-medium text-gray-500">Group Size</dt>
+                                                                 <dd class="mt-1 text-sm text-gray-900">
+                                                                      <%= booking.groupSize %> people
+                                                                 </dd>
+                                                            </div>
+                                                            <div>
+                                                                 <dt class="text-sm font-medium text-gray-500">Price per Person</dt>
+                                                                 <dd class="mt-1 text-sm text-gray-900">
+                                                                      $<%= (booking.totalPrice / booking.groupSize).toLocaleString() %>
+                                                                 </dd>
+                                                            </div>
+                                                            <div>
+                                                                 <dt class="text-sm font-medium text-gray-500">Total Price</dt>
+                                                                 <dd class="mt-1 text-sm font-semibold text-gray-900">
+                                                                      $<%= booking.totalPrice.toLocaleString() %>
+                                                                 </dd>
+                                                            </div>
+                                                       </dl>
+                                                  </div>
+                                             </div>
+                                        </div>
+
+                                        <!-- Special Requests -->
+                                        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                                             <div class="px-4 py-5 sm:px-6">
+                                                  <h3 class="text-lg font-medium text-gray-900">Additional Information</h3>
+                                             </div>
+                                             <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                                                  <dt class="text-sm font-medium text-gray-500">Special Requests</dt>
+                                                  <dd class="mt-1 text-sm text-gray-900">
+                                                       <%= booking.specialRequests || 'No special requests' %>
+                                                  </dd>
+                                             </div>
+                                        </div>
+
+                                        <!-- Actions Card -->
+                                        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                                             <div class="px-4 py-5 sm:px-6">
+                                                  <h3 class="text-lg font-medium text-gray-900">Actions</h3>
+                                             </div>
+                                             <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                                                  <div class="space-y-4">
+                                                       <!-- Send Email Button -->
+                                                       <button type="button" onclick="window.location.href='mailto:<%= booking.email %>'" class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                                            <svg class="mr-2 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                            </svg>
+                                                            Contact Customer
+                                                       </button>
+
+                                                       <!-- Delete Booking Button -->
+                                                       <form action="/admin/bookings/<%= booking._id %>/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this booking? This action cannot be undone.')">
+                                                            <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2 border border-red-300 shadow-sm text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50">
+                                                                 <svg class="mr-2 h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                                 </svg>
+                                                                 Delete Booking
+                                                            </button>
+                                                       </form>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                   </div>
+                              </div>
+                         </div>
+                    </div>
+               </main>
+          </div>
+
+          <%- include('../partials/admin/footer') %>

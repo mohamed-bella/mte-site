@@ -15,50 +15,58 @@
           }, 500);
      });
 </script>
+
 <!-- Top Info Bar -->
 <div class="bg-gradient-to-r from-orange-600 to-orange-700 text-white">
      <div class="container mx-auto px-4">
           <div class="flex justify-between items-center h-10 text-sm">
                <!-- Contact Info (hidden on mobile) -->
                <div class="hidden md:flex items-center space-x-4">
-                    <a href="mailto:info@morocotours.com" class="hover:text-orange-200 transition-colors flex items-center">
+                    <a href="mailto:<%= settings?.email || 'info@morocotours.com' %>" class="hover:text-orange-200 transition-colors flex items-center">
                          <i class="fas fa-envelope mr-2"></i>
-                         info@morocotours.com
+                         <%= settings?.email || 'info@morocotours.com' %>
                     </a>
-                    <a href="tel:+212-555-0123" class="hover:text-orange-200 transition-colors flex items-center">
+                    <a href="tel:<%= settings?.phone || '+212-555-0123' %>" class="hover:text-orange-200 transition-colors flex items-center">
                          <i class="fas fa-phone-alt mr-2"></i>
-                         +212 555 0123
+                         <%= settings?.phone || '+212 555 0123' %>
                     </a>
                </div>
                <!-- Social Media Icons -->
                <div class="flex items-center space-x-4 ml-auto">
-                    <a href="tel:+212-555-0123" class="md:hidden hover:text-orange-200 transition-colors">
+                    <a href="tel:<%= settings?.phone || '+212-555-0123' %>" class="md:hidden hover:text-orange-200 transition-colors">
                          <i class="fas fa-phone-alt"></i>
                     </a>
-                    <a href="mailto:info@morocotours.com" class="md:hidden hover:text-orange-200 transition-colors">
+                    <a href="mailto:<%= settings?.email || 'info@morocotours.com' %>" class="md:hidden hover:text-orange-200 transition-colors">
                          <i class="fas fa-envelope"></i>
                     </a>
-                    <a href="#" class="hover:text-orange-200 transition-colors">
+                    <% if (settings?.socialMedia?.facebook) { %>
+                    <a href="<%= settings.socialMedia.facebook %>" class="hover:text-orange-200 transition-colors">
                          <i class="fab fa-facebook-f"></i>
                     </a>
-                    <a href="#" class="hover:text-orange-200 transition-colors">
+                    <% } %>
+                    <% if (settings?.socialMedia?.instagram) { %>
+                    <a href="<%= settings.socialMedia.instagram %>" class="hover:text-orange-200 transition-colors">
                          <i class="fab fa-instagram"></i>
                     </a>
-                    <a href="#" class="hover:text-orange-200 transition-colors">
+                    <% } %>
+                    <% if (settings?.socialMedia?.twitter) { %>
+                    <a href="<%= settings.socialMedia.twitter %>" class="hover:text-orange-200 transition-colors">
                          <i class="fab fa-twitter"></i>
                     </a>
+                    <% } %>
                </div>
           </div>
      </div>
 </div>
+
 <!-- Main Navigation -->
-<nav x-data="{ mobileMenuOpen: false }" class="bg-white border-b border-orange-100 relative z-40" @scroll.window="scrolled = (window.pageYOffset > 20) ? true : false">
+<nav x-data="{ mobileMenuOpen: false, scrolled: false }" class="bg-white border-b border-orange-100 relative z-40" @scroll.window="scrolled = (window.pageYOffset > 20)">
      <div class="container mx-auto px-4">
           <div class="flex justify-between items-center h-20">
                <!-- Logo -->
                <div class="flex-shrink-0">
                     <a href="/" class="flex items-center">
-                         <img src="/images/logo.png" alt="Morocco Tours" class="h-12 w-auto">
+                         <img src="<%= settings?.logo || '/images/logo.png' %>" alt="<%= settings?.siteTitle || 'Morocco Tours' %>" class="h-12 w-auto">
                     </a>
                </div>
 
@@ -99,9 +107,9 @@
 
                <!-- Book Now Button -->
                <div class="hidden lg:block">
-                    <a href="/book-now" class="bg-gradient-to-r from-orange-600 to-orange-500 text-white px-6 py-2 rounded-full hover:from-orange-700 hover:to-orange-600 transition-colors">
+                    <a href="/tours" class="bg-gradient-to-r from-orange-600 to-orange-500 text-white px-6 py-2 rounded-full hover:from-orange-700 hover:to-orange-600 transition-colors">
                          <i class="fas fa-calendar-check mr-2"></i>
-                         Book Now
+                         <%= settings?.bookNowText || 'Book Now' %>
                     </a>
                </div>
 
@@ -139,32 +147,15 @@
                     </a>
 
                     <div class="pt-4">
-                         <a href="/book-now" class="block text-center bg-gradient-to-r from-orange-600 to-orange-500 text-white px-6 py-3 rounded-lg hover:from-orange-700 hover:to-orange-600 transition-colors">
+                         <a href="/tours" class="block text-center bg-gradient-to-r from-orange-600 to-orange-500 text-white px-6 py-3 rounded-lg hover:from-orange-700 hover:to-orange-600 transition-colors">
                               <i class="fas fa-calendar-check mr-2"></i>
-                              Book Now
+                              <%= settings?.bookNowText || 'Book Now' %>
                          </a>
                     </div>
                </nav>
           </div>
      </div>
 </nav>
+
 <!-- Font Awesome CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-<!-- Alpine.js -->
-<!-- <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script> -->
-
-<script>
-     document.addEventListener('alpine:init', () => {
-          Alpine.data('navigation', () => ({
-               scrolled: false,
-               mobileMenuOpen: false,
-
-               init() {
-                    window.addEventListener('scroll', () => {
-                         this.scrolled = window.pageYOffset > 20;
-                    });
-               }
-          }));
-     });
-</script>

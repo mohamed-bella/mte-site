@@ -1,0 +1,433 @@
+<%- include('../partials/admin/header') %>
+     <%- include('../partials/admin/sidebar') %>
+
+          <div class="md:pl-64 flex flex-col flex-1">
+               <main class="flex-1">
+                    <div class="py-6">
+                         <!-- Page Header -->
+                         <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                              <div class="flex items-center justify-between">
+                                   <h1 class="text-2xl font-semibold text-gray-900">Analytics Dashboard</h1>
+                                   <!-- Time Range Selector -->
+                                   <select id="timeRange" onchange="updateCharts(this.value)" class="mt-1 block w-48 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm rounded-md">
+                                        <option value="7">Last 7 days</option>
+                                        <option value="30" selected>Last 30 days</option>
+                                        <option value="90">Last 3 months</option>
+                                        <option value="365">Last year</option>
+                                   </select>
+                              </div>
+                         </div>
+
+                         <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                              <!-- Stats Cards -->
+                              <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                                   <!-- Total Bookings -->
+                                   <div class="bg-white overflow-hidden shadow rounded-lg">
+                                        <div class="p-5">
+                                             <div class="flex items-center">
+                                                  <div class="flex-shrink-0 bg-orange-500 rounded-md p-3">
+                                                       <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                       </svg>
+                                                  </div>
+                                                  <div class="ml-5 w-0 flex-1">
+                                                       <dl>
+                                                            <dt class="text-sm font-medium text-gray-500 truncate">Total Bookings</dt>
+                                                            <dd class="mt-1 text-3xl font-semibold text-gray-900" data-stat="totalBookings">
+                                                                 <%= stats.totalBookings %>
+                                                            </dd>
+                                                       </dl>
+                                                  </div>
+                                             </div>
+                                             <div class="mt-4">
+                                                  <div class="flex items-center justify-between">
+                                                       <div class="text-sm">
+                                                            <span class="text-green-600 font-medium" data-growth="bookingGrowth">
+                                                                 <%= stats.bookingGrowth %>%
+                                                            </span>
+                                                            <span class="text-gray-500">vs last period</span>
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                   </div>
+
+                                   <!-- Total Revenue -->
+                                   <div class="bg-white overflow-hidden shadow rounded-lg">
+                                        <div class="p-5">
+                                             <div class="flex items-center">
+                                                  <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
+                                                       <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                       </svg>
+                                                  </div>
+                                                  <div class="ml-5 w-0 flex-1">
+                                                       <dl>
+                                                            <dt class="text-sm font-medium text-gray-500 truncate">Total Revenue</dt>
+                                                            <dd class="mt-1 text-3xl font-semibold text-gray-900" data-stat="totalRevenue">$<%= stats.totalRevenue.toLocaleString() %>
+                                                            </dd>
+                                                       </dl>
+                                                  </div>
+                                             </div>
+                                             <div class="mt-4">
+                                                  <div class="flex items-center justify-between">
+                                                       <div class="text-sm">
+                                                            <span class="text-green-600 font-medium" data-growth="revenueGrowth">
+                                                                 <%= stats.revenueGrowth %>%
+                                                            </span>
+                                                            <span class="text-gray-500">vs last period</span>
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                   </div>
+
+                                   <!-- Average Booking Value -->
+                                   <div class="bg-white overflow-hidden shadow rounded-lg">
+                                        <div class="p-5">
+                                             <div class="flex items-center">
+                                                  <div class="flex-shrink-0 bg-blue-500 rounded-md p-3">
+                                                       <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                                       </svg>
+                                                  </div>
+                                                  <div class="ml-5 w-0 flex-1">
+                                                       <dl>
+                                                            <dt class="text-sm font-medium text-gray-500 truncate">Average Booking Value</dt>
+                                                            <dd class="mt-1 text-3xl font-semibold text-gray-900" data-stat="avgBookingValue">$<%= stats.avgBookingValue.toLocaleString() %>
+                                                            </dd>
+                                                       </dl>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                   </div>
+
+                                   <!-- Conversion Rate -->
+                                   <div class="bg-white overflow-hidden shadow rounded-lg">
+                                        <div class="p-5">
+                                             <div class="flex items-center">
+                                                  <div class="flex-shrink-0 bg-purple-500 rounded-md p-3">
+                                                       <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                                       </svg>
+                                                  </div>
+                                                  <div class="ml-5 w-0 flex-1">
+                                                       <dl>
+                                                            <dt class="text-sm font-medium text-gray-500 truncate">Conversion Rate</dt>
+                                                            <dd class="mt-1 text-3xl font-semibold text-gray-900" data-stat="conversionRate">
+                                                                 <%= stats.conversionRate %>%
+                                                            </dd>
+                                                       </dl>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                   </div>
+                              </div>
+
+                              <!-- Charts Section -->
+                              <div class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
+                                   <!-- Revenue Chart -->
+                                   <div class="bg-white shadow rounded-lg p-6">
+                                        <h2 class="text-lg font-medium text-gray-900 mb-4">Revenue Overview</h2>
+                                        <div class="h-80">
+                                             <canvas id="revenueChart"></canvas>
+                                        </div>
+                                   </div>
+
+                                   <!-- Bookings Chart -->
+                                   <div class="bg-white shadow rounded-lg p-6">
+                                        <h2 class="text-lg font-medium text-gray-900 mb-4">Bookings Trend</h2>
+                                        <div class="h-80">
+                                             <canvas id="bookingsChart"></canvas>
+                                        </div>
+                                   </div>
+
+                                   <!-- Popular Tours -->
+                                   <div class="bg-white shadow rounded-lg p-6">
+                                        <h2 class="text-lg font-medium text-gray-900 mb-4">Popular Tours</h2>
+                                        <div class="overflow-hidden">
+                                             <ul role="list" class="divide-y divide-gray-200" id="popularToursList">
+                                                  <% popularTours.forEach((tour, index)=> { %>
+                                                       <li class="py-4">
+                                                            <div class="flex items-center space-x-4">
+                                                                 <div class="flex-shrink-0">
+                                                                      <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-orange-100 text-orange-600">
+                                                                           <%= index + 1 %>
+                                                                      </span>
+                                                                 </div>
+                                                                 <div class="min-w-0 flex-1">
+                                                                      <p class="text-sm font-medium text-gray-900 truncate">
+                                                                           <%= tour._id.title %>
+                                                                      </p>
+                                                                      <p class="text-sm text-gray-500">
+                                                                           <%= tour.bookings %> bookings
+                                                                      </p>
+                                                                 </div>
+                                                                 <div class="text-sm font-medium text-orange-600">
+                                                                      <%= ((tour.bookings / stats.totalBookings) * 100).toFixed(1) %>%
+                                                                 </div>
+                                                            </div>
+                                                       </li>
+                                                       <% }); %>
+                                             </ul>
+                                        </div>
+                                   </div>
+
+                                   <!-- Recent Activity -->
+                                   <div class="bg-white shadow rounded-lg p-6">
+                                        <h2 class="text-lg font-medium text-gray-900 mb-4">Recent Activity</h2>
+                                        <div class="flow-root">
+                                             <ul role="list" class="-mb-8" id="recentActivityList">
+                                                  <% recentActivity.forEach((activity, index)=> { %>
+                                                       <li>
+                                                            <div class="relative pb-8">
+                                                                 <% if (index !==recentActivity.length - 1) { %>
+                                                                      <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                                                      <% } %>
+                                                                           <div class="relative flex space-x-3">
+                                                                                <div>
+                                                                                     <span class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white 
+                                                        <%= activity.type === 'booking' ? 'bg-green-500' :
+                                                            activity.type === 'cancellation' ? 'bg-red-500' :
+                                                            'bg-gray-500' %>">
+                                                                                          <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                               <%= activity.type==='booking' ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />' : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />' %>
+                                                                                          </svg>
+                                                                                     </span>
+                                                                                </div>
+                                                                                <div class="min-w-0 flex-1">
+                                                                                     <div class="text-sm text-gray-500">
+                                                                                          <%= activity.description %>
+                                                                                               <span class="whitespace-nowrap">
+                                                                                                    <%= activity.time %>
+                                                                                               </span>
+                                                                                     </div>
+                                                                                </div>
+                                                                           </div>
+                                                            </div>
+                                                       </li>
+                                                       <% }); %>
+                                             </ul>
+                                        </div>
+                                   </div>
+                              </div>
+                         </div>
+                    </div>
+               </main>
+          </div>
+
+          <!-- Chart.js -->
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          
+          <script>
+               // Initialize Charts with real data
+               const revenueData = <%= JSON.stringify(monthlyRevenue) %>;
+               const bookingsData = <%= JSON.stringify(monthlyBookings) %>;
+
+               // Revenue Chart
+               const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+               const revenueChart = new Chart(revenueCtx, {
+                    type: 'line',
+                    data: {
+                         labels: revenueData.map(item => item.date),
+                         datasets: [{
+                              label: 'Revenue',
+                              data: revenueData.map(item => item.revenue),
+                              borderColor: '#f97316',
+                              tension: 0.4,
+                              fill: false
+                         }]
+                    },
+                    options: {
+                         responsive: true,
+                         maintainAspectRatio: false,
+                         plugins: {
+                              legend: {
+                                   display: false
+                              }
+                         },
+                         scales: {
+                              y: {
+                                   beginAtZero: true,
+                                   ticks: {
+                                        callback: function(value) {
+                                             return '$' + value.toLocaleString();
+                                        }
+                                   }
+                              }
+                         }
+                    }
+               });
+
+               // Bookings Chart
+               const bookingsCtx = document.getElementById('bookingsChart').getContext('2d');
+               const bookingsChart = new Chart(bookingsCtx, {
+                    type: 'line',
+                    data: {
+                         labels: bookingsData.map(item => item.date),
+                         datasets: [{
+                              label: 'Bookings',
+                              data: bookingsData.map(item => item.bookings),
+                              borderColor: '#22c55e',
+                              tension: 0.4,
+                              fill: false
+                         }]
+                    },
+                    options: {
+                         responsive: true,
+                         maintainAspectRatio: false,
+                         plugins: {
+                              legend: {
+                                   display: false
+                              }
+                         },
+                         scales: {
+                              y: {
+                                   beginAtZero: true,
+                                   ticks: {
+                                        stepSize: 1
+                                   }
+                              }
+                         }
+                    }
+               });
+
+               // Update Charts based on time range
+               async function updateCharts(days) {
+                    try {
+                         const response = await fetch(`/admin/analytics/data?days=${days}`);
+                         const data = await response.json();
+
+                         if (data.success) {
+                              // Update stats cards
+                              updateStatsCards(data.stats);
+
+                              // Update charts with new data
+                              updateRevenueChart(data.monthlyRevenue);
+                              updateBookingsChart(data.monthlyBookings);
+
+                              // Update popular tours
+                              updatePopularTours(data.popularTours);
+
+                              // Update recent activity
+                              updateRecentActivity(data.recentActivity);
+                         }
+                    } catch (error) {
+                         console.error('Error updating analytics:', error);
+                         showNotification('Error updating analytics data', 'error');
+                    }
+               }
+
+               function updateRevenueChart(newData) {
+                    revenueChart.data.labels = newData.map(item => item.date);
+                    revenueChart.data.datasets[0].data = newData.map(item => item.revenue);
+                    revenueChart.update();
+               }
+
+               function updateBookingsChart(newData) {
+                    bookingsChart.data.labels = newData.map(item => item.date);
+                    bookingsChart.data.datasets[0].data = newData.map(item => item.bookings);
+                    bookingsChart.update();
+               }
+
+               // Helper function to update stats cards
+               function updateStatsCards(stats) {
+                    document.querySelector('[data-stat="totalBookings"]').textContent = stats.totalBookings;
+                    document.querySelector('[data-stat="totalRevenue"]').textContent = `$${stats.totalRevenue.toLocaleString()}`;
+                    document.querySelector('[data-stat="avgBookingValue"]').textContent = `$${stats.avgBookingValue.toLocaleString()}`;
+                    document.querySelector('[data-stat="conversionRate"]').textContent = `${stats.conversionRate}%`;
+
+                    // Update growth indicators
+                    updateGrowthIndicator('bookingGrowth', stats.bookingGrowth);
+                    updateGrowthIndicator('revenueGrowth', stats.revenueGrowth);
+               }
+
+               // Helper function to update growth indicators
+               function updateGrowthIndicator(id, value) {
+                    const element = document.querySelector(`[data-growth="${id}"]`);
+                    const isPositive = value > 0;
+
+                    element.textContent = `${isPositive ? '+' : ''}${value}%`;
+                    element.className = `text-sm font-medium ${isPositive ? 'text-green-600' : 'text-red-600'}`;
+               }
+
+               // Helper function to update popular tours list
+               function updatePopularTours(tours) {
+                    const container = document.getElementById('popularToursList');
+                    const totalBookings = tours.reduce((acc, tour) => acc + tour.bookings, 0);
+
+                    container.innerHTML = tours.map((tour, index) => `
+                         <li class="py-4">
+                              <div class="flex items-center space-x-4">
+                                   <div class="flex-shrink-0">
+                                        <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-orange-100 text-orange-600">
+                                             ${index + 1}
+                                        </span>
+                                   </div>
+                                   <div class="min-w-0 flex-1">
+                                        <p class="text-sm font-medium text-gray-900 truncate">
+                                             ${tour._id.title}
+                                        </p>
+                                        <p class="text-sm text-gray-500">
+                                             ${tour.bookings} bookings
+                                        </p>
+                                   </div>
+                                   <div class="text-sm font-medium text-orange-600">
+                                        ${((tour.bookings / totalBookings) * 100).toFixed(1)}%
+                                   </div>
+                              </div>
+                         </li>
+                    `).join('');
+               }
+
+               // Helper function to update recent activity
+               function updateRecentActivity(activities) {
+                    const container = document.getElementById('recentActivityList');
+
+                    container.innerHTML = activities.map((activity, index) => `
+                         <li>
+                              <div class="relative pb-8">
+                                   ${index !== activities.length - 1 ?
+                                        '<span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>'
+                                        : ''}
+                                   <div class="relative flex space-x-3">
+                                        <div>
+                                             <span class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white 
+                                                  ${activity.type === 'booking' ? 'bg-green-500' :
+                                                  activity.type === 'cancellation' ? 'bg-red-500' :
+                                                       'bg-gray-500'}">
+                                                  <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                       ${activity.type === 'booking' ?
+                                                       '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />' :
+                                                       '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />'}
+                                                  </svg>
+                                             </span>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                             <div class="text-sm text-gray-500">
+                                                  ${activity.description}
+                                                  <span class="whitespace-nowrap">${activity.time}</span>
+                                             </div>
+                                        </div>
+                                   </div>
+                              </div>
+                         </li>
+                    `).join('');
+               }
+
+               // Notification helper
+               function showNotification(message, type = 'success') {
+                    const notification = document.createElement('div');
+                    notification.className = `fixed top-4 right-4 z-50 p-4 rounded-md ${type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'} transition-all duration-300 transform translate-y-0 opacity-100`;
+                    notification.innerHTML = message;
+                    document.body.appendChild(notification);
+
+                    setTimeout(() => {
+                         notification.style.opacity = '0';
+                         notification.style.transform = 'translateY(-100%)';
+                         setTimeout(() => notification.remove(), 300);
+                    }, 3000);
+               }
+          </script>
+
+          <%- include('../partials/admin/footer') %>

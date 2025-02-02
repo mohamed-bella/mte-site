@@ -1,8 +1,95 @@
-<%- include('../layouts/main-layout', { title: 'Contact Us' }) %>
-     <h2>Contact Us</h2>
-     <form action="/submit-form" method="POST">
-          <input type="text" name="name" placeholder="Your Name" required>
-          <input type="email" name="email" placeholder="Your Email" required>
-          <textarea name="message" placeholder="Your Message" required></textarea>
-          <button type="submit">Submit</button>
-     </form>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+     <%- include('../partials/head', { title: 'Contact Us - Morocco Tours | Get in Touch With Us' }) %>
+</head>
+
+<body class="bg-white">
+     <%- include('../partials/header') %>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="text-3xl font-bold text-center mb-8">Contact Information</h1>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Contact Details -->
+                <div class="bg-gray-50 p-6 rounded-lg shadow-sm">
+                    <h2 class="text-xl font-semibold mb-4">Get in Touch</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-envelope text-primary mr-3"></i>
+                            <div>
+                                <p class="font-medium">Email</p>
+                                <a href="mailto:mohamedbella235@gmail.com" class="text-blue-600 hover:underline">
+                                    mohamedbella235@gmail.com
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <i class="fas fa-phone text-primary mr-3"></i>
+                            <div>
+                                <p class="font-medium">Phone</p>
+                                <a href="tel:+212123456789" class="text-blue-600 hover:underline">
+                                    +212 123 456 789
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <i class="fab fa-instagram text-primary mr-3"></i>
+                            <div>
+                                <p class="font-medium">Instagram</p>
+                                <a href="https://instagram.com/moroccotravel" target="_blank" class="text-blue-600 hover:underline">
+                                    @moroccotravel
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <i class="fab fa-facebook text-primary mr-3"></i>
+                            <div>
+                                <p class="font-medium">Facebook</p>
+                                <a href="https://facebook.com/moroccotravelexperts" target="_blank" class="text-blue-600 hover:underline">
+                                    Morocco Travel Experts
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location -->
+                <div class="bg-gray-50 p-6 rounded-lg shadow-sm">
+                    <h2 class="text-xl font-semibold mb-4">Our Location</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-primary mt-1 mr-3"></i>
+                            <div>
+                                <p class="font-medium">Address</p>
+                                <p>123 Tourism Street</p>
+                                <p>Marrakech Medina</p>
+                                <p>40000 Marrakech</p>
+                                <p>Morocco</p>
+                            </div>
+                        </div>
+                        
+                        <div class="aspect-w-16 aspect-h-9">
+                            <iframe 
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3397.119166508315!2d-7.989843684885611!3d31.631044981330687!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xdafee8d973333db%3A0x570a6b6c8651a3ef!2sMarrakech%20Medina!5e0!3m2!1sen!2sma!4v1645567894321!5m2!1sen!2sma"
+                                class="w-full h-64 rounded-lg"
+                                style="border:0;" 
+                                allowfullscreen="" 
+                                loading="lazy">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -14,7 +14,7 @@
                     <!-- Video Background -->
                     <div class="absolute inset-0">
                          <video class="w-full h-full object-cover" autoplay loop muted playsinline>
-                              <source src="https://cdn-cf-east.streamable.com/video/mp4/8u2cv1.mp4?Expires=1738534597954&Key-Pair-Id=APKAIEYUVEN4EVB2OKEQ&Signature=kArXf0BFpmoED74GrchVF49AN0P5cA3EsJSKNSck5n6vbp87Lsgcy2vf~C1BDPFUS5m6sKXbd0RBVPSDRKd1725r5YFefAg50xJTwg1-Glqtnn7OSvhfIjnboGmyvMvpTWgnhC9AcGgs9ngVz9oHAW6e4VOvopsL3zzJH9KiRt2E43NQC5aYddMyinICn3R7ITIluXMOKRVx6DHJpZ1LG41OeSRpsJWkHGZhge83-NtIkaeenrSZiswpIfYDhXpsN0HYWODyVmkgI3Xy5g4odZi9n0eScMGCrhngfl2NZVKCrIRn4kwsHpjC-GC6LQIDc5u7wzp9IYxXHlv~Tc-x7A__" type="video/mp4">
+                              <source src="https://github.com/mohamed-bella/mte-files/raw/refs/heads/main/videoplayback%20(1).mp4" type="video/mp4">
                          </video>
                          <div class="absolute inset-0 bg-black/50"></div>
                     </div>
@@ -175,12 +175,12 @@
                          <!-- Tours Grid -->
                          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
                               <% tours.forEach(tour=> { %>
-                                   <a href="/tours/<%= tour.id %>" class="block group">
+                                   <a href="/tour/<%= tour.slug %>" class="block group">
                                         <div class="h-full bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-out">
                                              <!-- Image Container -->
                                              <div class="relative">
                                                   <div class="aspect-w-16 aspect-h-10 sm:aspect-h-12">
-                                                       <img src="<%= tour.photos[0] %>" alt="<%= tour.title %>" class="w-full h-48 sm:h-56 lg:h-64 object-cover transform group-hover:scale-105 transition duration-700 ease-out">
+                                                       <img src="<%= tour.mainImage %>" alt="<%= tour.title %>" class="w-full h-48 sm:h-56 lg:h-64 object-cover transform group-hover:scale-105 transition duration-700 ease-out">
                                                   </div>
 
                                                   <!-- Overlay with Gradient -->
@@ -192,7 +192,7 @@
                                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                             </svg>
-                                                            <%= tour.itinerary.length %> Days
+                                                            <%= tour.duration %> Days
                                                        </span>
                                                   </div>
                                              </div>
@@ -206,7 +206,7 @@
                                                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                             </svg>
-                                                            Morocco
+                                                            <%= tour.startLocation %>
                                                        </div>
                                                   </div>
 
@@ -225,7 +225,7 @@
                                                        <div class="flex flex-col">
                                                             <span class="text-xs sm:text-sm text-gray-500">Starting from</span>
                                                             <span class="text-xl sm:text-2xl font-bold text-orange-500">
-                                                                 $<%= tour.price || '999' %>
+                                                                 $<%= tour.price %>
                                                             </span>
                                                        </div>
 

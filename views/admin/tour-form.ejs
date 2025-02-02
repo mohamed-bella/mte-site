@@ -1,0 +1,344 @@
+<%- include('../partials/admin/header') %>
+     <%- include('../partials/admin/sidebar') %>
+
+          <div class="md:pl-64 flex flex-col flex-1">
+               <main class="flex-1">
+                    <div class="py-6">
+                         <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                              <div class="flex items-center justify-between">
+                                   <h1 class="text-2xl font-semibold text-gray-900">
+                                        <%= tour ? 'Edit Tour' : 'Create New Tour' %>
+                                   </h1>
+                                   <a href="/admin/tours" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                        Back to Tours
+                                   </a>
+                              </div>
+                         </div>
+
+
+                         <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                              <div class="py-5">
+                                   <form id="tourForm" class="space-y-8 divide-y divide-gray-200" enctype="multipart/form-data">
+                                        <!-- Basic Information -->
+                                        <div class="space-y-6 sm:space-y-5">
+                                             <div>
+                                                  <h3 class="text-lg leading-6 font-medium text-gray-900">Basic Information</h3>
+                                                  <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                                                       Essential details about the tour.
+                                                  </p>
+                                             </div>
+
+                                             <div class="space-y-6 sm:space-y-5">
+                                                  <!-- Title -->
+                                                  <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                                                       <label for="title" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                                            Title *
+                                                       </label>
+                                                       <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                                            <input type="text" name="title" id="title" required value="<%= tour ? tour.title : '' %>" class="max-w-lg block w-full shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
+                                                       </div>
+                                                  </div>
+
+                                                  <!-- Description -->
+                                                  <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                                                       <label for="description" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                                            Description *
+                                                       </label>
+                                                       <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                                            <textarea id="description" name="description" rows="4" required class="max-w-lg shadow-sm block w-full focus:ring-orange-500 focus:border-orange-500 sm:text-sm border border-gray-300 rounded-md"><%= tour ? tour.description : '' %></textarea>
+                                                       </div>
+                                                  </div>
+
+                                                  <!-- Price -->
+                                                  <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                                                       <label for="price" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                                            Price (USD) *
+                                                       </label>
+                                                       <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                                            <input type="number" name="price" id="price" required min="0" step="0.01" value="<%= tour ? tour.price : '' %>" class="max-w-lg block w-full shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
+                                                       </div>
+                                                  </div>
+
+                                                  <!-- Duration -->
+                                                  <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                                                       <label for="duration" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                                            Duration (days) *
+                                                       </label>
+                                                       <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                                            <input type="number" name="duration" id="duration" required min="1" value="<%= tour ? tour.duration : '' %>" class="max-w-lg block w-full shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
+                                                       </div>
+                                                  </div>
+
+                                                  <!-- Group Size -->
+                                                  <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                                                       <label for="groupSize" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                                            Max Group Size *
+                                                       </label>
+                                                       <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                                            <input type="number" name="groupSize" id="groupSize" required min="1" value="<%= tour ? tour.groupSize : '15' %>" class="max-w-lg block w-full shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
+                                                       </div>
+                                                  </div>
+
+                                                  <!-- Start Location -->
+                                                  <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                                                       <label for="startLocation" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                                            Starting Location *
+                                                       </label>
+                                                       <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                                            <input type="text" name="startLocation" id="startLocation" required value="<%= tour ? tour.startLocation : '' %>" class="max-w-lg block w-full shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
+                                                       </div>
+                                                  </div>
+
+                                                  <!-- Accommodation -->
+                                                  <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                                                       <label for="accommodation" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                                            Accommodation *
+                                                       </label>
+                                                       <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                                            <input type="text" name="accommodation" id="accommodation" required value="<%= tour ? tour.accommodation : '' %>" class="max-w-lg block w-full shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                        </div>
+
+                                        <!-- Images Section -->
+                                        <div class="pt-8 space-y-6 sm:pt-10 sm:space-y-5">
+                                             <div>
+                                                  <h3 class="text-lg leading-6 font-medium text-gray-900">Images</h3>
+                                                  <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                                                       Upload tour images.
+                                                  </p>
+                                             </div>
+
+                                             <div class="space-y-6 sm:space-y-5">
+                                                  <!-- Main Image -->
+                                                  <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                                                       <label for="mainImage" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                                            Main Image <%= tour && tour.mainImage ? '(Current: ' + tour.mainImage + ')' : '*' %>
+                                                       </label>
+                                                       <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                                            <input type="file" name="images" id="mainImage" <%=!tour ? 'required' : '' %>
+                                                            accept="image/*"
+                                                            class="max-w-lg block w-full shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:max-w-xs sm:text-sm border-gray-300">
+                                                       </div>
+                                                  </div>
+
+                                                  <!-- Additional Images -->
+                                                  <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                                                       <label class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                                            Additional Images
+                                                       </label>
+                                                       <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                                            <div id="imageUrlsContainer">
+                                                                 <% if (tour && tour.images && tour.images.length> 0) { %>
+                                                                      <% tour.images.forEach((image, index)=> { %>
+                                                                           <div class="flex space-x-2 mb-2">
+                                                                                <input type="file" name="images" accept="image/*" class="max-w-lg block w-full shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm border-gray-300 rounded-md">
+                                                                                <% if (image) { %>
+                                                                                     <span class="text-sm text-gray-500">Current: <%= image %></span>
+                                                                                <% } %>
+                                                                                <button type="button" onclick="removeImageUrl(this)" class="text-red-600">Remove</button>
+                                                                           </div>
+                                                                           <% }); %>
+                                                                                <% } %>
+                                                            </div>
+                                                            <button type="button" onclick="addImageUrl()" class="mt-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-orange-700 bg-orange-100 hover:bg-orange-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                                                                 Add Image
+                                                            </button>
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                        </div>
+
+                                        <!-- Itinerary Section -->
+                                        <div class="pt-8 space-y-6 sm:pt-10 sm:space-y-5">
+                                             <div>
+                                                  <h3 class="text-lg leading-6 font-medium text-gray-900">Itinerary</h3>
+                                                  <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                                                       Add day-by-day itinerary details.
+                                                  </p>
+                                             </div>
+
+                                             <div id="itineraryContainer">
+                                                  <% if (tour && tour.itinerary && tour.itinerary.length> 0) { %>
+                                                       <% tour.itinerary.forEach((day, index)=> { %>
+                                                            <div class="border-b border-gray-200 pb-5 mb-5">
+                                                                 <div class="space-y-6 sm:space-y-5">
+                                                                      <input type="hidden" name="itinerary[<%= index %>][day]" value="<%= day.day %>">
+
+                                                                      <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                                                                           <label class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                                                                Day <%= day.day %> Title
+                                                                           </label>
+                                                                           <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                                                                <input type="text" name="itinerary[<%= index %>][title]" value="<%= day.title %>" required class="max-w-lg block w-full shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm border-gray-300 rounded-md">
+                                                                           </div>
+                                                                      </div>
+
+                                                                      <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                                                                           <label class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                                                                Description
+                                                                           </label>
+                                                                           <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                                                                <textarea name="itinerary[<%= index %>][description]" rows="3" required class="max-w-lg shadow-sm block w-full focus:ring-orange-500 focus:border-orange-500 sm:text-sm border border-gray-300 rounded-md"><%= day.description %></textarea>
+                                                                           </div>
+                                                                      </div>
+
+                                                                      <button type="button" onclick="removeItineraryDay(this)" class="mt-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                                                           Remove Day
+                                                                      </button>
+                                                                 </div>
+                                                            </div>
+                                                            <% }); %>
+                                                                 <% } %>
+                                             </div>
+
+                                             <button type="button" onclick="addItineraryDay()" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-orange-700 bg-orange-100 hover:bg-orange-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                                                  Add Day to Itinerary
+                                             </button>
+                                        </div>
+
+                                        <!-- Form Actions -->
+                                        <div class="pt-5">
+                                             <div class="flex justify-end">
+                                                  <a href="/admin/tours" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                                                       Cancel
+                                                  </a>
+                                                  <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                                                       <%= tour ? 'Update Tour' : 'Create Tour' %>
+                                                  </button>
+                                             </div>
+                                        </div>
+                                   </form>
+                              </div>
+                         </div>
+                    </div>
+               </main>
+          </div>
+
+          <!-- JavaScript for Dynamic Form Fields -->
+          <script>
+               // Add Image URL Field
+               function addImageUrl() {
+                    const container = document.getElementById('imageUrlsContainer');
+                    const div = document.createElement('div');
+                    div.className = 'flex space-x-2 mb-2';
+                    div.innerHTML = `
+                         <input type="file" 
+                                name="images" 
+                                accept="image/*"
+                                class="max-w-lg block w-full shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm border-gray-300 rounded-md">
+                         <button type="button" onclick="removeImageUrl(this)" class="text-red-600">Remove</button>
+                    `;
+                    container.appendChild(div);
+               }
+
+               // Remove Image URL Field
+               function removeImageUrl(button) {
+                    button.parentElement.remove();
+               }
+
+               // Add Itinerary Day
+               function addItineraryDay() {
+                    const container = document.getElementById('itineraryContainer');
+                    const dayCount = container.children.length;
+                    const div = document.createElement('div');
+                    div.className = 'border-b border-gray-200 pb-5 mb-5';
+
+                    div.innerHTML = `
+                         <div class="space-y-6 sm:space-y-5">
+                              <input type="hidden" name="itinerary[${dayCount}][day]" value="${dayCount + 1}">
+                              
+                              <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                                   <label class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                        Day ${dayCount + 1} Title
+                                   </label>
+                                   <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                        <input type="text" 
+                                               name="itinerary[${dayCount}][title]"
+                                               required
+                                               class="max-w-lg block w-full shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm border-gray-300 rounded-md">
+                                   </div>
+                              </div>
+                
+                              <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                                   <label class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                        Description
+                                   </label>
+                                   <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                        <textarea name="itinerary[${dayCount}][description]"
+                                                  rows="3"
+                                                  required
+                                                  class="max-w-lg shadow-sm block w-full focus:ring-orange-500 focus:border-orange-500 sm:text-sm border border-gray-300 rounded-md"></textarea>
+                                   </div>
+                              </div>
+                
+                              <button type="button" 
+                                      onclick="removeItineraryDay(this)"
+                                      class="mt-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                   Remove Day
+                              </button>
+                         </div>
+                    `;
+                    container.appendChild(div);
+                    updateItineraryDays();
+               }
+
+               // Remove Itinerary Day
+               function removeItineraryDay(button) {
+                    button.closest('.border-b').remove();
+                    updateItineraryDays();
+               }
+
+               // Update Itinerary Day Numbers
+               function updateItineraryDays() {
+                    const container = document.getElementById('itineraryContainer');
+                    const days = container.children;
+                    Array.from(days).forEach((day, index) => {
+                         const dayNum = index + 1;
+                         day.querySelector('input[type="hidden"]').value = dayNum;
+                         day.querySelector('label').textContent = `Day ${dayNum} Title`;
+                    });
+               }
+
+               // Add initial day if no itinerary exists
+               window.addEventListener('load', () => {
+                    const container = document.getElementById('itineraryContainer');
+                    if (container.children.length === 0) {
+                         addItineraryDay();
+                    }
+               });
+
+               // Handle form submission with AJAX
+               document.getElementById('tourForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const form = e.target;
+                    const formData = new FormData(form);
+                    
+                    try {
+                         const url = '<%= tour ? `/admin/tours/${tour._id}/edit` : `/admin/tours/new` %>';
+                         const response = await fetch(url, {
+                              method: 'POST',
+                              body: formData
+                         });
+
+                         if (!response.ok) {
+                              throw new Error('Network response was not ok');
+                         }
+
+                         const result = await response.json();
+                         
+                         if (result.success) {
+                              window.location.href = '/admin/tours';
+                         } else {
+                              alert(result.message || 'Error saving tour');
+                         }
+                    } catch (error) {
+                         console.error('Error:', error);
+                         alert('Error saving tour. Please try again.');
+                    }
+               });
+          </script>
+
+          <%- include('../partials/admin/footer') %>
