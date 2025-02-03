@@ -14,7 +14,7 @@
                     <!-- Video Background -->
                     <div class="absolute inset-0">
                          <video class="w-full h-full object-cover" autoplay loop muted playsinline>
-                              <source src="https://github.com/mohamed-bella/mte-files/raw/refs/heads/main/videoplayback%20(1).mp4" type="video/mp4">
+                              <!-- <source src="https://github.com/mohamed-bella/mte-files/raw/refs/heads/main/videoplayback%20(1).mp4" type="video/mp4"> -->
                          </video>
                          <div class="absolute inset-0 bg-black/50"></div>
                     </div>
@@ -175,7 +175,7 @@
                          <!-- Tours Grid -->
                          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
                               <% tours.forEach(tour=> { %>
-                                   <a href="/tour/<%= tour.slug %>" class="block group">
+                                   <a href="/tours/<%= tour.slug %>" class="block group">
                                         <div class="h-full bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-out">
                                              <!-- Image Container -->
                                              <div class="relative">
