@@ -126,22 +126,7 @@
 
                               <!-- Charts Section -->
                               <div class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
-                                   <!-- Revenue Chart -->
-                                   <div class="bg-white shadow rounded-lg p-6">
-                                        <h2 class="text-lg font-medium text-gray-900 mb-4">Revenue Overview</h2>
-                                        <div class="h-80">
-                                             <canvas id="revenueChart"></canvas>
-                                        </div>
-                                   </div>
-
-                                   <!-- Bookings Chart -->
-                                   <div class="bg-white shadow rounded-lg p-6">
-                                        <h2 class="text-lg font-medium text-gray-900 mb-4">Bookings Trend</h2>
-                                        <div class="h-80">
-                                             <canvas id="bookingsChart"></canvas>
-                                        </div>
-                                   </div>
-
+                                  
                                    <!-- Popular Tours -->
                                    <div class="bg-white shadow rounded-lg p-6">
                                         <h2 class="text-lg font-medium text-gray-900 mb-4">Popular Tours</h2>
@@ -220,10 +205,7 @@
           <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
           
           <script>
-               // Initialize Charts with real data
-               const revenueData = <%= JSON.stringify(monthlyRevenue) %>;
-               const bookingsData = <%= JSON.stringify(monthlyBookings) %>;
-
+             
                // Revenue Chart
                const revenueCtx = document.getElementById('revenueChart').getContext('2d');
                const revenueChart = new Chart(revenueCtx, {

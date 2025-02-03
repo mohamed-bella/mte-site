@@ -34,7 +34,7 @@
 </head>
 
 <body class="h-full bg-gray-100">
-     <% if (messages.success) { %>
+     <% if (messages.success && messages.success > 0) { %>
           <div class="fixed top-4 right-4 z-50 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded" role="alert">
                <span class="block sm:inline">
                     <%= messages.success %>
@@ -42,7 +42,7 @@
           </div>
           <% } %>
 
-               <% if (messages.error) { %>
+               <% if (messages.error && messages.error > 0) { %>
                     <div class="fixed top-4 right-4 z-50 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded" role="alert">
                          <span class="block sm:inline">
                               <%= messages.error %>

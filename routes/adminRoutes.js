@@ -79,6 +79,7 @@ router.get('/tours/new', (req, res) => {
           tour: null
      });
 });
+
 router.post('/tours/new', upload.array('images', 10), async (req, res) => {
      try {
           const {
@@ -165,14 +166,15 @@ router.get('/tours/:id/edit', async (req, res) => {
           }
           res.render('admin/tour-form', {
                title: 'Edit Tour',
-               tour
+               tour,
+               path: '/admin/tours' // Add path for sidebar highlighting
           });
      } catch (error) {
+          console.error('Error loading tour:', error);
           req.flash('error', 'Error loading tour');
           res.redirect('/admin/tours');
      }
 });
-
 router.post('/tours/:id/edit', upload.single('mainImage'), async (req, res) => {
      try {
           const {
@@ -187,20 +189,7 @@ router.post('/tours/:id/edit', upload.single('mainImage'), async (req, res) => {
                itinerary
           } = req.body;
 
-          const updateData = {
-               title,
-               description,
-               price: parseFloat(price),
-               duration: parseInt(duration),
-               groupSize: parseInt(groupSize),
-               startLocation,
-               accommodation,
-               images: Array.isArray(images) ? images : [images].filter(Boolean),
-               itinerary: Array.isArray(itinerary) ? itinerary : JSON.parse(itinerary),
-               slug: slugify(title, { lower: true })
-          };
-
-          // Upload new image to GitHub if provided
+          let imageUrls = [];
           if (req.file) {
                const imageBuffer = req.file.buffer;
                const fileName = `tours/${Date.now()}-${req.file.originalname}`;
@@ -228,10 +217,27 @@ router.post('/tours/:id/edit', upload.single('mainImage'), async (req, res) => {
 
                if (response.ok) {
                     const data = await response.json();
-                    updateData.mainImage = data.content.download_url;
+                    imageUrls.push(data.content.download_url);
                } else {
                     throw new Error('Failed to upload image to GitHub');
                }
+          }
+
+          const updateData = {
+               title,
+               description,
+               price: parseFloat(price),
+               duration: parseInt(duration),
+               groupSize: parseInt(groupSize),
+               startLocation,
+               accommodation,
+               images: Array.isArray(images) ? images : [images].filter(Boolean),
+               itinerary: Array.isArray(itinerary) ? itinerary : JSON.parse(itinerary),
+               slug: slugify(title, { lower: true })
+          };
+
+          if (imageUrls.length > 0) {
+               updateData.mainImage = imageUrls[0];
           }
 
           const tour = await Tour.findByIdAndUpdate(
@@ -241,15 +247,24 @@ router.post('/tours/:id/edit', upload.single('mainImage'), async (req, res) => {
           );
 
           if (!tour) {
-               req.flash('error', 'Tour not found');
-               return res.redirect('/admin/tours');
+               return res.status(404).json({
+                    success: false,
+                    message: 'Tour not found'
+               });
           }
 
-          req.flash('success', 'Tour updated successfully');
-          res.redirect('/admin/tours');
+          res.json({
+               success: true,
+               message: 'Tour updated successfully',
+               tour: tour
+          });
+
      } catch (error) {
-          req.flash('error', error.message || 'Error updating tour');
-          res.redirect(`/admin/tours/${req.params.id}/edit`);
+          console.log(error);
+          res.status(500).json({
+               success: false,
+               message: error.message || 'Error updating tour'
+          });
      }
 });
 
