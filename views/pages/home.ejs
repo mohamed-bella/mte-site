@@ -9,13 +9,12 @@
      <%- include('../partials/header') %>
 
           <main class="min-h-screen">
-               <!-- Hero Section with Video Background -->
+               <!-- Hero Section with image Background -->
                <section class="relative h-screen overflow-hidden">
-                    <!-- Video Background -->
+                    <!-- Image Background -->
                     <div class="absolute inset-0">
-                         <video class="w-full h-full object-cover" autoplay loop muted playsinline>
-                              <!-- <source src="https://github.com/mohamed-bella/mte-files/raw/refs/heads/main/videoplayback%20(1).mp4" type="video/mp4"> -->
-                         </video>
+
+                         <img src="/images/hero.jpg" alt="Morocco Desert" class="w-full h-full object-cover"> 
                          <div class="absolute inset-0 bg-black/50"></div>
                     </div>
 
@@ -276,13 +275,7 @@
                          }
                     });
 
-                    // Video modal functionality
-                    const videoBtn = document.querySelector('.play-video-btn');
-                    if (videoBtn) {
-                         videoBtn.addEventListener('click', () => {
-                              // Implement video modal functionality
-                         });
-                    }
+                     
                </script>
                </body>
 
