@@ -204,8 +204,12 @@
                                                   <a href="/admin/tours" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
                                                        Cancel
                                                   </a>
-                                                  <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
-                                                       <%= tour ? 'Update Tour' : 'Create Tour' %>
+                                                  <button type="submit" id="submitBtn" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                                                       <span id="submitText"><%= tour ? 'Update Tour' : 'Create Tour' %></span>
+                                                       <svg id="submitSpinner" class="hidden animate-spin ml-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                       </svg>
                                                   </button>
                                              </div>
                                         </div>
@@ -315,6 +319,14 @@
                     
                     const form = e.target;
                     const formData = new FormData(form);
+                    const submitBtn = document.getElementById('submitBtn');
+                    const submitText = document.getElementById('submitText');
+                    const submitSpinner = document.getElementById('submitSpinner');
+                    
+                    // Disable button and show spinner
+                    submitBtn.disabled = true;
+                    submitText.classList.add('opacity-50');
+                    submitSpinner.classList.remove('hidden');
                     
                     try {
                          const url = '<%= tour ? `/admin/tours/${tour._id}/edit` : `/admin/tours/new` %>';
@@ -333,10 +345,18 @@
                               window.location.href = '/admin/tours';
                          } else {
                               alert(result.message || 'Error saving tour');
+                              // Re-enable button and hide spinner on error
+                              submitBtn.disabled = false;
+                              submitText.classList.remove('opacity-50');
+                              submitSpinner.classList.add('hidden');
                          }
                     } catch (error) {
                          console.error('Error:', error);
                          alert('Error saving tour. Please try again.');
+                         // Re-enable button and hide spinner on error
+                         submitBtn.disabled = false;
+                         submitText.classList.remove('opacity-50');
+                         submitSpinner.classList.add('hidden');
                     }
                });
           </script>

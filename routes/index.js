@@ -288,7 +288,7 @@ router.post('/contact', async (req, res) => {
 
 // Privacy policy
 router.get('/privacy', (req, res) => {
-     res.render('privacy', {
+     res.render('pages/privacy', {
           title: 'Privacy Policy',
           metaTitle: res.locals.settings?.metaTitle,
           metaDescription: res.locals.settings?.metaDescription,
@@ -298,7 +298,7 @@ router.get('/privacy', (req, res) => {
 
 // Terms and conditions
 router.get('/terms', (req, res) => {
-     res.render('terms', {
+     res.render('pages/terms', {
           title: 'Terms and Conditions',
           metaTitle: res.locals.settings?.metaTitle,
           metaDescription: res.locals.settings?.metaDescription,

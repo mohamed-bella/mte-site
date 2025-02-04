@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<%- include('../partials/head', { title: 'Terms of Service | Morocco Travel Experts ' }) %>
+
+     <%- include('../partials/header') %>
+
+     <main class="py-20 bg-gray-50">
+          <div class="container mx-auto px-4 max-w-4xl">
+               <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12">
+                    <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Terms of Service</h1>
+                    <p class="text-gray-600 mb-12">Last updated: <%= new Date().toLocaleDateString() %></p>
+                    
+                    <div class="space-y-12">
+                         <section>
+                              <h2 class="text-2xl font-semibold text-gray-900 mb-4">Acceptance of Terms</h2>
+                              <p class="text-gray-600 leading-relaxed">By making a tour booking through our website, you agree to be bound by these Terms of Service. No account creation is required to use our services.</p>
+                         </section>
+
+                         <section>
+                              <h2 class="text-2xl font-semibold text-gray-900 mb-4">Booking Process</h2>
+                              <p class="text-gray-600 leading-relaxed mb-4">To book a tour, you will need to provide:</p>
+                              <ul class="list-disc list-inside space-y-2 text-gray-600 pl-4">
+                                   <li>Your full name as it appears on your official ID</li>
+                                   <li>A valid email address for communication and booking confirmation</li>
+                                   <li>Any other required booking information specific to your tour</li>
+                              </ul>
+                         </section>
+
+                         <section>
+                              <h2 class="text-2xl font-semibold text-gray-900 mb-4">Your Responsibilities</h2>
+                              <p class="text-gray-600 leading-relaxed mb-4">When using our booking service, you agree to:</p>
+                              <ul class="list-disc list-inside space-y-2 text-gray-600 pl-4">
+                                   <li>Provide accurate and truthful information</li>
+                                   <li>Use the service for legitimate tour bookings only</li>
+                                   <li>Respond to booking-related communications in a timely manner</li>
+                              </ul>
+                         </section>
+
+                         <section>
+                              <h2 class="text-2xl font-semibold text-gray-900 mb-4">Communication</h2>
+                              <p class="text-gray-600 leading-relaxed">By providing your email address, you agree to receive booking confirmations, tour information, and essential updates related to your booking. We will not use your contact information for unrelated marketing purposes without your consent.</p>
+                         </section>
+
+                         <section>
+                              <h2 class="text-2xl font-semibold text-gray-900 mb-4">Contact Us</h2>
+                              <p class="text-gray-600 leading-relaxed">If you have any questions about these Terms of Service or your booking, please contact us through our provided contact information.</p>
+                         </section>
+                    </div>
+               </div>
+          </div>
+     </main>
+</body>
+</html>
