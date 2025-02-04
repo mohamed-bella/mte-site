@@ -175,7 +175,7 @@ router.get('/tours/:id/edit', async (req, res) => {
           res.redirect('/admin/tours');
      }
 });
-router.post('/tours/:id/edit', upload.single('mainImage'), async (req, res) => {
+router.post('/tours/:id/edit', upload.array('images', 10), async (req, res) => {
      try {
           const {
                title,
@@ -185,41 +185,42 @@ router.post('/tours/:id/edit', upload.single('mainImage'), async (req, res) => {
                groupSize,
                startLocation,
                accommodation,
-               images,
                itinerary
           } = req.body;
 
           let imageUrls = [];
-          if (req.file) {
-               const imageBuffer = req.file.buffer;
-               const fileName = `tours/${Date.now()}-${req.file.originalname}`;
+          if (req.files && req.files.length > 0) {
+               for (const file of req.files) {
+                    const imageBuffer = file.buffer;
+                    const fileName = `tours/${Date.now()}-${file.originalname}`;
 
-               // GitHub API configuration  
-               const githubToken = process.env.GITHUB_TOKEN;
-               const repoOwner = process.env.GITHUB_OWNER;
-               const repoName = process.env.GITHUB_REPO;
+                    // GitHub API configuration  
+                    const githubToken = process.env.GITHUB_TOKEN;
+                    const repoOwner = process.env.GITHUB_OWNER;
+                    const repoName = process.env.GITHUB_REPO;
 
-               // Convert image to base64
-               const base64Image = imageBuffer.toString('base64');
+                    // Convert image to base64
+                    const base64Image = imageBuffer.toString('base64');
 
-               // Upload to GitHub
-               const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${fileName}`, {
-                    method: 'PUT',
-                    headers: {
-                         'Authorization': `token ${githubToken}`,
-                         'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                         message: 'Update tour image',
-                         content: base64Image
-                    })
-               });
+                    // Upload to GitHub
+                    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${fileName}`, {
+                         method: 'PUT',
+                         headers: {
+                              'Authorization': `token ${githubToken}`,
+                              'Content-Type': 'application/json',
+                         },
+                         body: JSON.stringify({
+                              message: 'Update tour image',
+                              content: base64Image
+                         })
+                    });
 
-               if (response.ok) {
-                    const data = await response.json();
-                    imageUrls.push(data.content.download_url);
-               } else {
-                    throw new Error('Failed to upload image to GitHub');
+                    if (response.ok) {
+                         const data = await response.json();
+                         imageUrls.push(data.content.download_url);
+                    } else {
+                         throw new Error('Failed to upload image to GitHub');
+                    }
                }
           }
 
@@ -231,13 +232,13 @@ router.post('/tours/:id/edit', upload.single('mainImage'), async (req, res) => {
                groupSize: parseInt(groupSize),
                startLocation,
                accommodation,
-               images: Array.isArray(images) ? images : [images].filter(Boolean),
                itinerary: Array.isArray(itinerary) ? itinerary : JSON.parse(itinerary),
                slug: slugify(title, { lower: true })
           };
 
           if (imageUrls.length > 0) {
                updateData.mainImage = imageUrls[0];
+               updateData.images = imageUrls;
           }
 
           const tour = await Tour.findByIdAndUpdate(

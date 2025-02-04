@@ -1,5 +1,5 @@
-<!-- Loading Overlay
-<div id="loading-overlay" class="fixed inset-0 bg-white z-50 flex items-center justify-center transition-opacity duration-500">
+<!-- Loading Overlay -->
+<!-- <div id="loading-overlay" class="fixed inset-0 bg-white z-50 flex items-center justify-center transition-opacity duration-500">
      <div class="flex flex-col items-center">
           <div class="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
           <span class="mt-4 text-gray-600 font-medium">Loading...</span>
@@ -15,6 +15,36 @@
           }, 500);
      });
 </script> -->
+
+<!-- Admin Top Bar -->
+<% if (locals.isAdmin) { %>
+<div class="bg-gray-800 text-white">
+     <div class="container mx-auto px-4">
+          <div class="flex items-center h-12 text-sm overflow-x-auto">
+               <a href="/admin/dashboard" class="px-4 py-2 hover:bg-gray-700 transition-colors whitespace-nowrap">
+                    <i class="fas fa-tachometer-alt mr-2"></i>
+                    Dashboard
+               </a>
+               <a href="/admin/tours/new" class="px-4 py-2 hover:bg-gray-700 transition-colors whitespace-nowrap">
+                    <i class="fas fa-plus mr-2"></i>
+                    Add New Tour
+               </a>
+               <a href="/admin/tours" class="px-4 py-2 hover:bg-gray-700 transition-colors whitespace-nowrap">
+                    <i class="fas fa-route mr-2"></i>
+                    View Tours
+               </a>
+               <a href="/admin/bookings" class="px-4 py-2 hover:bg-gray-700 transition-colors whitespace-nowrap">
+                    <i class="fas fa-calendar-check mr-2"></i>
+                    View Bookings
+               </a>
+               <a href="/admin/analytics" class="px-4 py-2 hover:bg-gray-700 transition-colors whitespace-nowrap">
+                    <i class="fas fa-chart-line mr-2"></i>
+                    Analytics
+               </a>
+          </div>
+     </div>
+</div>
+<% } %>
 
 <!-- Top Info Bar -->
 <div class="bg-gradient-to-r from-orange-600 to-orange-700 text-white">

@@ -89,6 +89,8 @@ app.post('/admin/login', (req, res) => {
                maxAge: rememberMe ? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000 // 30 days if remember me, else 24 hours
           };
           res.cookie('adminAuth', password, cookieOptions);
+          // Set global isAdmin variable
+          app.locals.isAdmin = true;
           res.redirect('/admin/dashboard');
      } else {
           req.flash('error', 'Invalid password');
