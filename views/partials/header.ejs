@@ -47,41 +47,68 @@
 <% } %>
 
 <!-- Top Info Bar -->
-<div class="bg-gradient-to-r from-orange-600 to-orange-700 text-white">
+<div class="bg-gray-900 text-white">
      <div class="container mx-auto px-4">
-          <div class="flex justify-between items-center h-10 text-sm">
-               <!-- Contact Info (hidden on mobile) -->
-               <div class="hidden md:flex items-center space-x-4">
-                    <a href="mailto:<%= settings?.email || 'info@morocotours.com' %>" class="hover:text-orange-200 transition-colors flex items-center">
+          <!-- Desktop View -->
+          <div class="hidden md:flex justify-between items-center h-10 text-sm">
+               <div class="flex items-center space-x-4">
+                    <a href="mailto:<%= settings?.email || 'moroccotravelexperts@yahoo.com' %>" class="hover:text-orange-400 transition-colors flex items-center">
                          <i class="fas fa-envelope mr-2"></i>
-                         <%= settings?.email || 'info@morocotours.com' %>
+                         <%= settings?.email || 'moroccotravelexperts@yahoo.com' %>
                     </a>
-                    <a href="tel:<%= settings?.phone || '+212-555-0123' %>" class="hover:text-orange-200 transition-colors flex items-center">
+
+                    <a href="tel:<%= settings?.phone || '+212 526-555512' %>" class="hover:text-orange-400 transition-colors flex items-center">
                          <i class="fas fa-phone-alt mr-2"></i>
-                         <%= settings?.phone || '+212 555 0123' %>
+                         <%= settings?.phone || '+212 526-555512' %>
                     </a>
                </div>
-               <!-- Social Media Icons -->
-               <div class="flex items-center space-x-4 ml-auto">
-                    <a href="tel:<%= settings?.phone || '+212-555-0123' %>" class="md:hidden hover:text-orange-200 transition-colors">
-                         <i class="fas fa-phone-alt"></i>
-                    </a>
-                    <a href="mailto:<%= settings?.email || 'info@morocotours.com' %>" class="md:hidden hover:text-orange-200 transition-colors">
-                         <i class="fas fa-envelope"></i>
-                    </a>
+
+               <div class="flex items-center space-x-4">
                     <% if (settings?.socialMedia?.facebook) { %>
-                    <a href="<%= settings.socialMedia.facebook %>" class="hover:text-orange-200 transition-colors">
+                    <a href="<%= settings.socialMedia.facebook %>" class="hover:text-orange-400 transition-colors">
                          <i class="fab fa-facebook-f"></i>
                     </a>
                     <% } %>
                     <% if (settings?.socialMedia?.instagram) { %>
-                    <a href="<%= settings.socialMedia.instagram %>" class="hover:text-orange-200 transition-colors">
+                    <a href="<%= settings.socialMedia.instagram %>" class="hover:text-orange-400 transition-colors">
                          <i class="fab fa-instagram"></i>
                     </a>
                     <% } %>
-                    <% if (settings?.socialMedia?.twitter) { %>
-                    <a href="<%= settings.socialMedia.twitter %>" class="hover:text-orange-200 transition-colors">
-                         <i class="fab fa-twitter"></i>
+                    <% if (settings?.socialMedia?.tiktok) { %>
+                    <a href="<%= settings.socialMedia.tiktok %>" class="hover:text-orange-400 transition-colors">
+                         <i class="fab fa-tiktok"></i>
+                    </a>
+                    <% } %>
+               </div>
+          </div>
+
+          <!-- Mobile View -->
+          <div class="md:hidden py-2">
+               <div class="flex justify-center items-center space-x-4 mb-2">
+                    <a href="tel:<%= settings?.phone || '+212 526-555512' %>" class="hover:text-orange-400 transition-colors text-sm">
+                         <i class="fas fa-phone-alt mr-1"></i>
+                         <%= settings?.phone || '+212 526-555512' %>
+                    </a>
+                    <span class="text-gray-500">|</span>
+                    <a href="mailto:<%= settings?.email || 'moroccotravelexperts@yahoo.com' %>" class="hover:text-orange-400 transition-colors text-sm">
+                         <i class="fas fa-envelope mr-1"></i>
+                         <%= settings?.email || 'moroccotravelexperts@yahoo.com' %>
+                    </a>
+               </div>
+               <div class="flex justify-center items-center space-x-6">
+                    <% if (settings?.socialMedia?.facebook) { %>
+                    <a href="<%= settings.socialMedia.facebook %>" class="hover:text-orange-400 transition-colors">
+                         <i class="fab fa-facebook-f text-lg"></i>
+                    </a>
+                    <% } %>
+                    <% if (settings?.socialMedia?.instagram) { %>
+                    <a href="<%= settings.socialMedia.instagram %>" class="hover:text-orange-400 transition-colors">
+                         <i class="fab fa-instagram text-lg"></i>
+                    </a>
+                    <% } %>
+                    <% if (settings?.socialMedia?.tiktok) { %>
+                    <a href="<%= settings.socialMedia.tiktok %>" class="hover:text-orange-400 transition-colors">
+                         <i class="fab fa-tiktok text-lg"></i>
                     </a>
                     <% } %>
                </div>

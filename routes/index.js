@@ -36,9 +36,39 @@ router.get('/', async (req, res) => {
           const featuredTours = await Tour.find({ featured: true })
                .limit(6);
 
+          // Get start cities and their tour counts
+          const startCities = await Tour.aggregate([
+               {
+                    $group: {
+                         _id: "$startLocation",
+                         count: { $sum: 1 },
+                         image: { $first: "$mainImage" },
+                         description: {
+                              $first: {
+                                   $concat: [
+                                        "Discover amazing tours starting from ",
+                                        "$startLocation"
+                                   ]
+                              }
+                         }
+                    }
+               },
+               {
+                    $project: {
+                         city: "$_id",
+                         count: 1,
+                         image: 1,
+                         description: 1,
+                         _id: 0
+                    }
+               }
+          ]);
+          console.log(startCities)
+
           res.render('pages/home', {
                title: res.locals.settings?.siteTitle || 'Welcome to Morocco Tours',
                tours: featuredTours,
+               startCities: startCities,
                metaTitle: res.locals.settings?.metaTitle,
                metaDescription: res.locals.settings?.metaDescription,
                metaKeywords: res.locals.settings?.metaKeywords
@@ -47,7 +77,8 @@ router.get('/', async (req, res) => {
           console.error('Homepage error:', error);
           res.render('home', {
                title: res.locals.settings?.siteTitle || 'Welcome to Morocco Tours',
-               featuredTours: [],
+               tours: [],
+               startCities: [],
                metaTitle: res.locals.settings?.metaTitle,
                metaDescription: res.locals.settings?.metaDescription,
                metaKeywords: res.locals.settings?.metaKeywords
@@ -58,14 +89,22 @@ router.get('/', async (req, res) => {
 // All tours page
 router.get('/tours', async (req, res) => {
      try {
-          const tours = await Tour.find();
+          let query = {};
+          
+          // Filter by city if provided in query params
+          if (req.query.city) {
+               query.startLocation = req.query.city;
+          }
+
+          const tours = await Tour.find(query);
 
           res.render('pages/tours', {
                title: 'Our Tours',
                tours,
                metaTitle: res.locals.settings?.metaTitle,
                metaDescription: res.locals.settings?.metaDescription,
-               metaKeywords: res.locals.settings?.metaKeywords
+               metaKeywords: res.locals.settings?.metaKeywords,
+               selectedCity: req.query.city // Pass selected city to view
           });
      } catch (error) {
           console.error('Tours page error:', error);
@@ -83,6 +122,7 @@ router.get('/tours/:slug', async (req, res) => {
                req.flash('error', 'Tour not found');
                return res.redirect('/tours');
           }
+          console.log(tour.mapCoordinates)
 
           res.render('pages/tour-details', {
                title: tour.title,

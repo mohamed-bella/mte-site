@@ -89,6 +89,18 @@
                                                        </div>
                                                   </div>
 
+                                                  <!-- Map -->
+                                                  <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                                                       <label class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                                            Tour Route Map
+                                                       </label>
+                                                       <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                                            <div id="map" class="h-96 w-full rounded-lg shadow-md"></div>
+                                                            <input type="hidden" name="mapCoordinates" id="mapCoordinates">
+                                                            <p class="mt-2 text-sm text-gray-500">Click on the map to add route points</p>
+                                                       </div>
+                                                  </div>
+
                                                   <!-- Accommodation -->
                                                   <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
                                                        <label for="accommodation" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
@@ -96,6 +108,28 @@
                                                        </label>
                                                        <div class="mt-1 sm:mt-0 sm:col-span-2">
                                                             <input type="text" name="accommodation" id="accommodation" required value="<%= tour ? tour.accommodation : '' %>" class="max-w-lg block w-full shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
+                                                       </div>
+                                                  </div>
+
+                                                  <!-- Includes -->
+                                                  <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                                                       <label for="includes" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                                            What's Included *
+                                                       </label>
+                                                       <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                                            <textarea id="includes" name="includes" rows="4" required class="max-w-lg shadow-sm block w-full focus:ring-orange-500 focus:border-orange-500 sm:text-sm border border-gray-300 rounded-md" placeholder="Enter items included in the tour (one per line)"><%= tour && tour.includes ? tour.includes.join('\n') : '' %></textarea>
+                                                            <p class="mt-1 text-sm text-gray-500">Enter each included item on a new line</p>
+                                                       </div>
+                                                  </div>
+
+                                                  <!-- Excludes -->
+                                                  <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                                                       <label for="excludes" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                                            What's Not Included *
+                                                       </label>
+                                                       <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                                            <textarea id="excludes" name="excludes" rows="4" required class="max-w-lg shadow-sm block w-full focus:ring-orange-500 focus:border-orange-500 sm:text-sm border border-gray-300 rounded-md" placeholder="Enter items not included in the tour (one per line)"><%= tour && tour.excludes ? tour.excludes.join('\n') : '' %></textarea>
+                                                            <p class="mt-1 text-sm text-gray-500">Enter each excluded item on a new line</p>
                                                        </div>
                                                   </div>
                                              </div>
@@ -220,7 +254,55 @@
           </div>
 
           <!-- JavaScript for Dynamic Form Fields -->
+          <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+          <link href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" rel="stylesheet">
+          
           <script>
+               // Initialize map
+               let map;
+               let markers = [];
+               let polyline;
+
+               window.addEventListener('load', () => {
+                    map = L.map('map').setView([0, 0], 2);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                         attribution: '© OpenStreetMap contributors'
+                    }).addTo(map);
+
+                    // Add click handler to map
+                    map.on('click', function(e) {
+                         const marker = L.marker(e.latlng).addTo(map);
+                         markers.push(marker);
+                         
+                         // Update polyline
+                         if (polyline) {
+                              map.removeLayer(polyline);
+                         }
+                         
+                         const coordinates = markers.map(m => m.getLatLng());
+                         polyline = L.polyline(coordinates, {color: 'red'}).addTo(map);
+                         
+                         // Update hidden input with coordinates
+                         document.getElementById('mapCoordinates').value = JSON.stringify(
+                              coordinates.map(c => ({lat: c.lat, lng: c.lng}))
+                         );
+                    });
+
+                    // Load existing coordinates if editing
+                    if ('<%= tour && tour.mapCoordinates %>') {
+                         const coordinates = JSON.parse('<%= tour && tour.mapCoordinates %>');
+                         coordinates.forEach(coord => {
+                              const marker = L.marker([coord.lat, coord.lng]).addTo(map);
+                              markers.push(marker);
+                         });
+                         
+                         if (coordinates.length > 0) {
+                              polyline = L.polyline(coordinates, {color: 'red'}).addTo(map);
+                              map.fitBounds(polyline.getBounds());
+                         }
+                    }
+               });
+
                // Handle multiple image selection and preview
                function handleImageSelection(input) {
                     const previewContainer = document.getElementById('selectedImagesPreview');
@@ -324,6 +406,19 @@
                     
                     const form = e.target;
                     const formData = new FormData(form);
+
+                    // Convert includes and excludes textareas to arrays
+                    const includes = form.querySelector('#includes').value.split('\n').filter(item => item.trim());
+                    const excludes = form.querySelector('#excludes').value.split('\n').filter(item => item.trim());
+                    
+                    // Remove the original includes/excludes from formData
+                    formData.delete('includes');
+                    formData.delete('excludes');
+                    
+                    // Add each include/exclude item as an array element
+                    includes.forEach(item => formData.append('includes[]', item.trim()));
+                    excludes.forEach(item => formData.append('excludes[]', item.trim()));
+                    
                     const submitBtn = document.getElementById('submitBtn');
                     const submitText = document.getElementById('submitText');
                     const submitSpinner = document.getElementById('submitSpinner');

@@ -42,338 +42,525 @@
           }
      }
      </script>
+
+     <!-- Leaflet CSS -->
+     <link href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" rel="stylesheet">
+     
+     <!-- Lightbox CSS -->
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-gray-50">
      <%- include('../partials/header') %>
 
-          <!-- Hero Section -->
-          <section class="relative min-h-[60vh] flex items-center justify-center">
-               <!-- Background Image -->
-               <div class="absolute inset-0">
-                    <img src="<%= tour.mainImage %>" alt="<%= tour.title %> - Morocco Travel Tour" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-black/50"></div>
-               </div>
+     <!-- Hero Section with Parallax -->
+     <section class="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
+          <div class="absolute inset-0 transform scale-105" style="background: url('<%= tour.mainImage %>') center/cover no-repeat;" data-parallax="scroll" data-speed="0.3"></div>
+          <div class="absolute inset-0 bg-gradient-to-b from-black/60 to-black/40"></div>
 
-               <!-- Content -->
-               <div class="relative container mx-auto px-4 py-20 text-center text-white">
-                    <h1 class="text-4xl md:text-6xl font-bold mb-6" data-aos="fade-up">
+          <div class="relative container mx-auto px-4 py-20 text-center text-white">
+               <div class="max-w-4xl mx-auto">
+                    <span class="inline-block px-4 py-2 bg-orange-500/90 rounded-full text-sm font-medium mb-6">
+                         <%= tour.duration %> Days Adventure
+                    </span>
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
                          <%= tour.title %>
                     </h1>
-                    <div class="max-w-3xl mx-auto mb-8">
-                         <p class="text-lg md:text-xl text-gray-200" data-aos="fade-up" data-aos-delay="100">
-                              <%= tour.description %>
-                         </p>
-                    </div>
-                    <!-- Tour Quick Info -->
-                    <div class="flex flex-wrap justify-center gap-8 text-white/90" data-aos="fade-up" data-aos-delay="200">
-                         <div class="flex items-center">
-                              <i class="fas fa-clock text-orange-500 mr-2" aria-hidden="true"></i>
-                              <span>
-                                   <%= tour.duration %> Days
-                              </span>
+                    
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto mt-12">
+                         <div class="bg-white/20 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:bg-white/30 transition-all duration-300">
+                              <i class="fas fa-clock text-orange-400 text-3xl mb-3"></i>
+                              <p class="text-sm text-gray-100 font-medium">Duration</p>
+                              <p class="font-bold text-xl"><%= tour.duration %> Days</p>
                          </div>
-                         <div class="flex items-center">
-                              <i class="fas fa-users text-orange-500 mr-2" aria-hidden="true"></i>
-                              <span>Max <%= tour.groupSize %> People</span>
+                         <div class="bg-white/20 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:bg-white/30 transition-all duration-300">
+                              <i class="fas fa-users text-orange-400 text-3xl mb-3"></i>
+                              <p class="text-sm text-gray-100 font-medium">Group Size</p>
+                              <p class="font-bold text-xl">Max <%= tour.groupSize %></p>
                          </div>
-                         <div class="flex items-center">
-                              <i class="fas fa-map-marker-alt text-orange-500 mr-2" aria-hidden="true"></i>
-                              <span>
-                                   <%= tour.startLocation %>
-                              </span>
+                         <div class="bg-white/20 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:bg-white/30 transition-all duration-300">
+                              <i class="fas fa-map-marker-alt text-orange-400 text-3xl mb-3"></i>
+                              <p class="text-sm text-gray-100 font-medium">Starting Point</p>
+                              <p class="font-bold text-xl"><%= tour.startLocation %></p>
                          </div>
-                         <div class="flex items-center">
-                              <i class="fas fa-star text-orange-500 mr-2" aria-hidden="true"></i>
-                              <span>
-                                   <%= tour.rating %> Rating (<%= tour.reviewsCount %> reviews)
-                              </span>
-                         </div>
-                    </div>
-               </div>
-
-               <!-- Scroll Indicator -->
-               <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Scroll down">
-                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                    </svg>
-               </div>
-          </section>
-
-          <!-- Photo Gallery -->
-          <section class="py-20 bg-white">
-               <div class="container mx-auto px-4">
-                    <h2 class="text-3xl font-bold text-center mb-12" data-aos="fade-up">Tour Gallery</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-aos="fade-up">
-                         <% tour.images.forEach((image, index)=> { %>
-                              <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition duration-300">
-                                   <img src="<%= image %>" alt="<%= tour.title %> - Tour Location <%= index + 1 %>" class="w-full h-80 object-cover transform group-hover:scale-105 transition duration-500">
-                                    
-                              </div>
-                              <% }) %>
-                    </div>
-               </div>
-          </section>
-
-          <!-- Itinerary -->
-          <section class="py-20 bg-gray-50">
-               <div class="container mx-auto px-4">
-                    <h2 class="text-3xl font-bold text-center mb-12" data-aos="fade-up">Your Journey</h2>
-                    <div class="max-w-4xl mx-auto space-y-8">
-                         <% tour.itinerary.forEach((day, index)=> { %>
-                              <div class="relative pl-12 border-l-2 border-orange-500/20" data-aos="fade-up">
-                                   <div class="absolute w-6 h-6 bg-orange-500 rounded-full -left-[13px] top-0 flex items-center justify-center">
-                                        <span class="text-white text-sm font-bold">
-                                             <%= index + 1 %>
-                                        </span>
-                                   </div>
-                                   <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                                        <div class="flex items-center gap-3 mb-4">
-                                             <span class="text-orange-500 font-bold">Day <%= day.day %></span>
-                                             <div class="h-px bg-gray-200 flex-1"></div>
-                                             <!-- <span class="text-gray-500">
-                                                  <%= day.distance || '0 km' %>
-                                             </span> -->
-                                        </div>
-                                        <h3 class="text-xl font-semibold text-gray-800 mb-3">
-                                             <%= day.title %>
-                                        </h3>
-                                        <p class="text-gray-600 leading-relaxed">
-                                             <%= day.description %>
-                                        </p>
-                                        <% if (day.highlights && day.highlights.length > 0) { %>
-                                             <div class="mt-4 flex flex-wrap gap-2">
-                                                  <% day.highlights.forEach(highlight=> { %>
-                                                       <span class="px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-sm">
-                                                            <%= highlight %>
-                                                       </span>
-                                                       <% }) %>
-                                             </div>
-                                             <% } %>
-                                   </div>
-                              </div>
-                              <% }) %>
-                    </div>
-               </div>
-          </section>
-
-
-          <section id="booking-section" class="py-20 bg-white">
-               <div class="container mx-auto px-4 max-w-6xl">
-                    <div class="grid md:grid-cols-2 gap-12">
-                         <!-- Price Details - Fixed on Desktop -->
-                         <div class="hidden lg:block sticky top-24 h-fit" data-aos="fade-right">
-                              <div class="bg-orange-50 rounded-2xl p-8">
-                                   <h3 class="text-2xl font-bold mb-6">Tour Price & Details</h3>
-                                   <div class="space-y-4">
-                                        <div class="flex justify-between items-center pb-4 border-b border-orange-200">
-                                             <span class="text-gray-600">Price per person</span>
-                                             <span class="text-2xl font-bold text-orange-600">$<%= tour.price %></span>
-                                        </div>
-                                        <div class="flex justify-between items-center pb-4 border-b border-orange-200">
-                                             <span class="text-gray-600">Duration</span>
-                                             <span class="font-medium">
-                                                  <%= tour.duration %> Days
-                                             </span>
-                                        </div>
-                                        <div class="flex justify-between items-center pb-4 border-b border-orange-200">
-                                             <span class="text-gray-600">Max Group Size</span>
-                                             <span class="font-medium">
-                                                  <%= tour.groupSize %> People
-                                             </span>
-                                        </div>
-                                        <div class="flex justify-between items-center pb-4 border-b border-orange-200">
-                                             <span class="text-gray-600">Tour Guide</span>
-                                             <span class="font-medium">Professional Guide</span>
-                                        </div>
-                                        <div class="flex justify-between items-center">
-                                             <span class="text-gray-600">Accommodation</span>
-                                             <span class="font-medium">
-                                                  <%= tour.accommodation %>
-                                             </span>
-                                        </div>
-                                   </div>
-                              </div>
-                         </div>
-
-                         <!-- Booking Form -->
-                         <div class="lg:col-start-2" data-aos="fade-left">
-                              <div class="bg-white rounded-2xl shadow-lg p-8">
-                                   <h3 class="text-2xl font-bold mb-6">Book This Tour</h3>
-                                   <form action="/tours/<%= tour.slug %>/book" method="POST" class="space-y-6">
-                                        <div class="grid md:grid-cols-2 gap-6">
-                                             <div>
-                                                  <label class="block text-gray-700 mb-2 font-medium">First Name</label>
-                                                  <input type="text" name="firstName"   required class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition">
-                                             </div>
-                                             <div>
-                                                  <label class="block text-gray-700 mb-2 font-medium">Last Name</label>
-                                                  <input type="text" name="lastName"   required class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition">
-                                             </div>
-                                        </div>
-
-
-                                        <div>
-                                             <label class="block text-gray-700 mb-2 font-medium">Email Address</label>
-                                             <input type="email" name="email" required   class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition">
-                                        </div>
-
-                                        <div class="grid md:grid-cols-2 gap-6">
-                                             <div>
-                                                  <label class="block text-gray-700 mb-2 font-medium">Tour Date</label>
-                                                  <input type="date" name="date" required class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition">
-                                             </div>
-                                             <div>
-                                                  <label class="block text-gray-700 mb-2 font-medium">Number of People</label>
-                                                  <select   name="groupSize" required class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition">
-                                                       <% for(let i=1; i <=tour.groupSize; i++) { %>
-
-                                                            <option value="<%= i %>">
-                                                                 <%= i %>
-                                                                      <%= i===1 ? 'Person' : 'People' %>
-                                                            </option>
-                                                            <% } %>
-                                                  </select>
-                                             </div>
-                                        </div>
-
-                                        <div>
-                                             <label class="block text-gray-700 mb-2 font-medium">Special Requests</label>
-                                             <textarea name="specialRequests" rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition"></textarea>
-                                        </div>
-
-                                        <button type="submit" class="w-full bg-gradient-to-r from-orange-600 to-orange-500 text-white py-4 rounded-lg font-medium hover:from-orange-700 hover:to-orange-600 transition-all transform hover:scale-[1.02]">
-                                             Book Now
-                                        </button>
-
-                                        <p class="text-sm text-gray-500 text-center mt-4">
-                                             By booking, you agree to our <a href="/terms" class="text-orange-500 hover:underline">Terms & Conditions</a>
-                                        </p>
-                                   </form>
-                              </div>
-                         </div>
-                    </div>
-               </div>
-          </section>
-
-          <!-- Floating Minimized Card (Desktop) -->
-          <div class="fixed bottom-8 right-8 hidden lg:block z-50 booking-float" x-data="{ open: false }">
-               <!-- Minimized Card -->
-               <div x-show="!open" class="bg-white rounded-2xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-shadow" @click="open = true">
-                    <div class="flex items-center justify-between gap-4">
-                         <div>
-                              <p class="font-bold text-gray-800">Interested in this tour?</p>
-                              <p class="text-orange-600 font-bold">From $<%= tour.price %> per person</p>
-                         </div>
-                         <button class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
-                              Book Now
-                         </button>
-                    </div>
-               </div>
-
-               <!-- Expanded Card -->
-               <div x-show="open" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform translate-y-2" class="bg-white rounded-2xl shadow-xl w-96">
-                    <div class="p-6">
-                         <div class="flex justify-between items-center mb-4">
-                              <h4 class="text-xl font-bold">Quick Booking</h4>
-                              <button @click="open = false" class="text-gray-400 hover:text-gray-600" aria-label="Close booking form">
-                                   <i class="fas fa-times" aria-hidden="true"></i>
-                              </button>
-                         </div>
-                         <div class="space-y-4">
-                              <p class="text-gray-600">Book this amazing tour now and start your adventure!</p>
-                              <div class="flex items-center justify-between border-y border-gray-100 py-4">
-                                   <span class="text-gray-600">Price per person</span>
-                                   <span class="text-xl font-bold text-orange-600">$<%= tour.price %></span>
-                              </div>
-                              <a href="#booking-section" @click="open = false" class="block w-full bg-gradient-to-r from-orange-600 to-orange-500 text-white text-center py-3 rounded-lg hover:from-orange-700 hover:to-orange-600 transition-colors">
-                                   Proceed to Booking
-                              </a>
+                         <div class="bg-white/20 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:bg-white/30 transition-all duration-300">
+                              <i class="fas fa-star text-orange-400 text-3xl mb-3"></i>
+                              <p class="text-sm text-gray-100 font-medium">Rating</p>
+                              <p class="font-bold text-xl"><%= tour.rating %>/5</p>
                          </div>
                     </div>
                </div>
           </div>
 
-          <!-- Floating Button (Mobile) -->
-          <div class="fixed bottom-6 inset-x-4 lg:hidden z-50">
-               <a href="#booking-section" class="block w-full text-center bg-gradient-to-r from-orange-600 to-orange-500 text-white 
-                        text-lg font-medium py-3.5 rounded-full shadow-xl 
-                        hover:shadow-2xl hover:from-orange-700 hover:to-orange-600
-                        active:scale-95 
-                        transition-all duration-300 ease-out">
-                    <i class="fas fa-calendar-check mr-2" aria-hidden="true"></i>
-                    Book This Tour
+          <!-- Scroll Indicator -->
+          <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+               <a href="#overview" class="text-white/80 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                    </svg>
                </a>
           </div>
+     </section>
 
-          <!-- Add this script for smooth scrolling -->
-          <script>
-               document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                    anchor.addEventListener('click', function (e) {
-                         e.preventDefault();
-                         const target = document.querySelector(this.getAttribute('href'));
-                         const headerOffset = 100;
-                         const elementPosition = target.getBoundingClientRect().top;
-                         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+     <!-- Overview Section -->
+     <section id="overview" class="py-20 bg-white">
+          <div class="container mx-auto px-4">
+               <div class="grid lg:grid-cols-2 gap-12 items-start">
+                    <!-- Tour Overview -->
+                    <div>
+                         <h2 class="text-3xl font-bold mb-6">Tour Overview</h2>
+                         <div class="prose prose-lg">
+                              <%= tour.description %>
+                         </div>
+                         
+                         <!-- Includes & Excludes -->
+                         <div class="grid md:grid-cols-2 gap-8 mt-12">
+                              <div class="bg-gray-50 rounded-xl p-6">
+                                   <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-green-500"></i>
+                                        What's Included
+                                   </h3>
+                                   <ul class="space-y-3">
+                                        <% tour.includes.forEach(item => { %>
+                                        <li class="flex items-start gap-2">
+                                             <i class="fas fa-check text-green-500 mt-1"></i>
+                                             <span><%= item %></span>
+                                        </li>
+                                        <% }) %>
+                                   </ul>
+                              </div>
+                              <div class="bg-gray-50 rounded-xl p-6">
+                                   <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                                        <i class="fas fa-times-circle text-red-500"></i>
+                                        What's Not Included
+                                   </h3>
+                                   <ul class="space-y-3">
+                                        <% tour.excludes.forEach(item => { %>
+                                        <li class="flex items-start gap-2">
+                                             <i class="fas fa-times text-red-500 mt-1"></i>
+                                             <span><%= item %></span>
+                                        </li>
+                                        <% }) %>
+                                   </ul>
+                              </div>
+                         </div>
+                    </div>
 
-                         window.scrollTo({
-                              top: offsetPosition,
-                              behavior: 'smooth'
-                         });
+                    <!-- Map -->
+                    <div class="lg:sticky lg:top-24">
+                         <div class="bg-gray-50 rounded-xl p-6">
+                              <h3 class="text-xl font-bold mb-4">Tour Route</h3>
+                              <div id="map" class="w-full h-[400px] rounded-lg"></div>
+                         </div>
+                    </div>
+               </div>
+          </div>
+     </section>
+
+     <!-- Gallery Section -->
+     <section class="relative">
+          <div class="container mx-auto px-4 py-8">
+               <!-- Main Gallery Grid -->
+               <div class="grid grid-cols-4 gap-2 h-[480px] rounded-xl overflow-hidden">
+                    <!-- Main large image -->
+                    <div class="col-span-2 row-span-2 relative group">
+                         <img src="<%= tour.images[0] %>" 
+                              alt="<%= tour.title %> - Main View"
+                              class="w-full h-full object-cover cursor-pointer hover:brightness-90 transition">
+                    </div>
+                    
+                    <!-- Grid of smaller images -->
+                    <% tour.images.slice(1, 5).forEach((image, index) => { %>
+                    <div class="relative group">
+                         <img src="<%= image %>" 
+                              alt="<%= tour.title %> - View <%= index + 2 %>"
+                              class="w-full h-full object-cover cursor-pointer hover:brightness-90 transition">
+                    </div>
+                    <% }) %>
+
+                    <!-- Show all photos button -->
+                    <button onclick="openGalleryModal()" 
+                            class="absolute bottom-4 right-8 bg-white px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-shadow
+                                   flex items-center gap-2 font-medium">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                         </svg>
+                         Show all photos
+                    </button>
+               </div>
+          </div>
+
+          <!-- Full Screen Modal Gallery -->
+          <div id="galleryModal" class="fixed inset-0 bg-black z-50 hidden">
+               <div class="h-full relative">
+                    <!-- Close button -->
+                    <button onclick="closeGalleryModal()" 
+                            class="absolute top-4 left-4 text-white bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors z-10">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                         </svg>
+                    </button>
+
+                    <!-- Swiper container -->
+                    <div class="swiper h-full">
+                         <div class="swiper-wrapper">
+                              <% tour.images.forEach((image, index) => { %>
+                              <div class="swiper-slide">
+                                   <div class="flex items-center justify-center h-full">
+                                        <img src="<%= image %>" 
+                                             alt="<%= tour.title %> - View <%= index + 1 %>"
+                                             class="max-h-full max-w-full object-contain">
+                                   </div>
+                              </div>
+                              <% }) %>
+                         </div>
+                         
+                         <!-- Navigation -->
+                         <div class="swiper-button-next"></div>
+                         <div class="swiper-button-prev"></div>
+                         
+                         <!-- Pagination -->
+                         <div class="swiper-pagination"></div>
+                    </div>
+               </div>
+          </div>
+     </section>
+
+     <!-- Swiper JS -->
+     <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
+     <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+
+     <script>
+          let swiper;
+
+          function openGalleryModal() {
+               document.getElementById('galleryModal').classList.remove('hidden');
+               if (!swiper) {
+                    swiper = new Swiper('.swiper', {
+                         loop: true,
+                         navigation: {
+                              nextEl: '.swiper-button-next',
+                              prevEl: '.swiper-button-prev',
+                         },
+                         pagination: {
+                              el: '.swiper-pagination',
+                              type: 'fraction',
+                         },
+                         keyboard: {
+                              enabled: true,
+                         },
+                    });
+               }
+               // Prevent body scroll
+               document.body.style.overflow = 'hidden';
+          }
+
+          function closeGalleryModal() {
+               document.getElementById('galleryModal').classList.add('hidden');
+               document.body.style.overflow = 'auto';
+          }
+
+          // Close on escape key
+          document.addEventListener('keydown', (e) => {
+               if (e.key === 'Escape') {
+                    closeGalleryModal();
+               }
+          });
+
+          // Open gallery when clicking any image
+          document.querySelectorAll('.grid img').forEach((img, index) => {
+               img.addEventListener('click', () => {
+                    openGalleryModal();
+                    swiper.slideTo(index);
+               });
+          });
+     </script>
+
+     <!-- Itinerary Section -->
+     <section class="py-20 bg-white">
+          <div class="container mx-auto px-4">
+               <div class="text-center mb-12">
+                    <span class="text-orange-500 font-medium">Your Journey</span>
+                    <h2 class="text-3xl font-bold mt-2">Day by Day Itinerary</h2>
+               </div>
+
+               <div class="max-w-4xl mx-auto">
+                    <div class="space-y-4">
+                         <% tour.itinerary.forEach((day, index) => { %>
+                         <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                              <div class="collapse-header cursor-pointer w-full px-6 py-4 flex items-center justify-between text-left"
+                                   onclick="toggleCollapse(this)">
+                                   <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                             <span class="text-white font-bold">Day <%= day.day %></span>
+                                        </div>
+                                        <div>
+                                             <h3 class="text-lg font-semibold"><%= day.title %></h3>
+                                             <% if(day.distance) { %>
+                                             <p class="text-sm text-gray-500">Distance: <%= day.distance %></p>
+                                             <% } %>
+                                        </div>
+                                   </div>
+                                   <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-300">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                             d="M19 9l-7 7-7-7"/>
+                                   </svg>
+                              </div>
+
+                              <div class="collapse-content hidden px-6 pb-6">
+                                   <p class="text-gray-600 mb-6"><%= day.description %></p>
+                                   
+                                   <% if (day.highlights && day.highlights.length > 0) { %>
+                                   <div class="space-y-4">
+                                        <h4 class="font-medium flex items-center gap-2">
+                                             <i class="fas fa-star text-orange-500"></i>
+                                             Highlights
+                                        </h4>
+                                        <div class="flex flex-wrap gap-2">
+                                             <% day.highlights.forEach(highlight => { %>
+                                             <span class="px-3 py-1.5 bg-orange-50 text-orange-700 rounded-lg text-sm">
+                                                  <%= highlight %>
+                                             </span>
+                                             <% }) %>
+                                        </div>
+                                   </div>
+                                   <% } %>
+                              </div>
+                         </div>
+                         <% }) %>
+                    </div>
+               </div>
+          </div>
+     </section>
+
+     <!-- Booking Section -->
+     <section id="booking" class="py-20 bg-gray-50">
+          <div class="container mx-auto px-4 max-w-6xl">
+               <div class="grid lg:grid-cols-2 gap-12">
+                    <!-- Price Details -->
+                    <div class="lg:sticky lg:top-24 h-fit">
+                         <div class="bg-white rounded-xl shadow-lg p-8">
+                              <h3 class="text-2xl font-bold mb-6">Tour Details</h3>
+                              <div class="space-y-4">
+                                   <div class="flex justify-between items-center pb-4 border-b">
+                                        <span class="text-gray-600">Price per person</span>
+                                        <span class="text-3xl font-bold text-orange-600">$<%= tour.price %></span>
+                                   </div>
+                                   <div class="flex justify-between items-center pb-4 border-b">
+                                        <span class="text-gray-600">Duration</span>
+                                        <span class="font-medium"><%= tour.duration %> Days</span>
+                                   </div>
+                                   <div class="flex justify-between items-center pb-4 border-b">
+                                        <span class="text-gray-600">Group Size</span>
+                                        <span class="font-medium">Max <%= tour.groupSize %> People</span>
+                                   </div>
+                                   <div class="flex justify-between items-center pb-4 border-b">
+                                        <span class="text-gray-600">Starting Point</span>
+                                        <span class="font-medium"><%= tour.startLocation %></span>
+                                   </div>
+                                   <div class="flex justify-between items-center">
+                                        <span class="text-gray-600">Accommodation</span>
+                                        <span class="font-medium"><%= tour.accommodation %></span>
+                                   </div>
+                              </div>
+                         </div>
+                    </div>
+
+                    <!-- Booking Form -->
+                    <div>
+                         <div class="bg-white rounded-xl shadow-lg p-8">
+                              <h3 class="text-2xl font-bold mb-6">Book Your Adventure</h3>
+                              <form action="/tours/<%= tour.slug %>/book" method="POST" class="space-y-6">
+                                   <div class="grid md:grid-cols-2 gap-6">
+                                        <div>
+                                             <label class="block text-gray-700 mb-2">First Name</label>
+                                             <input type="text" name="firstName" required 
+                                                  class="w-full px-4 py-3 rounded-lg border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
+                                        </div>
+                                        <div>
+                                             <label class="block text-gray-700 mb-2">Last Name</label>
+                                             <input type="text" name="lastName" required 
+                                                  class="w-full px-4 py-3 rounded-lg border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
+                                        </div>
+                                   </div>
+
+                                   <div>
+                                        <label class="block text-gray-700 mb-2">Email Address</label>
+                                        <input type="email" name="email" required 
+                                             class="w-full px-4 py-3 rounded-lg border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
+                                   </div>
+
+                                   <div class="grid md:grid-cols-2 gap-6">
+                                        <div>
+                                             <label class="block text-gray-700 mb-2">Tour Date</label>
+                                             <input type="date" name="date" required 
+                                                  class="w-full px-4 py-3 rounded-lg border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
+                                        </div>
+                                        <div>
+                                             <label class="block text-gray-700 mb-2">Number of People</label>
+                                             <select name="groupSize" required 
+                                                  class="w-full px-4 py-3 rounded-lg border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
+                                                  <% for(let i=1; i <= tour.groupSize; i++) { %>
+                                                  <option value="<%= i %>">
+                                                       <%= i %> <%= i===1 ? 'Person' : 'People' %>
+                                                  </option>
+                                                  <% } %>
+                                             </select>
+                                        </div>
+                                   </div>
+
+                                   <div>
+                                        <label class="block text-gray-700 mb-2">Special Requests</label>
+                                        <textarea name="specialRequests" rows="4" 
+                                             class="w-full px-4 py-3 rounded-lg border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"></textarea>
+                                   </div>
+
+                                   <button type="submit" 
+                                        class="w-full bg-gradient-to-r from-orange-600 to-orange-500 text-white py-4 rounded-lg 
+                                        font-medium hover:from-orange-700 hover:to-orange-600 transform hover:scale-[1.02] 
+                                        transition-all duration-300">
+                                        Book Now
+                                   </button>
+
+                                   <p class="text-sm text-gray-500 text-center">
+                                        By booking, you agree to our <a href="/terms" class="text-orange-500 hover:underline">Terms & Conditions</a>
+                                   </p>
+                              </form>
+                         </div>
+                    </div>
+               </div>
+          </div>
+     </section>
+
+     <!-- Floating Elements -->
+     <div class="fixed bottom-8 right-8 hidden lg:block z-50" x-data="{ open: false }">
+          <div x-show="!open" 
+               class="bg-white rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-shadow"
+               @click="open = true">
+               <div class="flex items-center gap-4">
+                    <div>
+                         <p class="font-bold text-gray-800">Ready to Book?</p>
+                         <p class="text-orange-600 font-bold">From $<%= tour.price %> per person</p>
+                    </div>
+                    <button class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
+                         Book Now
+                    </button>
+               </div>
+          </div>
+
+          <div x-show="open" 
+               x-transition:enter="transition ease-out duration-300"
+               x-transition:enter-start="opacity-0 transform translate-y-2"
+               x-transition:enter-end="opacity-100 transform translate-y-0"
+               class="bg-white rounded-xl shadow-xl w-96">
+               <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                         <h4 class="text-xl font-bold">Quick Booking</h4>
+                         <button @click="open = false" class="text-gray-400 hover:text-gray-600">
+                              <i class="fas fa-times"></i>
+                         </button>
+                    </div>
+                    <div class="space-y-4">
+                         <p class="text-gray-600">Start your Moroccan adventure today!</p>
+                         <div class="flex items-center justify-between border-y py-4">
+                              <span class="text-gray-600">Price per person</span>
+                              <span class="text-xl font-bold text-orange-600">$<%= tour.price %></span>
+                         </div>
+                         <a href="#booking" @click="open = false" 
+                              class="block w-full bg-gradient-to-r from-orange-600 to-orange-500 text-white text-center 
+                              py-3 rounded-lg hover:from-orange-700 hover:to-orange-600 transition-colors">
+                              Proceed to Booking
+                         </a>
+                    </div>
+               </div>
+          </div>
+     </div>
+
+     <!-- Mobile Booking Button -->
+     <div class="fixed bottom-6 inset-x-4 lg:hidden z-50">
+          <a href="#booking" 
+               class="block w-full text-center bg-gradient-to-r from-orange-600 to-orange-500 text-white 
+               text-lg font-medium py-3.5 rounded-full shadow-xl hover:shadow-2xl hover:from-orange-700 
+               hover:to-orange-600 active:scale-95 transition-all duration-300">
+               <i class="fas fa-calendar-check mr-2"></i>
+               Book This Tour
+          </a>
+     </div>
+
+     <%- include('../partials/footer') %>
+
+     <!-- Scripts -->
+     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+     <script>
+          // Initialize map
+          const map = L.map('map');
+          
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+               attribution: '© OpenStreetMap contributors'
+          }).addTo(map);
+
+          // Add markers and route
+          const coordinates = <%- JSON.stringify(tour.mapCoordinates) %>;
+          
+          // Convert coordinates for Leaflet
+          const latLngs = coordinates.map(coord => [coord.lat, coord.lng]);
+          
+          // Add markers
+          latLngs.forEach((latLng, index) => {
+               L.marker(latLng)
+                    .bindPopup(`<strong>Stop ${index + 1}</strong>`)
+                    .addTo(map);
+          });
+
+          // Add route line
+          L.polyline(latLngs, {
+               color: '#f97316',
+               weight: 3,
+               opacity: 0.8
+          }).addTo(map);
+
+          // Fit bounds to show all markers
+          map.fitBounds(L.latLngBounds(latLngs));
+
+          // Initialize lightbox
+          lightbox.option({
+               'resizeDuration': 200,
+               'wrapAround': true
+          });
+
+          // Collapse functionality
+          function toggleCollapse(element) {
+               const content = element.nextElementSibling;
+               const arrow = element.querySelector('svg');
+               
+               // Toggle content visibility
+               content.classList.toggle('hidden');
+               
+               // Rotate arrow
+               if (content.classList.contains('hidden')) {
+                    arrow.style.transform = 'rotate(0deg)';
+               } else {
+                    arrow.style.transform = 'rotate(180deg)';
+               }
+          }
+
+          // Smooth scroll
+          document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+               anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    const headerOffset = 100;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                         top: offsetPosition,
+                         behavior: 'smooth'
                     });
                });
-
-               // Hide/Show floating elements based on scroll position
-               let lastScroll = 0;
-               const floatingElements = document.querySelectorAll('.booking-float');
-
-               window.addEventListener('scroll', () => {
-                    const currentScroll = window.pageYOffset;
-                    const bookingSection = document.getElementById('booking-section');
-                    const bookingSectionTop = bookingSection.offsetTop;
-                    const bookingSectionBottom = bookingSectionTop + bookingSection.offsetHeight;
-
-                    floatingElements.forEach(element => {
-                         if (currentScroll < bookingSectionTop - window.innerHeight ||
-                              currentScroll > bookingSectionBottom - 200) {
-                              element.style.opacity = '1';
-                              element.style.transform = 'translateY(0)';
-                         } else {
-                              element.style.opacity = '0';
-                              element.style.transform = 'translateY(20px)';
-                         }
-                    });
-
-                    lastScroll = currentScroll;
-               });
-          </script>
-
-          <style>
-               /* Smooth transitions for floating elements */
-               .booking-float {
-                    transition: opacity 0.3s ease, transform 0.3s ease;
-               }
-
-               /* Ensure smooth scrolling */
-               html {
-                    scroll-behavior: smooth;
-                    scroll-padding-top: 100px;
-               }
-          </style>
-
-          <%- include('../partials/footer') %>
-
-               <!-- Font Awesome -->
-               <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
-
-               <!-- AOS Init -->
-               <script>
-                    AOS.init({
-                         duration: 800,
-                         once: true,
-                         offset: 100
-                    });
-               </script>
+          });
+     </script>
 </body>
-
 </html>

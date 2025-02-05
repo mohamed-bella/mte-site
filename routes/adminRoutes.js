@@ -80,8 +80,8 @@ router.get('/tours/new', (req, res) => {
           tour: null
      });
 });
-
 router.post('/tours/new', upload.array('images', 10), async (req, res) => {
+     console.log(req.body)
      try {
           const {
                title,
@@ -91,7 +91,10 @@ router.post('/tours/new', upload.array('images', 10), async (req, res) => {
                groupSize,
                startLocation,
                accommodation,
-               itinerary
+               itinerary,
+               includes,
+               excludes,
+               mapCoordinates
           } = req.body;
 
           // Upload images to GitHub if files exist
@@ -138,7 +141,10 @@ router.post('/tours/new', upload.array('images', 10), async (req, res) => {
                accommodation,
                mainImage: imageUrls[0] || '', // First image becomes main image
                images: imageUrls, // Store all image URLs
-               itinerary: Array.isArray(itinerary) ? itinerary : JSON.parse(itinerary)
+               itinerary: Array.isArray(itinerary) ? itinerary : JSON.parse(itinerary),
+               includes: Array.isArray(includes) ? includes : JSON.parse(includes),
+               excludes: Array.isArray(excludes) ? excludes : JSON.parse(excludes),
+               mapCoordinates: Array.isArray(mapCoordinates) ? mapCoordinates : JSON.parse(mapCoordinates)
           });
 
           await newTour.save();
@@ -177,6 +183,7 @@ router.get('/tours/:id/edit', async (req, res) => {
      }
 });
 router.post('/tours/:id/edit', upload.array('images', 10), async (req, res) => {
+     
      try {
           const {
                title,
@@ -186,7 +193,10 @@ router.post('/tours/:id/edit', upload.array('images', 10), async (req, res) => {
                groupSize,
                startLocation,
                accommodation,
-               itinerary
+               itinerary,
+               includes,
+               excludes,
+               mapCoordinates
           } = req.body;
 
           let imageUrls = [];
@@ -234,6 +244,9 @@ router.post('/tours/:id/edit', upload.array('images', 10), async (req, res) => {
                startLocation,
                accommodation,
                itinerary: Array.isArray(itinerary) ? itinerary : JSON.parse(itinerary),
+               includes: Array.isArray(includes) ? includes : JSON.parse(includes),
+               excludes: Array.isArray(excludes) ? excludes : JSON.parse(excludes),
+               mapCoordinates: Array.isArray(mapCoordinates) ? mapCoordinates : JSON.parse(mapCoordinates),
                slug: slugify(title, { lower: true })
           };
 

@@ -83,6 +83,25 @@ const tourSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    includes: [{
+        type: String,
+        required: true
+    }],
+    excludes: [{
+        type: String,
+        required: true
+    }],
+    mapCoordinates: [{
+        lat: {
+            type: Number,
+            required: true
+        },
+        lng: {
+            type: Number,
+            required: true
+        }
+    }],
+    
     itinerary: [itinerarySchema],
     createdAt: {
         type: Date,
