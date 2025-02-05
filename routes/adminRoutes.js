@@ -13,10 +13,11 @@ const storage = multer.memoryStorage(); // Change to memory storage for GitHub u
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5000000 }, // 5MB limit
+    limits: { fileSize: 50000000 }, // 50MB limit 
     fileFilter: function (req, file, cb) {
         checkFileType(file, cb);
     }
+
 });
 // Check file type helper function
 function checkFileType(file, cb) {
