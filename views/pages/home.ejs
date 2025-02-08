@@ -151,48 +151,77 @@
                          </div>
                     </div>
                </section>
-               <!-- Start Cities Grid -->
-               <section class="py-16 bg-gray-50">
-                    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+               <!-- Starting Cities Section -->
+               <section class="py-16 bg-gray-50 relative">
+                    <!-- Subtle Background Pattern -->
+                    <div class="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNTQuNjI3IDQuNjI3YTQuNSA0LjUgMCAwIDAtNi4zNjQgMEw0LjYyNyA0OC4yNjNhNC41IDQuNSAwIDEgMCA2LjM2NCA2LjM2NEw1NC42MjcgMTAuOTlhNC41IDQuNSAwIDAgMCAwLTYuMzY0eiIgZmlsbD0iIzAwMCIgZmlsbC1ydWxlPSJldmVub2RkIi8+PC9zdmc+')] pattern-repeat"></div>
+                    
+                    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative">
                          <!-- Section Header -->
                          <div class="max-w-2xl mx-auto text-center mb-12 lg:mb-16">
+                              <div class="flex justify-center mb-4" data-aos="fade-up">
+                                   <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-100">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                   </span>
+                              </div>
                               <h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-gray-900 mb-4" data-aos="fade-up">
-                                   Popular Starting Points
+                                   Start Your Moroccan Story
                               </h2>
                               <div class="w-24 h-1 bg-orange-500 mx-auto rounded-full"></div>
-                              <p class="mt-4 text-lg text-gray-600">Begin your Moroccan adventure from these amazing cities</p>
+                              <p class="mt-4 text-lg text-gray-600">Pick your perfect starting point and let Morocco's magic unfold</p>
                          </div>
 
                          <!-- Cities Grid -->
                          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                               <% startCities.forEach(location => { %>
-                                   <div class="group relative overflow-hidden rounded-xl shadow-lg" data-aos="fade-up">
-                                        <div class="aspect-w-3 aspect-h-4">
+                                   <a href="/tours?city=<%= location.city %>" class="group h-full block" data-aos="fade-up">
+                                        <div class="relative h-[400px] rounded-xl overflow-hidden shadow-lg transition duration-300 transform hover:-translate-y-2 hover:shadow-2xl">
+                                             <!-- Background Image -->
                                              <img src="<%= location.image %>" 
                                                   alt="Tours from <%= location.city %>" 
-                                                  class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500">
-                                        </div>
-                                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
-                                             <div class="absolute bottom-0 p-6">
-                                                  <h3 class="text-xl font-bold text-white mb-2"><%= location.city %></h3>
-                                                  <p class="text-gray-200 text-sm mb-3"><%= location.count %> Tours Available</p>
-                                                  <a href="/tours?city=<%= location.city %>" 
-                                                     class="inline-flex items-center text-white text-sm font-medium">
-                                                       Explore Tours
-                                                       <svg xmlns="http://www.w3.org/2000/svg" 
-                                                            class="h-4 w-4 ml-2 group-hover:translate-x-2 transition-transform" 
-                                                            fill="none" 
-                                                            viewBox="0 0 24 24" 
-                                                            stroke="currentColor">
-                                                            <path stroke-linecap="round" 
-                                                                  stroke-linejoin="round" 
-                                                                  stroke-width="2" 
-                                                                  d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                                       </svg>
-                                                  </a>
+                                                  class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
+                                             
+                                             <!-- Gradient Overlay -->
+                                             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent group-hover:from-black/95 transition duration-300">
+                                                  <!-- Content -->
+                                                  <div class="absolute bottom-0 left-0 right-0 p-6">
+                                                       <div class="mb-4">
+                                                            <div class="flex items-center space-x-2 mb-3">
+                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                                                 </svg>
+                                                                 <span class="text-orange-400 text-sm font-medium">Starting Point</span>
+                                                            </div>
+                                                            <h3 class="text-2xl font-bold text-white mb-2"><%= location.city %></h3>
+                                                            <p class="text-gray-300 text-sm flex items-center">
+                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                                                                 </svg>
+
+                                                                 <%= location.count %> Adventures Available
+                                                            </p>
+                                                       </div>
+                                                       
+                                                       <div class="flex items-center text-white text-sm font-medium group-hover:translate-x-2 transition-transform">
+                                                            Explore Tours
+                                                            <svg xmlns="http://www.w3.org/2000/svg" 
+                                                                 class="h-5 w-5 ml-2" 
+                                                                 fill="none" 
+                                                                 viewBox="0 0 24 24" 
+                                                                 stroke="currentColor">
+                                                                 <path stroke-linecap="round" 
+                                                                       stroke-linejoin="round" 
+                                                                       stroke-width="2" 
+                                                                       d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                                            </svg>
+                                                       </div>
+                                                  </div>
                                              </div>
                                         </div>
-                                   </div>
+                                   </a>
                               <% }); %>
                          </div>
                     </div>

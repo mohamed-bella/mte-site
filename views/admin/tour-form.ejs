@@ -289,7 +289,7 @@
                     });
 
                     // Load existing coordinates if editing
-                    if ('<%= tour && tour.mapCoordinates %>') {
+                    if ('<% tour && tour.mapCoordinates %>' !== 'false') {
                          const coordinates = JSON.parse('<%= tour && tour.mapCoordinates %>');
                          coordinates.forEach(coord => {
                               const marker = L.marker([coord.lat, coord.lng]).addTo(map);
