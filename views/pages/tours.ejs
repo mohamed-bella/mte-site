@@ -1,7 +1,7 @@
 <%- include('../partials/head', { 
      title: 'Our Tours - Morocco Tour Experts',
      metaDescription: 'Explore our curated selection of Morocco adventure tours. From desert safaris to cultural experiences, find your perfect Moroccan journey.',
-     metaKeywords: 'morocco tours, morocco travel, desert tours, cultural tours, adventure tours',
+     metaKeywords: 'morocco tours, morocco travel, desert tours, cultural tours, adventure tours', 
      metaTitle: 'Morocco Tours & Adventures | Expert-Led Experiences'
 }) %>
 
@@ -10,16 +10,98 @@
 
      <!-- Main Content -->
      <main class="min-h-screen pt-16">
+          <!-- Filters Section -->
+          <section id="filters" class=" top-16 z-10 py-6 bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200">
+               <div class="container mx-auto px-4">
+                    <form class="space-y-4 md:space-y-0 md:grid md:grid-cols-12 md:gap-6 items-end">
+                         <!-- Starting City Filter -->
+                         <div class="md:col-span-3 group">
+                              <label class="block text-sm font-medium text-gray-700 mb-2 group-hover:text-orange-600 transition-colors">Starting City</label>
+                              <div class="relative">
+                                   <select name="city" class="w-full rounded-lg border-2 border-gray-200 pl-4 pr-10 py-2.5 appearance-none bg-white focus:border-orange-400 focus:ring focus:ring-orange-200 transition-all duration-300">
+                                        <option value="">All Cities</option>
+                                        <% startingCities.forEach(city => { %>
+                                             <option value="<%= city.city %>" <%= selectedCity === city.city ? 'selected' : '' %>>
+                                                  <%= city.city %>
+                                             </option>
+                                        <% }) %>
+                                   </select>
+                                   <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                   </div>
+                              </div>
+                         </div>
+
+                         <!-- Price Range -->
+                         <div class="md:col-span-3 group">
+                              <label class="block text-sm font-medium text-gray-700 mb-2 group-hover:text-orange-600 transition-colors">Price Range</label>
+                              <div class="flex gap-3">
+                                   <div class="relative flex-1">
+                                        <span class="absolute left-3 top-2.5 text-gray-500">$</span>
+                                        <input type="number" name="minPrice" placeholder="Min" value="<%= filters.minPrice %>"
+                                             class="w-full pl-7 pr-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-orange-400 focus:ring focus:ring-orange-200 transition-all">
+                                   </div>
+                                   <div class="relative flex-1">
+                                        <span class="absolute left-3 top-2.5 text-gray-500">$</span>
+                                        <input type="number" name="maxPrice" placeholder="Max" value="<%= filters.maxPrice %>"
+                                             class="w-full pl-7 pr-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-orange-400 focus:ring focus:ring-orange-200 transition-all">
+                                   </div>
+                              </div>
+                         </div>
+
+                         <!-- Duration Range -->
+                         <div class="md:col-span-3 group">
+                              <label class="block text-sm font-medium text-gray-700 mb-2 group-hover:text-orange-600 transition-colors">Duration</label>
+                              <div class="flex gap-3">
+                                   <input type="number" name="minDays" placeholder="Min days" value="<%= filters.minDays %>"
+                                        class="w-full px-4 py-2.5 rounded-lg border-2 border-gray-200 focus:border-orange-400 focus:ring focus:ring-orange-200 transition-all">
+                                   <input type="number" name="maxDays" placeholder="Max days" value="<%= filters.maxDays %>"
+                                        class="w-full px-4 py-2.5 rounded-lg border-2 border-gray-200 focus:border-orange-400 focus:ring focus:ring-orange-200 transition-all">
+                              </div>
+                         </div>
+
+                         <!-- Sort -->
+                         <div class="md:col-span-2 group">
+                              <label class="block text-sm font-medium text-gray-700 mb-2 group-hover:text-orange-600 transition-colors">Sort By</label>
+                              <div class="relative">
+                                   <select name="sort" class="w-full rounded-lg border-2 border-gray-200 pl-4 pr-10 py-2.5 appearance-none bg-white focus:border-orange-400 focus:ring focus:ring-orange-200 transition-all">
+                                        <option value="">Default</option>
+                                        <option value="price-asc" <%= filters.sort === 'price-asc' ? 'selected' : '' %>>Price: Low to High</option>
+                                        <option value="price-desc" <%= filters.sort === 'price-desc' ? 'selected' : '' %>>Price: High to Low</option>
+                                        <option value="duration-asc" <%= filters.sort === 'duration-asc' ? 'selected' : '' %>>Duration: Short to Long</option>
+                                        <option value="duration-desc" <%= filters.sort === 'duration-desc' ? 'selected' : '' %>>Duration: Long to Short</option>
+                                   </select>
+                                   <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                   </div>
+                              </div>
+                         </div>
+
+                         <button type="submit" class="md:col-span-1 w-full px-6 py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 active:bg-orange-700 transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 flex items-center justify-center gap-2">
+                              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                              </svg>
+                              Filter
+                         </button>
+                    </form>
+               </div>
+          </section>
+
           <!-- Popular Tours Grid -->
-          <section id="tours" class="py-20 bg-gray-50">
+          <section id="tours" class="py-20 bg-gradient-to-b from-gray-50 to-white">
                <div class="container mx-auto px-4">
                     <h2 class="text-3xl md:text-4xl font-bold text-center mb-12" data-aos="fade-up">Our Adventure Tours</h2>
                     
                     <% if (tours && tours.length > 0) { %>
                          <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                               <% tours.forEach(tour => { %>
-                                   <a href="/tours/<%= tour.slug %>" class="block group">
-                                        <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-out">
+                                   <a href="/tours/<%= tour.slug %>" class="block group" data-aos="fade-up">
+                                        <div class="bg-white rounded-xl overflow-hidden shadow-sm border-2 border-gray-100 hover:border-orange-200 hover:shadow-xl transform hover:-translate-y-1 transition-all duration-500 ease-out">
+                                             <!-- Rest of the tour card content remains the same -->
                                              <!-- Image Container -->
                                              <div class="relative">
                                                   <div class="aspect-w-16 aspect-h-10 overflow-hidden">
@@ -36,7 +118,7 @@
 
                                                   <!-- Duration Badge -->
                                                   <div class="absolute top-4 right-4">
-                                                       <span class="px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full text-sm font-semibold text-gray-900 flex items-center gap-2">
+                                                       <span class="px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full text-sm font-semibold text-gray-900 flex items-center gap-2 shadow-lg">
                                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                             </svg>
@@ -46,7 +128,7 @@
 
                                                   <!-- Rating Badge -->
                                                   <div class="absolute top-4 left-4">
-                                                       <span class="px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full text-sm font-semibold text-gray-900 flex items-center gap-2">
+                                                       <span class="px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full text-sm font-semibold text-gray-900 flex items-center gap-2 shadow-lg">
                                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
                                                                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                                                             </svg>
@@ -98,8 +180,8 @@
                               <% }) %>
                          </div>
                     <% } else { %>
-                         <div class="text-center py-12">
-                              <p class="text-gray-600">No tours available at the moment. Please check back later.</p>
+                         <div class="text-center py-12 bg-white rounded-lg shadow-sm border-2 border-gray-100">
+                              <p class="text-gray-600">No tours found matching your filters. Try adjusting your search criteria.</p>
                          </div>
                     <% } %>
                </div>
@@ -114,6 +196,36 @@
                duration: 800,
                offset: 100,
                once: true
+          });
+
+          // Sticky filter handling
+          const filtersSection = document.getElementById('filters');
+          let lastScrollTop = 0;
+
+          window.addEventListener('scroll', () => {
+               const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+               
+               if (scrollTop > 100) { // Show after 100px scroll
+                    if (scrollTop > lastScrollTop) {
+                         // Scrolling down
+                         filtersSection.style.transform = 'translateY(-100%)';
+                    } else {
+                         // Scrolling up
+                         filtersSection.style.transform = 'translateY(0)';
+                         filtersSection.style.position = 'fixed';
+                         filtersSection.style.top = '64px'; // Adjust based on your header height
+                         filtersSection.style.left = '0';
+                         filtersSection.style.right = '0';
+                         filtersSection.style.zIndex = '40';
+                    }
+               } else {
+                    // At the top
+                    filtersSection.style.position = 'relative';
+                    filtersSection.style.transform = 'none';
+                    filtersSection.style.top = 'auto';
+               }
+               
+               lastScrollTop = scrollTop;
           });
      </script>
 </body>

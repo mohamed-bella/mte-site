@@ -8,6 +8,7 @@ const slugify = require('slugify');
 const multer = require('multer');
 const path = require('path');
 const Setting = require('../models/Setting');
+const StartingCity = require('../models/StartingCity');
 
 const storage = multer.memoryStorage(); // Change to memory storage for GitHub uploads
 
@@ -32,7 +33,8 @@ function checkFileType(file, cb) {
      }
 }
 
-// Middleware to check admin role
+
+
 
 
 // Admin Dashboard
@@ -624,25 +626,152 @@ router.get('/settings', async (req, res) => {
 
 router.post('/settings', async (req, res) => {
      try {
-          const { siteTitle, contactEmail, phoneNumber, facebook, instagram, twitter } = req.body;
+          const { 
+               siteTitle, 
+               contactEmail, 
+               phoneNumber, 
+               facebook, 
+               instagram, 
+               twitter,
+               address,
+               coordinates
+          } = req.body;
 
           const setting = await Setting.findOneAndUpdate(
                {},
-               { siteTitle, contactEmail, phoneNumber, socialMedia: { facebook, instagram, twitter } },
+               { 
+                    siteTitle, 
+                    contactEmail, 
+                    phoneNumber, 
+                    socialMedia: { facebook, instagram, twitter },
+                    address,
+                    coordinates: {
+                         lat: parseFloat(coordinates.lat),
+                         lng: parseFloat(coordinates.lng)
+                    }
+               },
                { new: true, upsert: true }
           );
 
           req.flash('success', 'Settings updated successfully');
           res.redirect('/admin/settings');
      } catch (error) {
+          console.error('Settings update error:', error);
           req.flash('error', 'Error updating settings');
           res.redirect('/admin/settings');
      }
 });
 
+// Starting Cities Management Routes
+router.get('/starting-cities', async (req, res) => {
+    try {
+        const cities = await StartingCity.find().populate('tours', 'title');
+        res.render('admin/starting-cities', {
+            title: 'Manage Starting Cities',
+            cities
+        });
+    } catch (error) {
+        req.flash('error', 'Error loading starting cities');
+        res.redirect('/admin/dashboard');
+    }
+});
 
+router.get('/starting-cities/new', async (req, res) => {
+    try {
+        const tours = await Tour.find().select('title startLocation');
+        res.render('admin/starting-city-form', {
+            title: 'Add New Starting City',
+            tours,
+            city: null
+        });
+    } catch (error) {
+        req.flash('error', 'Error loading form');
+        res.redirect('/admin/starting-cities');
+    }
+});
 
+// Create/Edit Starting City
+router.post('/starting-cities/:id?', upload.single('image'), async (req, res) => {
+    try {
+        const { city, description, tours } = req.body;
+        const isEdit = !!req.params.id;
+        
+        // Only require image for new cities
+        if (!req.file && !isEdit) {
+            req.flash('error', 'Please upload an image');
+            return res.redirect(isEdit ? `/admin/starting-cities/${req.params.id}/edit` : '/admin/starting-cities/new');
+        }
 
+        let imageUrl;
+        if (req.file) {
+            // Upload image to GitHub
+            const imageBuffer = req.file.buffer;
+            const fileName = `starting-cities/${Date.now()}-${req.file.originalname.replace(/[^a-zA-Z0-9.]/g, '-')}`;
+            const content = imageBuffer.toString('base64');
+
+            // Make direct API call to GitHub
+            const response = await fetch(`https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${fileName}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${process.env.GITHUB_TOKEN}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: `${isEdit ? 'Update' : 'Upload'} starting city image`,
+                    content: content,
+                    branch: process.env.GITHUB_BRANCH || 'main'
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to upload image to GitHub');
+            }
+
+            imageUrl = `https://raw.githubusercontent.com/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/${process.env.GITHUB_BRANCH || 'main'}/${fileName}`;
+        }
+
+        const cityData = {
+            city,
+            description,
+            tours: Array.isArray(tours) ? tours : [tours]
+        };
+
+        if (imageUrl) {
+            cityData.image = imageUrl;
+        }
+
+        if (isEdit) {
+            await StartingCity.findByIdAndUpdate(req.params.id, cityData);
+            req.flash('success', 'Starting city updated successfully');
+        } else {
+            const newCity = new StartingCity(cityData);
+            await newCity.save();
+            req.flash('success', 'Starting city created successfully');
+        }
+
+        res.redirect('/admin/starting-cities');
+    } catch (error) {
+        console.error(`Error ${isEdit ? 'updating' : 'creating'} starting city:`, error);
+        req.flash('error', error.message || `Error ${isEdit ? 'updating' : 'creating'} starting city`);
+        res.redirect(isEdit ? `/admin/starting-cities/${req.params.id}/edit` : '/admin/starting-cities/new');
+    }
+});
+
+// Get edit form
+router.get('/starting-cities/:id/edit', async (req, res) => {
+    try {
+        const city = await StartingCity.findById(req.params.id);
+        const tours = await Tour.find().select('title startLocation');
+        res.render('admin/starting-city-form', {
+            title: 'Edit Starting City',
+            city,
+            tours
+        });
+    } catch (error) {
+        req.flash('error', 'Error loading form'); 
+        res.redirect('/admin/starting-cities');   
+    }
+});
 
 
 module.exports = router;

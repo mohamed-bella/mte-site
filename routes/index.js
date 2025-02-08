@@ -10,6 +10,8 @@ const ejs = require('ejs');
 const path = require('path');
 const dotenv = require('dotenv');
 const nodemailer = require('nodemailer');
+const StartingCity = require('../models/StartingCity');
+
 
 dotenv.config();
 
@@ -36,52 +38,48 @@ router.get('/', async (req, res) => {
           const featuredTours = await Tour.find({ featured: true })
                .limit(6);
 
-          // Get start cities and their tour counts
-          const startCities = await Tour.aggregate([
-               {
-                    $group: {
-                         _id: "$startLocation",
-                         count: { $sum: 1 },
-                         image: { $first: "$mainImage" },
-                         description: {
-                              $first: {
-                                   $concat: [
-                                        "Discover amazing tours starting from ",
-                                        "$startLocation"
-                                   ]
-                              }
-                         }
-                    }
-               },
-               {
-                    $project: {
-                         city: "$_id",
-                         count: 1,
-                         image: 1,
-                         description: 1,
-                         _id: 0
+          // Get starting cities
+          const startingCities = await StartingCity.find()
+               .populate('tours', 'title');
+
+         
+
+          // Get settings with location information
+          const settings = await Setting.findOne();
+          // console.log(startingCities)
+          
+          res.render('pages/home', {
+               title: settings?.siteTitle || 'Welcome to Morocco Tours',
+               tours: featuredTours,
+               startingCities: startingCities,
+               metaTitle: settings?.metaTitle,
+               metaDescription: settings?.metaDescription,
+               metaKeywords: settings?.metaKeywords,
+               location: {
+                    address: settings?.address || '123 Tourism Street, Marrakech Medina',
+                    coordinates: settings?.coordinates || {
+                         lat: 31.631044981330687,
+                         lng: -7.989843684885611
                     }
                }
-          ]);
-          console.log(startCities)
-
-          res.render('pages/home', {
-               title: res.locals.settings?.siteTitle || 'Welcome to Morocco Tours',
-               tours: featuredTours,
-               startCities: startCities,
-               metaTitle: res.locals.settings?.metaTitle,
-               metaDescription: res.locals.settings?.metaDescription,
-               metaKeywords: res.locals.settings?.metaKeywords
           });
      } catch (error) {
           console.error('Homepage error:', error);
-          res.render('home', {
-               title: res.locals.settings?.siteTitle || 'Welcome to Morocco Tours',
+          res.render('pages/home', {
+               title: 'Welcome to Morocco Tours',
                tours: [],
+               startingCities: [],
                startCities: [],
-               metaTitle: res.locals.settings?.metaTitle,
-               metaDescription: res.locals.settings?.metaDescription,
-               metaKeywords: res.locals.settings?.metaKeywords
+               metaTitle: '',
+               metaDescription: '',
+               metaKeywords: '',
+               location: {
+                    address: '123 Tourism Street, Marrakech Medina',
+                    coordinates: {
+                         lat: 31.631044981330687,
+                         lng: -7.989843684885611
+                    }
+               }
           });
      }
 });
@@ -89,14 +87,76 @@ router.get('/', async (req, res) => {
 // All tours page
 router.get('/tours', async (req, res) => {
      try {
+          let tours = [];
           let query = {};
           
-          // Filter by city if provided in query params
+          // Get all starting cities for the filter dropdown
+          const allStartingCities = await StartingCity.find().select('city');
+          
+          // Apply filters
           if (req.query.city) {
-               query.startLocation = req.query.city;
+               const startingCity = await StartingCity.findOne({ city: req.query.city })
+                    .populate({
+                         path: 'tours',
+                         match: {
+                              $and: [
+                                   // Price filter
+                                   req.query.minPrice ? { price: { $gte: parseInt(req.query.minPrice) } } : {},
+                                   req.query.maxPrice ? { price: { $lte: parseInt(req.query.maxPrice) } } : {},
+                                   // Duration filter
+                                   req.query.minDays ? { duration: { $gte: parseInt(req.query.minDays) } } : {},
+                                   req.query.maxDays ? { duration: { $lte: parseInt(req.query.maxDays) } } : {}
+                              ]
+                         }
+                    });
+               
+               if (startingCity) {
+                    tours = startingCity.tours;
+               }
+          } else {
+               // If no city filter, get all tours from all starting cities with filters
+               const startingCities = await StartingCity.find()
+                    .populate({
+                         path: 'tours',
+                         match: {
+                              $and: [
+                                   // Price filter
+                                   req.query.minPrice ? { price: { $gte: parseInt(req.query.minPrice) } } : {},
+                                   req.query.maxPrice ? { price: { $lte: parseInt(req.query.maxPrice) } } : {},
+                                   // Duration filter
+                                   req.query.minDays ? { duration: { $gte: parseInt(req.query.minDays) } } : {},
+                                   req.query.maxDays ? { duration: { $lte: parseInt(req.query.maxDays) } } : {}
+                              ]
+                         }
+                    });
+               
+               // Combine all tours from all cities, removing duplicates
+               const tourSet = new Set();
+               startingCities.forEach(city => {
+                    city.tours.forEach(tour => {
+                         tourSet.add(tour);
+                    });
+               });
+               tours = Array.from(tourSet);
           }
 
-          const tours = await Tour.find(query);
+          // Sort tours if requested
+          if (req.query.sort) {
+               switch(req.query.sort) {
+                    case 'price-asc':
+                         tours.sort((a, b) => a.price - b.price);
+                         break;
+                    case 'price-desc':
+                         tours.sort((a, b) => b.price - a.price);
+                         break;
+                    case 'duration-asc':
+                         tours.sort((a, b) => a.duration - b.duration);
+                         break;
+                    case 'duration-desc':
+                         tours.sort((a, b) => b.duration - a.duration);
+                         break;
+               }
+          }
 
           res.render('pages/tours', {
                title: 'Our Tours',
@@ -104,7 +164,15 @@ router.get('/tours', async (req, res) => {
                metaTitle: res.locals.settings?.metaTitle,
                metaDescription: res.locals.settings?.metaDescription,
                metaKeywords: res.locals.settings?.metaKeywords,
-               selectedCity: req.query.city // Pass selected city to view
+               selectedCity: req.query.city,
+               filters: {
+                    minPrice: req.query.minPrice,
+                    maxPrice: req.query.maxPrice,
+                    minDays: req.query.minDays,
+                    maxDays: req.query.maxDays,
+                    sort: req.query.sort
+               },
+               startingCities: allStartingCities
           });
      } catch (error) {
           console.error('Tours page error:', error);

@@ -1,348 +1,256 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 
-
 <%- include('../partials/head', { title: 'Discover Morocco - Your Desert Adventure Awaits' }) %>
 
+<%- include('../partials/header') %>
 
+<main class="min-h-screen">
+    <!-- Hero Section -->
+    <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gray-50">
+        <!-- Background Image with Gradient Overlay -->
+        <div class="absolute inset-0">
+            <img 
+                src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0004.webp" 
+                alt="Morocco Desert" 
+                class="w-full h-full object-cover"
+            />
+            <div class="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-gray-900/40"></div>
+        </div>
 
-     <%- include('../partials/header') %>
+        <!-- Content Container -->
+        <div class="relative w-full max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-24">
+            <div class="max-w-3xl" data-aos="fade-up" data-aos-delay="100">
+                <!-- Eyebrow Text -->
+                <p class="inline-flex items-center gap-2 text-sm font-medium text-white/80 mb-4 backdrop-blur-sm bg-white/10 py-1 px-3 rounded-full">
+                    <span class="flex h-2 w-2 rounded-full bg-orange-500"></span>
+                    Discover Morocco's Hidden Gems
+                </p>
 
-          <main class="min-h-screen">
-              <!-- Hero Section with image Background -->
-               <section class="relative h-[80vh] md:h-screen overflow-hidden">
-                    <!-- Image Background -->
-                    <div class="absolute inset-0">
-                         <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0004.webp" alt="Morocco Desert" class="w-full h-full object-cover"> 
-                         <div class="absolute inset-0 bg-black/50"></div>
+                <!-- Main Heading -->
+                <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight">
+                    Journey Through 
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
+                        Magical Morocco
+                    </span>
+                </h1>
+
+                <!-- Description -->
+                <p class="text-lg md:text-xl text-gray-200 mb-8 max-w-2xl">
+                    Experience authentic Moroccan culture, from ancient medinas to endless Sahara dunes. Let us guide you through an unforgettable adventure.
+                </p>
+
+                <!-- CTA Buttons -->
+                <div class="flex flex-wrap gap-4">
+                    <a href="/tours" class="inline-flex items-center justify-center px-8 py-4 text-base font-medium text-white bg-orange-600 border border-transparent rounded-full shadow-sm hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all duration-300">
+                        Explore Tours
+                        <svg class="w-5 h-5 ml-2 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </a>
+                    <a href="#contact" class="inline-flex items-center justify-center px-8 py-4 text-base font-medium text-gray-900 bg-white border border-transparent rounded-full shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all duration-300">
+                        Contact Us
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Decorative Elements -->
+        <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-50 to-transparent"></div>
+        <div class="absolute -bottom-px left-0 right-0 h-px bg-gray-200"></div>
+    </section>
+
+    <hr class="border-gray-200 my-8">
+
+    <!-- About Section -->
+    <section class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-16">
+                    <h2 class="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-4">About The Agency</h2>
+                    <div class="w-24 h-1 bg-orange-500 mb-4"></div>
+                    <p class="text-gray-600 text-base md:text-lg lg:text-xl">Since 2010, we've been curating extraordinary journeys through the heart of Morocco</p>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="relative">
+                        <div class="relative z-20" data-aos="fade-right">
+                            <img src="https://www.photo-pick.com/online/api/v1/albums/7b6a0e41-8f27-4f31-8af0-01f7de95dc82.jpg" alt="Luxury Desert Camp" class="w-full h-[500px] object-cover rounded-lg shadow-2xl">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-lg">
+                                <div class="grid grid-cols-3 text-white text-center">
+                                    <div>
+                                        <div class="text-2xl md:text-3xl font-bold mb-1">3+</div>
+                                        <div class="text-sm md:text-base text-gray-300">Years of Excellence</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-2xl md:text-3xl font-bold mb-1">1.2k+</div>
+                                        <div class="text-sm md:text-base text-gray-300">Happy Travelers</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-2xl md:text-3xl font-bold mb-1">20+</div>
+                                        <div class="text-sm md:text-base text-gray-300">Unique Routes</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute top-8 -left-8 w-full h-full bg-orange-500/10 rounded-lg -z-10"></div>
+                        <div class="absolute -bottom-8 -right-8 w-full h-full bg-orange-600/10 rounded-lg -z-10"></div>
                     </div>
 
-                    <!-- Hero Content -->
-                    <div class="relative container mx-auto px-4 h-full flex items-center">
-                         <div class="max-w-3xl text-white" data-aos="fade-up">
-                              <h1 class="text-4xl md:text-7xl font-bold mb-4 md:mb-6 leading-tight">
-                                   Experience the Magic of
-                                   <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600">
-                                        Morocco
-                                   </span>
-                              </h1>
-                              <p class="text-lg md:text-xl mb-6 md:mb-8 text-gray-200">From ancient medinas to endless deserts, discover the wonders of Morocco with our expertly crafted tours</p>
-                              <div class="flex flex-wrap gap-4">
-                                   <a href="#tours" class="group bg-white text-gray-900 px-6 md:px-8 py-3 md:py-4 rounded-full flex items-center gap-2 hover:bg-orange-500 hover:text-white transition duration-300">
-                                        Explore Tours
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    <div class="lg:pl-10">
+                        <div class="space-y-6">
+                            <p class="text-gray-600 text-base md:text-lg lg:text-xl leading-relaxed mb-8">
+                                With over a decade of expertise in crafting exceptional Moroccan experiences, we take pride in being your trusted gateway to the wonders of this enchanting country. Our journey began with a simple vision: to share Morocco's rich cultural heritage, breathtaking landscapes, and warm hospitality with travelers seeking authentic experiences.
+                            </p>
+                            <div class="flex flex-wrap gap-4">
+                                <a href="/about" class="group inline-flex items-center">
+                                    <span class="bg-gradient-to-r from-orange-600 to-orange-500 text-white px-6 md:px-8 py-3 md:py-4 rounded-full">
+                                        Learn More About Us
+                                    </span>
+                                    <span class="ml-2 text-orange-500 group-hover:translate-x-2 transition-transform">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="border-gray-200 my-8">
+
+    <!-- Starting Cities Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="mb-16">
+                <h2 class="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Start Your Moroccan Story</h2>
+                <div class="w-24 h-1 bg-orange-500 mb-4"></div>
+                <p class="text-gray-600 text-base md:text-lg lg:text-xl">Pick your perfect starting point and let Morocco's magic unfold</p>
+            </div>
+
+            <div class="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <% startingCities.forEach(location => { %>
+                    <a href="/tours?city=<%= location.city %>" class="group">
+                        <div class="relative h-[400px] rounded-xl overflow-hidden shadow-lg transition duration-300 hover:-translate-y-2">
+                            <img src="<%= location.image %>" alt="Tours from <%= location.city %>" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
+                                <div class="absolute bottom-0 p-6">
+                                    <div class="mb-4">
+                                        <div class="flex items-center space-x-2 mb-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                            </svg>
+                                            <span class="text-orange-400 text-sm md:text-base font-medium">Starting Point</span>
+                                        </div>
+                                        <h3 class="text-xl md:text-2xl font-bold text-white mb-2"><%= location.city %></h3>
+                                        <p class="text-gray-300 text-sm md:text-base flex items-center">
+                                            <%= location.tours.length %> Adventures Available
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                <% }); %>
+            </div>
+
+            <!-- Mobile Slider -->
+            <div class="sm:hidden">
+                <div class="overflow-x-auto hide-scrollbar">
+                    <div class="flex space-x-4">
+                        <% startingCities.forEach(location => { %>
+                            <div class="flex-none w-[85vw]">
+                                <!-- Same card structure as above -->
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="border-gray-200 my-8">
+
+    <!-- Tours Section -->
+    <section id="tours" class="py-20 bg-gray-200">
+        <div class="container mx-auto px-4">
+            <div class="mb-16">
+                <h2 class="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Our Tours</h2>
+                <div class="w-24 h-1 bg-orange-500 mb-4"></div>
+                <p class="text-gray-600 text-base md:text-lg lg:text-xl">Explore our carefully curated selection of Moroccan adventures</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <% tours.forEach(tour => { %>
+                    <a href="/tours/<%= tour.slug %>" class="group">
+                        <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
+                            <div class="relative">
+                                <img src="<%= tour.mainImage %>" alt="<%= tour.title %>" class="w-full h-48 sm:h-56 lg:h-64 object-cover transform group-hover:scale-105 transition duration-700">
+                                <div class="absolute top-4 right-4">
+                                    <span class="px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full text-sm md:text-base font-semibold text-gray-900">
+                                        <%= tour.duration %> Days
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="p-6">
+                                <div class="flex items-center mb-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    </svg>
+                                    <span class="ml-2 text-sm md:text-base text-gray-600"><%= tour.startLocation %></span>
+                                </div>
+
+                                <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-500 transition-colors">
+                                    <%= tour.title %>
+                                </h3>
+
+                                <p class="text-sm md:text-base text-gray-600 mb-6 line-clamp-2">
+                                    <%= tour.description.substring(0, 150) %>...
+                                </p>
+
+                                <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                                    <div class="flex flex-col">
+                                        <span class="text-xs md:text-sm text-gray-500">Starting from</span>
+                                        <span class="text-xl md:text-2xl font-bold text-orange-500">$<%= tour.price %></span>
+                                    </div>
+                                    <span class="inline-flex items-center text-sm md:text-base font-semibold text-gray-900 group-hover:text-orange-500">
+                                        Explore
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transform group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                         </svg>
-                                   </a>
-                              </div>
-                         </div>
-                    </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                <% }); %>
+            </div>
 
-                    <!-- Scroll Indicator -->
-                    <div class="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                         </svg>
-                    </div>
-               </section>
+            <div class="flex justify-center mt-12">
+                <a href="/tours" class="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 transition duration-300">
+                    View All Tours
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
 
-               <!-- Featured Experiences -->
-               <!-- About Section -->
-               <section class="relative py-20 overflow-hidden">
-                    <!-- Background Pattern -->
-                    <div class="absolute inset-0 opacity-5">
-                         <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\" 60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23000000\" fill-opacity=\"1\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"></div>
-                    </div>
+<%- include('../partials/footer') %>
 
-                    <div class="container mx-auto px-4">
-                         <!-- Section Header -->
-                         <div class="max-w-3xl mx-auto text-center mb-16">
-                              <h2 class="text-3xl md:text-4xl font-bold mb-4" data-aos="fade-up">
-                                   <span class="bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
-                                        About The Agency
-                                   </span>
-                              </h2>
-                              <p class="text-gray-600 text-lg" data-aos="fade-up" data-aos-delay="100">
-                                   Since 2010, we've been curating extraordinary journeys through the heart of Morocco
-                              </p>
-                         </div>
-
-                         <!-- Main Content Grid -->
-                         <div class="grid lg:grid-cols-2 gap-12 items-center">
-                              <!-- Left Column - Experience Showcase -->
-                              <div class="relative">
-                                   <!-- Main Image -->
-                                   <div class="relative z-20" data-aos="fade-right">
-                                        <img src="https://www.photo-pick.com/online/api/v1/albums/7b6a0e41-8f27-4f31-8af0-01f7de95dc82.jpg" alt="Luxury Desert Camp" class="w-full h-[500px] object-cover rounded-lg shadow-2xl">
-                                        <!-- Stats Overlay -->
-                                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-lg">
-                                             <div class="grid grid-cols-3 text-white text-center">
-                                                  <div>
-                                                       <div class="text-3xl font-bold mb-1">3+</div>
-                                                       <div class="text-sm text-gray-300">Years of Excellence</div>
-                                                  </div>
-                                                  <div>
-                                                       <div class="text-3xl font-bold mb-1">1.2k+</div>
-                                                       <div class="text-sm text-gray-300">Happy Travelers</div>
-                                                  </div>
-                                                  <div>
-                                                       <div class="text-3xl font-bold mb-1">20+</div>
-                                                       <div class="text-sm text-gray-300">Unique Routes</div>
-                                                  </div>
-                                             </div>
-                                        </div>
-                                   </div>
-                                   <!-- Decorative Elements -->
-                                   <div class="absolute top-8 -left-8 w-full h-full bg-orange-500/10 rounded-lg -z-10" data-aos="fade-up" data-aos-delay="200"></div>
-                                   <div class="absolute -bottom-8 -right-8 w-full h-full bg-orange-600/10 rounded-lg -z-10" data-aos="fade-up" data-aos-delay="300"></div>
-                              </div>
-
-                              <!-- Right Column - Content -->
-                              <div class="lg:pl-10">
-                                   <div class="space-y-6">
-                                        <!-- About Text -->
-                                        <div data-aos="fade-left">
-                                             <p class="text-gray-600 text-lg leading-relaxed mb-8">
-                                                  With over a decade of expertise in crafting exceptional Moroccan experiences, we take pride in being your trusted gateway to the wonders of this enchanting country. Our journey began with a simple vision: to share Morocco's rich cultural heritage, breathtaking landscapes, and warm hospitality with travelers seeking authentic experiences.
-                                             </p>
-
-                                             <!-- CTA Button -->
-                                             <a href="/about" class="inline-flex items-center group">
-                                                  <span class="bg-gradient-to-r from-orange-600 to-orange-500 text-white px-8 py-3 rounded-full">
-                                                       Learn More About Us
-                                                  </span>
-                                                  <span class="ml-2 text-orange-500 group-hover:translate-x-2 transition-transform">
-                                                       <i class="fas fa-arrow-right"></i>
-                                                  </span>
-                                             </a>
-                                        </div>
-
-                                        <!-- Review Platform Icons -->
-                                        <div class="flex items-center space-x-8 mt-12" data-aos="fade-up">
-                                             <div class="flex items-center">
-                                                  <i class="fab fa-google text-4xl text-orange-500"></i>
-                                                  <div class="ml-2">
-                                                       <div class="flex text-yellow-400">
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                       </div>
-                                                       <span class="text-sm text-gray-600">4.9 Rating</span>
-                                                  </div>
-                                             </div>
-                                             <div class="flex items-center">
-                                                  <i class="fa fa-tripadvisor text-4xl text-orange-500"></i>
-                                                  <div class="ml-2">
-                                                       <div class="flex text-yellow-400">
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                       </div>
-                                                       <span class="text-sm text-gray-600">5.0 Rating</span>
-                                                  </div>
-                                             </div>
-                                        </div>
-                                   </div>
-                              </div>
-                         </div>
-                    </div>
-               </section>
-               <!-- Starting Cities Section -->
-               <section class="py-16 bg-gray-50 relative">
-                    <!-- Subtle Background Pattern -->
-                    <div class="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNTQuNjI3IDQuNjI3YTQuNSA0LjUgMCAwIDAtNi4zNjQgMEw0LjYyNyA0OC4yNjNhNC41IDQuNSAwIDEgMCA2LjM2NCA2LjM2NEw1NC42MjcgMTAuOTlhNC41IDQuNSAwIDAgMCAwLTYuMzY0eiIgZmlsbD0iIzAwMCIgZmlsbC1ydWxlPSJldmVub2RkIi8+PC9zdmc+')] pattern-repeat"></div>
-                    
-                    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative">
-                         <!-- Section Header -->
-                         <div class="max-w-2xl mx-auto text-center mb-12 lg:mb-16">
-                              <div class="flex justify-center mb-4" data-aos="fade-up">
-                                   <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-100">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
-                                   </span>
-                              </div>
-                              <h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-gray-900 mb-4" data-aos="fade-up">
-                                   Start Your Moroccan Story
-                              </h2>
-                              <div class="w-24 h-1 bg-orange-500 mx-auto rounded-full"></div>
-                              <p class="mt-4 text-lg text-gray-600">Pick your perfect starting point and let Morocco's magic unfold</p>
-                         </div>
-
-                         <!-- Cities Grid -->
-                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                              <% startCities.forEach(location => { %>
-                                   <a href="/tours?city=<%= location.city %>" class="group h-full block" data-aos="fade-up">
-                                        <div class="relative h-[400px] rounded-xl overflow-hidden shadow-lg transition duration-300 transform hover:-translate-y-2 hover:shadow-2xl">
-                                             <!-- Background Image -->
-                                             <img src="<%= location.image %>" 
-                                                  alt="Tours from <%= location.city %>" 
-                                                  class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
-                                             
-                                             <!-- Gradient Overlay -->
-                                             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent group-hover:from-black/95 transition duration-300">
-                                                  <!-- Content -->
-                                                  <div class="absolute bottom-0 left-0 right-0 p-6">
-                                                       <div class="mb-4">
-                                                            <div class="flex items-center space-x-2 mb-3">
-                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                                                 </svg>
-                                                                 <span class="text-orange-400 text-sm font-medium">Starting Point</span>
-                                                            </div>
-                                                            <h3 class="text-2xl font-bold text-white mb-2"><%= location.city %></h3>
-                                                            <p class="text-gray-300 text-sm flex items-center">
-                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                                                                 </svg>
-
-                                                                 <%= location.count %> Adventures Available
-                                                            </p>
-                                                       </div>
-                                                       
-                                                       <div class="flex items-center text-white text-sm font-medium group-hover:translate-x-2 transition-transform">
-                                                            Explore Tours
-                                                            <svg xmlns="http://www.w3.org/2000/svg" 
-                                                                 class="h-5 w-5 ml-2" 
-                                                                 fill="none" 
-                                                                 viewBox="0 0 24 24" 
-                                                                 stroke="currentColor">
-                                                                 <path stroke-linecap="round" 
-                                                                       stroke-linejoin="round" 
-                                                                       stroke-width="2" 
-                                                                       d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                                            </svg>
-                                                       </div>
-                                                  </div>
-                                             </div>
-                                        </div>
-                                   </a>
-                              <% }); %>
-                         </div>
-                    </div>
-               </section>
-               <!--  Tours Grid -->
-               <section id="tours" class="py-12 sm:py-16 lg:py-20 bg-gradient-to-b from-gray-50 to-white">
-                    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                         <!-- Section Header -->
-                         <div class="max-w-2xl mx-auto text-center mb-12 lg:mb-16">
-                              <h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-gray-900 mb-4" data-aos="fade-up">
-                                   Tours
-                              </h2>
-                              <div class="w-24 h-1 bg-orange-500 mx-auto rounded-full"></div>
-                         </div>
-
-                         <!-- Tours Grid -->
-                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
-                              <% tours.forEach(tour=> { %>
-                                   <a href="/tours/<%= tour.slug %>" class="block group">
-                                        <div class="h-full bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-out">
-                                             <!-- Image Container -->
-                                             <div class="relative">
-                                                  <div class="aspect-w-16 aspect-h-10 sm:aspect-h-12">
-                                                       <img src="<%= tour.mainImage %>" alt="<%= tour.title %>" class="w-full h-48 sm:h-56 lg:h-64 object-cover transform group-hover:scale-105 transition duration-700 ease-out">
-                                                  </div>
-
-                                                  <!-- Overlay with Gradient -->
-                                                  <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent"></div>
-
-                                                  <!-- Days Badge -->
-                                                  <div class="absolute top-4 right-4">
-                                                       <span class="px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full text-sm font-semibold text-gray-900 flex items-center gap-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                            </svg>
-                                                            <%= tour.duration %> Days
-                                                       </span>
-                                                  </div>
-                                             </div>
-
-                                             <!-- Content -->
-                                             <div class="p-4 sm:p-6">
-                                                  <!-- Location -->
-                                                  <div class="flex items-center gap-4 mb-3">
-                                                       <div class="flex items-center text-sm text-gray-600">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-orange-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                            </svg>
-                                                            <%= tour.startLocation %>
-                                                       </div>
-                                                  </div>
-
-                                                  <!-- Title -->
-                                                  <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-500 transition-colors line-clamp-2">
-                                                       <%= tour.title %>
-                                                  </h3>
-
-                                                  <!-- Description -->
-                                                  <p class="text-sm text-gray-600 mb-6 line-clamp-2">
-                                                       <%= tour.description.substring(0, 150) %>...
-                                                  </p>
-
-                                                  <!-- Footer -->
-                                                  <div class="flex items-center justify-between pt-4 border-t border-gray-100">
-                                                       <div class="flex flex-col">
-                                                            <span class="text-xs sm:text-sm text-gray-500">Starting from</span>
-                                                            <span class="text-xl sm:text-2xl font-bold text-orange-500">
-                                                                 $<%= tour.price %>
-                                                            </span>
-                                                       </div>
-
-                                                       <span class="inline-flex items-center gap-2 text-sm font-semibold text-gray-900 group-hover:text-orange-500 transition-colors">
-                                                            Explore
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                                            </svg>
-                                                       </span>
-                                                  </div>
-                                             </div>
-                                        </div>
-                                   </a>
-                                   <% }) %>
-                         </div>
-                    </div>
-               </section>
-          </main>
-
-          <%- include('../partials/footer') %>
-
-               <!-- Scripts -->
-               <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-               <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-               <script>
-                    // Initialize AOS
-                    AOS.init({
-                         duration: 800,
-                         once: true,
-                         offset: 100
-                    });
-
-                    // Initialize Swiper
-                    const experiencesSwiper = new Swiper('.experiences-swiper', {
-                         slidesPerView: 1,
-                         spaceBetween: 20,
-                         navigation: {
-                              nextEl: '.swiper-button-next',
-                              prevEl: '.swiper-button-prev',
-                         },
-                         breakpoints: {
-                              640: {
-                                   slidesPerView: 2,
-                              },
-                              1024: {
-                                   slidesPerView: 3,
-                              }
-                         }
-                    });
-
-                     
-               </script>
-               </body>
-
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100
+    });
+</script>
+</body>
 </html>
