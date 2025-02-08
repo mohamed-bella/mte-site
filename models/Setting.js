@@ -4,18 +4,19 @@ const settingSchema = new mongoose.Schema({
     siteTitle: {
         type: String,
         required: true,
-        default: 'Morocco Tours'
+        default: 'Morocco Travel Experts'
     },
-    contactEmail: {
+    email: {
         type: String,
         required: true,
-        default: 'contact@moroccotours.com'
+        default: 'contact@moroccotravelexperts.com'
     },
-    phoneNumber: {
+    phone: {
         type: String,
         required: true,
-        default: '+212-000-0000'
+        default: '+212-526-555512'
     },
+
     socialMedia: {
         facebook: {
             type: String,
@@ -32,7 +33,7 @@ const settingSchema = new mongoose.Schema({
     },
     metaTitle: {
         type: String,
-        default: 'Morocco Tours - Your Gateway to Authentic Moroccan Experiences'
+        default: 'Morocco Travel Experts - Your Gateway to Authentic Moroccan Experiences'
     },
     metaDescription: {
         type: String,
@@ -41,7 +42,7 @@ const settingSchema = new mongoose.Schema({
     metaKeywords: {
         type: String,
         default: 'morocco tours, moroccan travel, desert tours, cultural experiences'
-    },
+    },  
     smtp: {
         host: {
             type: String,

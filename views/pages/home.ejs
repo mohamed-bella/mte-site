@@ -162,7 +162,32 @@
                     <div class="flex space-x-4">
                         <% startingCities.forEach(location => { %>
                             <div class="flex-none w-[85vw]">
-                                <!-- Same card structure as above -->
+                                <div class="relative h-[300px] rounded-xl overflow-hidden shadow-lg">
+                                    <img src="<%= location.image %>" alt="Tours from <%= location.city %>" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex flex-col justify-end p-4">
+                                        <div class="flex items-center space-x-2 mb-2">
+                                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500/20 backdrop-blur-sm">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                                </svg>
+                                            </div>
+                                            <span class="text-orange-400 text-sm font-medium">Starting Point</span>
+                                        </div>
+                                        
+                                        <h3 class="text-2xl font-bold text-white mb-1"><%= location.city %></h3>
+                                        
+                                        <div class="flex items-center justify-between">
+                                            <p class="text-gray-300 text-sm flex items-center">
+                                                <span class="inline-block w-2 h-2 rounded-full bg-orange-500 mr-2"></span>
+                                                <%= location.tours.length %> Tours Available
+                                            </p>
+                                            <a href="/tours?city=<%= location.city %>" class="text-white text-sm bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                                                View Tours →
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                </div>
                             </div>
                         <% }); %>
                     </div>
@@ -174,50 +199,53 @@
     <hr class="border-gray-200 my-8">
 
     <!-- Tours Section -->
-    <section id="tours" class="py-20 bg-gray-200">
+    <section id="tours" class="py-20 bg-gradient-to-b from-gray-100 to-white">
         <div class="container mx-auto px-4">
-            <div class="mb-16">
-                <h2 class="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Our Tours</h2>
-                <div class="w-24 h-1 bg-orange-500 mb-4"></div>
-                <p class="text-gray-600 text-base md:text-lg lg:text-xl">Explore our carefully curated selection of Moroccan adventures</p>
+            <div class="mb-16 text-center" data-aos="fade-up">
+                <span class="text-orange-600 font-medium text-sm tracking-wider uppercase mb-2 block">Curated Experiences</span>
+                <h2 class="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Discover Our Signature Tours</h2>
+                <div class="w-24 h-1 bg-orange-500 mx-auto mb-4"></div>
+                <p class="text-gray-600 text-base md:text-lg lg:text-xl max-w-2xl mx-auto">Embark on carefully crafted journeys through Morocco's most enchanting destinations</p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Desktop Grid -->
+            <div class="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 <% tours.forEach(tour => { %>
                     <a href="/tours/<%= tour.slug %>" class="group">
-                        <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
+                        <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
                             <div class="relative">
-                                <img src="<%= tour.mainImage %>" alt="<%= tour.title %>" class="w-full h-48 sm:h-56 lg:h-64 object-cover transform group-hover:scale-105 transition duration-700">
+                                <img src="<%= tour.mainImage %>" alt="<%= tour.title %>" class="w-full h-56 lg:h-64 object-cover transform group-hover:scale-105 transition duration-700">
                                 <div class="absolute top-4 right-4">
-                                    <span class="px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full text-sm md:text-base font-semibold text-gray-900">
+                                    <span class="px-4 py-2 bg-white/95 backdrop-blur-sm rounded-full text-sm font-semibold text-gray-900 shadow-md">
                                         <%= tour.duration %> Days
                                     </span>
                                 </div>
+                                <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent"></div>
                             </div>
 
                             <div class="p-6">
-                                <div class="flex items-center mb-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <div class="flex items-center mb-3 text-orange-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                     </svg>
-                                    <span class="ml-2 text-sm md:text-base text-gray-600"><%= tour.startLocation %></span>
+                                    <span class="ml-2 text-sm font-medium"><%= tour.startLocation %></span>
                                 </div>
 
-                                <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-500 transition-colors">
+                                <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-orange-600 transition-colors">
                                     <%= tour.title %>
                                 </h3>
 
-                                <p class="text-sm md:text-base text-gray-600 mb-6 line-clamp-2">
+                                <p class="text-gray-600 mb-6 line-clamp-2 text-sm leading-relaxed">
                                     <%= tour.description.substring(0, 150) %>...
                                 </p>
 
                                 <div class="flex items-center justify-between pt-4 border-t border-gray-100">
                                     <div class="flex flex-col">
-                                        <span class="text-xs md:text-sm text-gray-500">Starting from</span>
-                                        <span class="text-xl md:text-2xl font-bold text-orange-500">$<%= tour.price %></span>
+                                        <span class="text-xs text-gray-500 font-medium">Starting from</span>
+                                        <span class="text-2xl font-bold text-orange-600">$<%= tour.price %></span>
                                     </div>
-                                    <span class="inline-flex items-center text-sm md:text-base font-semibold text-gray-900 group-hover:text-orange-500">
-                                        Explore
+                                    <span class="inline-flex items-center text-sm font-semibold text-orange-600 group-hover:text-orange-700">
+                                        Explore Tour
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transform group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                         </svg>
@@ -229,15 +257,99 @@
                 <% }); %>
             </div>
 
+            <!-- Mobile Swiper -->
+            <div class="sm:hidden">
+                <div class="swiper toursSwiper">
+                    <div class="swiper-wrapper pb-12">
+                        <% tours.forEach(tour => { %>
+                            <div class="swiper-slide px-2">
+                                <a href="/tours/<%= tour.slug %>" class="block">
+                                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                                        <div class="relative">
+                                            <img src="<%= tour.mainImage %>" alt="<%= tour.title %>" class="w-full h-56 object-cover">
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+                                                <div class="absolute top-4 right-4">
+                                                    <span class="px-3 py-1.5 bg-white/95 backdrop-blur-sm rounded-full text-sm font-semibold text-gray-900 shadow-md">
+                                                        <%= tour.duration %> Days
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="p-5">
+                                            <div class="flex items-center mb-2 text-orange-500">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                </svg>
+                                                <span class="ml-1.5 text-sm font-medium"><%= tour.startLocation %></span>
+                                            </div>
+                                            
+                                            <h3 class="text-lg font-bold text-gray-900 mb-2"><%= tour.title %></h3>
+                                            
+                                            <p class="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
+                                                <%= tour.description.substring(0, 100) %>...
+                                            </p>
+                                            
+                                            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                                                <div class="flex flex-col">
+                                                    <span class="text-xs text-gray-500 font-medium">From</span>
+                                                    <span class="text-xl font-bold text-orange-600">$<%= tour.price %></span>
+                                                </div>
+                                                <button class="flex items-center px-4 py-2 bg-orange-600 text-white rounded-full text-sm font-medium transition-colors hover:bg-orange-700">
+                                                    View Details
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        <% }); %>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+
             <div class="flex justify-center mt-12">
-                <a href="/tours" class="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 transition duration-300">
-                    View All Tours
+                <a href="/tours" class="inline-flex items-center px-8 py-4 text-base font-medium text-white bg-orange-600 rounded-full shadow-lg hover:bg-orange-700 transform hover:-translate-y-0.5 transition-all duration-300">
+                    Explore All Tours
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
                 </a>
             </div>
         </div>
+
+        <!-- Initialize Swiper -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const toursSwiper = new Swiper('.toursSwiper', {
+                    slidesPerView: 1.1,
+                    spaceBetween: 16,
+                    centeredSlides: true,
+                    loop: true,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                        dynamicBullets: true,
+                    },
+                    autoplay: {
+                        delay: 3500,
+                        disableOnInteraction: false,
+                    },
+                    effect: 'coverflow',
+                    coverflowEffect: {
+                        rotate: 0,
+                        stretch: 0,
+                        depth: 100,
+                        modifier: 1,
+                        slideShadows: false,
+                    },
+                });
+            });
+        </script>
     </section>
 </main>
 
