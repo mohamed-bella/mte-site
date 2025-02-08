@@ -151,7 +151,13 @@
                     <div class="lg:sticky lg:top-24">
                          <div class="bg-gray-50 rounded-xl p-6">
                               <h3 class="text-xl font-bold mb-4">Tour Route</h3>
-                              <div id="map" class="w-full h-[400px] rounded-lg"></div>
+                              <% if (tour.mapImage) { %>
+                                   <img src="<%= tour.mapImage %>" 
+                                        alt="Tour route map" 
+                                        class="w-full rounded-lg shadow-md">
+                              <% } else { %>
+                                   <p class="text-gray-500 text-center py-8">No route map available</p>
+                              <% } %>
                          </div>
                     </div>
                </div>
@@ -491,45 +497,8 @@
      <%- include('../partials/footer') %>
 
      <!-- Scripts -->
-     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
      <script>
-          // Initialize map
-          const map = L.map('map');
-          
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-               attribution: '© OpenStreetMap contributors'
-          }).addTo(map);
-
-          // Add markers and route
-          const coordinates = <%- JSON.stringify(tour.mapCoordinates) %>;
-          
-          // Convert coordinates for Leaflet
-          const latLngs = coordinates.map(coord => [coord.lat, coord.lng]);
-          
-          // Add markers
-          latLngs.forEach((latLng, index) => {
-               L.marker(latLng)
-                    .bindPopup(`<strong>Stop ${index + 1}</strong>`)
-                    .addTo(map);
-          });
-
-          // Add route line
-          L.polyline(latLngs, {
-               color: '#f97316',
-               weight: 3,
-               opacity: 0.8
-          }).addTo(map);
-
-          // Fit bounds to show all markers
-          map.fitBounds(L.latLngBounds(latLngs));
-
-          // Initialize lightbox
-          lightbox.option({
-               'resizeDuration': 200,
-               'wrapAround': true
-          });
-
           // Collapse functionality
           function toggleCollapse(element) {
                const content = element.nextElementSibling;

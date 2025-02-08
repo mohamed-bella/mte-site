@@ -69,6 +69,17 @@ const tourSchema = new mongoose.Schema({
             message: 'Please provide a valid image URL'
         }
     }],
+    mapImage: {
+        type: String,
+        required: [true, 'Tour route map image is required'],
+        validate: {
+            validator: function (url) {
+                const urlPattern = new RegExp('^https?:\\/\\/.+\\..+');
+                return urlPattern.test(url);
+            },
+            message: 'Please provide a valid map image URL'
+        }
+    },
     featured: {
         type: Boolean,
         default: true
@@ -91,17 +102,6 @@ const tourSchema = new mongoose.Schema({
         type: String,
         required: true
     }],
-    mapCoordinates: [{
-        lat: {
-            type: Number,
-            required: true
-        },
-        lng: {
-            type: Number,
-            required: true
-        }
-    }],
-    
     itinerary: [itinerarySchema],
     createdAt: {
         type: Date,

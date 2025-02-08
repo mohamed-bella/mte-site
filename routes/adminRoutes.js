@@ -82,89 +82,97 @@ router.get('/tours/new', (req, res) => {
           tour: null
      });
 });
-router.post('/tours/new', upload.array('images', 10), async (req, res) => {
-     console.log(req.body)
-     try {
-          const {
-               title,
-               description,
-               price,
-               duration,
-               groupSize,
-               startLocation,
-               accommodation,
-               itinerary,
-               includes,
-               excludes,
-               mapCoordinates
-          } = req.body;
+router.post('/tours/new', upload.fields([
+    { name: 'images', maxCount: 10 },
+    { name: 'mapImage', maxCount: 1 }
+]), async (req, res) => {
+    try {
+        const {
+            title,
+            description,
+            price,
+            duration,
+            groupSize,
+            startLocation,
+            accommodation,
+            itinerary,
+            includes,
+            excludes
+        } = req.body;
 
-          // Upload images to GitHub if files exist
-          let imageUrls = [];
-          if (req.files && req.files.length > 0) {
-               const githubToken = process.env.GITHUB_TOKEN;
-               const repoOwner = process.env.GITHUB_OWNER;
-               const repoName = process.env.GITHUB_REPO;
+        let imageUrls = [];
+        let mapImageUrl = '';
 
-               // Upload each image
-               for (const file of req.files) {
-                    const imageBuffer = file.buffer;
-                    const fileName = `tours/${Date.now()}-${file.originalname}`;
-                    const base64Image = imageBuffer.toString('base64');
+        // Handle regular tour images
+        if (req.files.images) {
+            for (const file of req.files.images) {
+                const imageUrl = await uploadToGithub(file);
+                imageUrls.push(imageUrl);
+            }
+        }
 
-                    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${fileName}`, {
-                         method: 'PUT',
-                         headers: {
-                              'Authorization': `token ${githubToken}`,
-                              'Content-Type': 'application/json',
-                         },
-                         body: JSON.stringify({
-                              message: 'Upload tour image',
-                              content: base64Image
-                         })
-                    });
+        // Handle map image
+        if (req.files.mapImage && req.files.mapImage[0]) {
+            mapImageUrl = await uploadToGithub(req.files.mapImage[0]);
+        }
 
-                    if (response.ok) {
-                         const data = await response.json();
-                         imageUrls.push(data.content.download_url);
-                    } else {
-                         throw new Error('Failed to upload image to GitHub');
-                    }
-               }
-          }
+        const newTour = new Tour({
+            title,
+            description,
+            price: parseFloat(price),
+            duration: parseInt(duration),
+            groupSize: parseInt(groupSize),
+            startLocation,
+            accommodation,
+            mainImage: imageUrls[0] || '',
+            images: imageUrls,
+            mapImage: mapImageUrl,
+            itinerary: Array.isArray(itinerary) ? itinerary : JSON.parse(itinerary),
+            includes: Array.isArray(includes) ? includes : JSON.parse(includes),
+            excludes: Array.isArray(excludes) ? excludes : JSON.parse(excludes)
+        });
 
-          const newTour = new Tour({
-               title,
-               description,
-               price: parseFloat(price),
-               duration: parseInt(duration),
-               groupSize: parseInt(groupSize),
-               startLocation,
-               accommodation,
-               mainImage: imageUrls[0] || '', // First image becomes main image
-               images: imageUrls, // Store all image URLs
-               itinerary: Array.isArray(itinerary) ? itinerary : JSON.parse(itinerary),
-               includes: Array.isArray(includes) ? includes : JSON.parse(includes),
-               excludes: Array.isArray(excludes) ? excludes : JSON.parse(excludes),
-               mapCoordinates: Array.isArray(mapCoordinates) ? mapCoordinates : JSON.parse(mapCoordinates)
-          });
+        await newTour.save();
 
-          await newTour.save();
+        res.json({
+            success: true,
+            message: 'Tour created successfully',
+            tour: newTour
+        });
 
-          res.json({
-               success: true,
-               message: 'Tour created successfully',
-               tour: newTour
-          });
-
-     } catch (error) {
-          console.log(error)
-          res.status(500).json({
-               success: false,
-               message: error.message || 'Error creating tour'
-          });
-     }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Error creating tour'
+        });
+    }
 });
+
+// Helper function to upload to GitHub
+async function uploadToGithub(file) {
+    const imageBuffer = file.buffer;
+    const fileName = `tours/${Date.now()}-${file.originalname}`;
+    const base64Image = imageBuffer.toString('base64');
+
+    const response = await fetch(`https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${fileName}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `token ${process.env.GITHUB_TOKEN}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            message: 'Upload tour image',
+            content: base64Image
+        })
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        return data.content.download_url;
+    }
+    throw new Error('Failed to upload image to GitHub');
+}
 
 router.get('/tours/:id/edit', async (req, res) => {
      try {
@@ -184,105 +192,89 @@ router.get('/tours/:id/edit', async (req, res) => {
           res.redirect('/admin/tours');
      }
 });
-router.post('/tours/:id/edit', upload.array('images', 10), async (req, res) => {
-     
-     try {
-          const {
-               title,
-               description,
-               price,
-               duration,
-               groupSize,
-               startLocation,
-               accommodation,
-               itinerary,
-               includes,
-               excludes,
-               mapCoordinates
-          } = req.body;
 
-          let imageUrls = [];
-          if (req.files && req.files.length > 0) {
-               for (const file of req.files) {
-                    const imageBuffer = file.buffer;
-                    const fileName = `tours/${Date.now()}-${file.originalname}`;
+router.post('/tours/:id/edit', upload.fields([
+    { name: 'images', maxCount: 10 },
+    { name: 'mapImage', maxCount: 1 }
+]), async (req, res) => {
+    try {
+        const {
+            title,
+            description,
+            price,
+            duration,
+            groupSize,
+            startLocation,
+            accommodation,
+            itinerary,
+            includes,
+            excludes
+        } = req.body;
 
-                    // GitHub API configuration  
-                    const githubToken = process.env.GITHUB_TOKEN;
-                    const repoOwner = process.env.GITHUB_OWNER;
-                    const repoName = process.env.GITHUB_REPO;
+        let imageUrls = [];
+        let mapImageUrl = '';
 
-                    // Convert image to base64
-                    const base64Image = imageBuffer.toString('base64');
+        // Handle regular tour images
+        if (req.files.images) {
+            for (const file of req.files.images) {
+                const imageUrl = await uploadToGithub(file);
+                imageUrls.push(imageUrl);
+            }
+        }
 
-                    // Upload to GitHub
-                    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${fileName}`, {
-                         method: 'PUT',
-                         headers: {
-                              'Authorization': `token ${githubToken}`,
-                              'Content-Type': 'application/json',
-                         },
-                         body: JSON.stringify({
-                              message: 'Update tour image',
-                              content: base64Image
-                         })
-                    });
+        // Handle map image
+        if (req.files.mapImage && req.files.mapImage[0]) {
+            mapImageUrl = await uploadToGithub(req.files.mapImage[0]);
+        }
 
-                    if (response.ok) {
-                         const data = await response.json();
-                         imageUrls.push(data.content.download_url);
-                    } else {
-                         throw new Error('Failed to upload image to GitHub');
-                    }
-               }
-          }
+        const updateData = {
+            title,
+            description,
+            price: parseFloat(price),
+            duration: parseInt(duration),
+            groupSize: parseInt(groupSize),
+            startLocation,
+            accommodation,
+            itinerary: Array.isArray(itinerary) ? itinerary : JSON.parse(itinerary),
+            includes: Array.isArray(includes) ? includes : JSON.parse(includes),
+            excludes: Array.isArray(excludes) ? excludes : JSON.parse(excludes)
+        };
 
-          const updateData = {
-               title,
-               description,
-               price: parseFloat(price),
-               duration: parseInt(duration),
-               groupSize: parseInt(groupSize),
-               startLocation,
-               accommodation,
-               itinerary: Array.isArray(itinerary) ? itinerary : JSON.parse(itinerary),
-               includes: Array.isArray(includes) ? includes : JSON.parse(includes),
-               excludes: Array.isArray(excludes) ? excludes : JSON.parse(excludes),
-               mapCoordinates: Array.isArray(mapCoordinates) ? mapCoordinates : JSON.parse(mapCoordinates),
-               slug: slugify(title, { lower: true })
-          };
+        if (imageUrls.length > 0) {
+            updateData.mainImage = imageUrls[0];
+            updateData.images = imageUrls;
+        }
 
-          if (imageUrls.length > 0) {
-               updateData.mainImage = imageUrls[0];
-               updateData.images = imageUrls;
-          }
+        if (mapImageUrl) {
+            updateData.mapImage = mapImageUrl;
+        }
 
-          const tour = await Tour.findByIdAndUpdate(
-               req.params.id,
-               updateData,
-               { new: true, runValidators: true }
-          );
+        const tour = await Tour.findByIdAndUpdate(
+            req.params.id,
+            updateData,
+            { new: true, runValidators: true }
+        );
 
-          if (!tour) {
-               return res.status(404).json({
-                    success: false,
-                    message: 'Tour not found'
-               });
-          }
+        if (!tour) {
+            return res.status(404).json({
+                success: false,
+                message: 'Tour not found'
+            });
+        }
 
-          res.json({
-               success: true,
-               message: 'Tour updated successfully',
-               tour: tour
-          });
+        res.json({
+            success: true,
+            message: 'Tour updated successfully',
+            tour: tour
+        });
 
-     } catch (error) {
-          console.log(error);
-          res.status(500).json({
-               success: false,
-               message: error.message || 'Error updating tour'
-          });
-     }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Error updating tour'
+        });
+    }
 });
 
 router.post('/tours/:id/delete', async (req, res) => {
