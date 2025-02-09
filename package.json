@@ -10,6 +10,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+<<<<<<< HEAD
+=======
+   
+>>>>>>> 3d55af34bf120a591b6fedc9e17862d13a0b1344
     "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.7",
