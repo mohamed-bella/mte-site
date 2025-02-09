@@ -360,13 +360,40 @@ router.get('/bookings/:id/download-pdf', async (req, res) => {
 });
 
 // About page
-router.get('/about', (req, res) => {
-     res.render('pages/about', {
-          title: 'About Us',
-          metaTitle: res.locals.settings?.metaTitle,
-          metaDescription: res.locals.settings?.metaDescription,
-          metaKeywords: res.locals.settings?.metaKeywords
-     });
+router.get('/about', async (req, res) => {
+     try {
+          // Create array of image URLs
+          const galleryImages = [
+               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/1.jpg',
+               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/2.jpg',
+               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/3.jpg',
+               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/4.jpg',
+               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/5.jpg',
+               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/6.jpg',
+               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/7.jpg',
+               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/8.jpg',
+               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/9.jpg',
+               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/10.jpg',
+               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/11.jpg'
+          ];
+
+          res.render('pages/about', {
+               title: 'About Us',
+               metaTitle: res.locals.settings?.metaTitle,
+               metaDescription: res.locals.settings?.metaDescription,
+               metaKeywords: res.locals.settings?.metaKeywords,
+               galleryImages: galleryImages
+          });
+     } catch (error) {
+          console.error('Error loading gallery images:', error);
+          res.render('pages/about', {
+               title: 'About Us',
+               metaTitle: res.locals.settings?.metaTitle,
+               metaDescription: res.locals.settings?.metaDescription,
+               metaKeywords: res.locals.settings?.metaKeywords,
+               galleryImages: []
+          });
+     }
 });
 
 // Contact page

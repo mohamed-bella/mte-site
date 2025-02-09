@@ -5,88 +5,97 @@
      <%- include('../partials/head', { title: 'Contact Us - Morocco Tours | Get in Touch With Us' }) %>
 </head>
 
-<body class="bg-white">
+<body class="bg-gray-50">
      <%- include('../partials/header') %>
 
-<div class="container my-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <h1 class="text-3xl font-bold text-center mb-8">Contact Information</h1>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center mb-16">
+        <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl">Get in Touch</h1>
+        <p class="mt-4 text-xl text-gray-600">We'd love to hear from you. Let us help plan your perfect Moroccan adventure.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <!-- Contact Information -->
+        <div class="bg-white rounded-2xl shadow-sm p-8">
+            <div class="space-y-8">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-blue-100 rounded-full p-4">
+                        <i class="fas fa-envelope text-2xl text-blue-600"></i>
+                    </div>
+                    <div class="ml-6">
+                        <p class="text-sm font-medium text-gray-500">Email</p>
+                        <a href="mailto:contact@moroccotravelexperts.com" class="text-lg font-medium text-gray-900 hover:text-blue-600 transition">
+                            contact@moroccotravelexperts.com
+                        </a>
+                    </div>
+                </div>
+
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-green-100 rounded-full p-4">
+                        <i class="fas fa-phone text-2xl text-green-600"></i>
+                    </div>
+                    <div class="ml-6">
+                        <p class="text-sm font-medium text-gray-500">Phone</p>
+                        <a href="tel:+212123456789" class="text-lg font-medium text-gray-900 hover:text-green-600 transition">
+                            +212-526-555512
+                        </a>
+                    </div>
+                </div>
+
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-pink-100 rounded-full p-4">
+                        <i class="fab fa-instagram text-2xl text-pink-600"></i>
+                    </div>
+                    <div class="ml-6">
+                        <p class="text-sm font-medium text-gray-500">Instagram</p>
+                        <a href="https://instagram.com/el_maimouni_97" target="_blank" class="text-lg font-medium text-gray-900 hover:text-pink-600 transition">
+                            @el_maimouni_97
+                        </a>
+                    </div>
+                </div>
+
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-indigo-100 rounded-full p-4">
+                        <i class="fab fa-facebook text-2xl text-indigo-600"></i>
+                    </div>
+                    <div class="ml-6">
+                        <p class="text-sm font-medium text-gray-500">Facebook</p>
+                        <a href="https://www.facebook.com/profile.php?id=100023315713003" target="_blank" class="text-lg font-medium text-gray-900 hover:text-indigo-600 transition">
+                            Hamid EL maimouni
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Location -->
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div class="p-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Visit Our Office</h2>
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-red-100 rounded-full p-4">
+                        <i class="fas fa-map-marker-alt text-2xl text-red-600"></i>
+                    </div>
+                    <div class="ml-6">
+                        <p class="text-sm font-medium text-gray-500">Address</p>
+                        <div class="mt-2 text-gray-900">
+                            <p class="text-lg">123 Tourism Street</p>
+                            <p class="text-lg">Marrakech Medina</p>
+                            <p class="text-lg">40000 Marrakech</p>
+                            <p class="text-lg">Morocco</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Contact Details -->
-                <div class="bg-gray-50 p-6 rounded-lg shadow-sm">
-                    <h2 class="text-xl font-semibold mb-4">Get in Touch</h2>
-                    
-                    <div class="space-y-4">
-                        <div class="flex items-center">
-                            <i class="fas fa-envelope text-primary mr-3"></i>
-                            <div>
-                                <p class="font-medium">Email</p>
-                                <a href="mailto:mohamedbella235@gmail.com" class="text-blue-600 hover:underline">
-                                    mohamedbella235@gmail.com
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
-                            <i class="fas fa-phone text-primary mr-3"></i>
-                            <div>
-                                <p class="font-medium">Phone</p>
-                                <a href="tel:+212123456789" class="text-blue-600 hover:underline">
-                                    +212 123 456 789
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
-                            <i class="fab fa-instagram text-primary mr-3"></i>
-                            <div>
-                                <p class="font-medium">Instagram</p>
-                                <a href="https://instagram.com/moroccotravel" target="_blank" class="text-blue-600 hover:underline">
-                                    @moroccotravel
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
-                            <i class="fab fa-facebook text-primary mr-3"></i>
-                            <div>
-                                <p class="font-medium">Facebook</p>
-                                <a href="https://facebook.com/moroccotravelexperts" target="_blank" class="text-blue-600 hover:underline">
-                                    Morocco Travel Experts
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Location -->
-                <div class="bg-gray-50 p-6 rounded-lg shadow-sm">
-                    <h2 class="text-xl font-semibold mb-4">Our Location</h2>
-                    <div class="space-y-4">
-                        <div class="flex items-start">
-                            <i class="fas fa-map-marker-alt text-primary mt-1 mr-3"></i>
-                            <div>
-                                <p class="font-medium">Address</p>
-                                <p>123 Tourism Street</p>
-                                <p>Marrakech Medina</p>
-                                <p>40000 Marrakech</p>
-                                <p>Morocco</p>
-                            </div>
-                        </div>
-                        
-                        <div class="aspect-w-16 aspect-h-9">
-                            <iframe 
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3397.119166508315!2d-7.989843684885611!3d31.631044981330687!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xdafee8d973333db%3A0x570a6b6c8651a3ef!2sMarrakech%20Medina!5e0!3m2!1sen!2sma!4v1645567894321!5m2!1sen!2sma"
-                                class="w-full h-64 rounded-lg"
-                                style="border:0;" 
-                                allowfullscreen="" 
-                                loading="lazy">
-                            </iframe>
-                        </div>
-                    </div>
-                </div>
+            <div class="h-96 w-full">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3397.119166508315!2d-7.989843684885611!3d31.631044981330687!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xdafee8d973333db%3A0x570a6b6c8651a3ef!2sMarrakech%20Medina!5e0!3m2!1sen!2sma!4v1645567894321!5m2!1sen!2sma"
+                    class="w-full h-full"
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy">
+                </iframe>
             </div>
         </div>
     </div>
