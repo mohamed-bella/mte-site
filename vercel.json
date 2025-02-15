@@ -11,21 +11,6 @@
       "src": "/(.*)",
       "dest": "app.js"
     }
-  ],
-  "env": {
-    "MONGODB_URI": "@mongodb_uri",
-    "JWT_SECRET": "@jwt_secret",
-    "SESSION_SECRET": "@session_secret",
-    "ADMIN_PASSWORD": "@admin_password",
-    "BASE_URL": "@base_url",
-    "GITHUB_TOKEN": "@github_token",
-    "GITHUB_OWNER": "@github_owner", 
-    "GITHUB_REPO": "@github_repo",
-    "EMAIL_HOST": "@email_host",
-    "EMAIL_PORT": "@email_port",
-    "EMAIL_SECURE": "@email_secure",
-    "EMAIL_USER": "@email_user",
-    "EMAIL_PASS": "@email_pass",
-    "DEEPL_API_KEY": "@deepl_api_key"
-  }
+  ]
+  
 }
