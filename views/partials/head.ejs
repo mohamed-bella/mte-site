@@ -71,6 +71,7 @@
      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
      <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
      <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+     <link rel="preconnect" href="https://translate.google.com" crossorigin>
      <link rel="dns-prefetch" href="https://www.google-analytics.com">
      <link rel="preload" href="/fonts/custom-font.woff2" as="font" type="font/woff2" crossorigin>
      <link rel="preload" href="/images/hero-bg.jpg" as="image">
@@ -88,8 +89,64 @@
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
 
      <!-- Custom Fonts with display swap and preload -->
-     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
-     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+
+     <!-- Google Translate Element -->
+     <script type="text/javascript">
+          function googleTranslateElementInit() {
+               new google.translate.TranslateElement({
+                    pageLanguage: 'en',
+                    includedLanguages: 'en,fr,es,it,ar,ja',
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                    autoDisplay: false,
+                    multilanguagePage: true,
+                    gaTrack: false,
+                    gaId: ''
+               }, 'google_translate_element');
+
+               // Remove Google Translate top bar and fix body position
+               const removeTopBar = () => {
+                    const frame = document.querySelector('.goog-te-banner-frame');
+                    if (frame) frame.style.display = 'none';
+                    document.body.style.top = '0px';
+               };
+
+               // Apply fixes after translation
+               const observer = new MutationObserver(() => {
+                    removeTopBar();
+                    
+                    // Add globe icon to the translate button
+                    const menuValue = document.querySelector('.goog-te-menu-value');
+                    if (menuValue && !menuValue.querySelector('.fa-globe')) {
+                         const globeIcon = document.createElement('i');
+                         globeIcon.className = 'fas fa-globe text-gray-600 mr-1';
+                         menuValue.insertBefore(globeIcon, menuValue.firstChild);
+
+                         // Add down arrow icon
+                         const arrowIcon = document.createElement('i');
+                         arrowIcon.className = 'fas fa-chevron-down text-gray-600 ml-1';
+                         menuValue.appendChild(arrowIcon);
+                    }
+
+                    // Clean up any extra elements
+                    const gadget = document.querySelector('.goog-te-gadget');
+                    if (gadget) {
+                         Array.from(gadget.childNodes).forEach(node => {
+                              if (node.nodeType === 3) { // Text node
+                                   node.textContent = '';
+                              }
+                         });
+                    }
+               });
+
+               observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+               });
+          }
+     </script>
+     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async defer></script>
 
      <!-- Critical CSS -->
      <style>

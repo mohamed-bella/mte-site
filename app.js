@@ -9,6 +9,12 @@ require('dotenv').config();
 
 const app = express();
 
+// Essential middleware setup
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
      .then(() => console.log('MongoDB Connected'))
@@ -17,12 +23,6 @@ mongoose.connect(process.env.MONGODB_URI)
 // View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(cookieParser());
 
 // Session configuration
 app.use(session({

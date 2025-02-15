@@ -23,6 +23,64 @@
      <!-- Custom Fonts -->
      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+     <!-- Google Translate Element -->
+     <script type="text/javascript">
+          function googleTranslateElementInit() {
+               new google.translate.TranslateElement({
+                    pageLanguage: 'en',
+                    includedLanguages: 'en,fr,es,it', // Supported languages
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                    autoDisplay: false,
+               }, 'google_translate_element');
+
+               // Style fixes for Google Translate
+               const style = document.createElement('style');
+               style.textContent = `
+                    .goog-te-gadget {
+                         font-family: 'Poppins', sans-serif !important;
+                         color: white !important;
+                    }
+                    .goog-te-gadget-simple {
+                         background-color: transparent !important;
+                         border: none !important;
+                         padding: 0 !important;
+                         font-size: 14px !important;
+                         color: white !important;
+                         display: flex !important;
+                         align-items: center !important;
+                    }
+                    .goog-te-gadget-icon {
+                         display: none !important;
+                    }
+                    .goog-te-menu-value {
+                         color: white !important;
+                         display: flex !important;
+                         align-items: center !important;
+                    }
+                    .goog-te-menu-value span {
+                         color: white !important;
+                         text-decoration: none !important;
+                         font-family: 'Poppins', sans-serif !important;
+                    }
+                    .goog-te-menu-value:hover {
+                         text-decoration: none !important;
+                         color: #fb923c !important;
+                    }
+                    .goog-te-menu-value:hover span {
+                         color: #fb923c !important;
+                    }
+                    .goog-te-banner-frame {
+                         display: none !important;
+                    }
+                    body {
+                         top: 0 !important;
+                    }
+               `;
+               document.head.appendChild(style);
+          }
+     </script>
+     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
      <!-- Custom styles -->
      <style>
           body {
@@ -51,11 +109,6 @@
      <header x-data="{ isOpen: false }" class="fixed w-full bg-white shadow-md z-50">
           <%- include('../partials/header') %>
      </header>
-
-     <!-- Navigation -->
-     <nav class="bg-white border-b" x-data="{ mobileMenuOpen: false }">
-          <%- include('../partials/nav') %>
-     </nav>
 
      <!-- Main Content -->
      <main class="min-h-screen pt-16">
@@ -90,4 +143,4 @@
      <script src="/js/main.js"></script>
 </body>
 
-</html>
+</html> 
