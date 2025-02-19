@@ -426,7 +426,7 @@
                                         class="w-full bg-gradient-to-r from-orange-600 to-orange-500 text-white py-4 rounded-lg 
                                         font-medium hover:from-orange-700 hover:to-orange-600 transform hover:scale-[1.02] 
                                         transition-all duration-300">
-                                        Book Now
+                                        Book This
                                    </button>
 
                                    <p class="text-sm text-gray-500 text-center">
@@ -450,7 +450,7 @@
                          <p class="text-orange-600 font-bold">From $<%= tour.price %> per person</p>
                     </div>
                     <button class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
-                         Book Now
+                         Book This
                     </button>
                </div>
           </div>
@@ -484,14 +484,101 @@
      </div>
 
      <!-- Mobile Booking Button -->
-     <div class="fixed bottom-6 inset-x-4 lg:hidden z-50">
-          <a href="#booking" 
-               class="block w-full text-center bg-gradient-to-r from-orange-600 to-orange-500 text-white 
-               text-lg font-medium py-3.5 rounded-full shadow-xl hover:shadow-2xl hover:from-orange-700 
-               hover:to-orange-600 active:scale-95 transition-all duration-300">
-               <i class="fas fa-calendar-check mr-2"></i>
-               Book This Tour
-          </a>
+     <div class="fixed bottom-6 inset-x-4 lg:hidden z-50 space-y-2">
+          <!-- Main Buttons Container -->
+          <div class="grid grid-cols-2 gap-2">
+               <!-- Book Now Button -->
+               <a href="#booking" 
+                   class="block text-center bg-gradient-to-r from-orange-600 to-orange-500 text-white 
+                   text-lg font-medium py-3.5 rounded-full shadow-xl hover:shadow-2xl hover:from-orange-700 
+                   hover:to-orange-600 active:scale-95 transition-all duration-300">
+                   <i class="fas fa-calendar-check mr-2"></i>
+                   Book This
+               </a>
+
+               <!-- Custom Tour Button -->
+               <button onclick="openContactModal()"
+                   class="block text-center bg-gradient-to-r from-green-600 to-green-500 text-white 
+                   text-lg font-medium py-3.5 rounded-full shadow-xl hover:shadow-2xl hover:from-green-700 
+                   hover:to-green-600 active:scale-95 transition-all duration-300">
+                   <i class="fas fa-route mr-2"></i>
+                   Custom Tour
+               </button>
+          </div>
+     </div>
+
+     <!-- Custom Tour Contact Section -->
+     <div class="fixed bottom-8 left-8 hidden lg:block z-50">
+          <button onclick="openContactModal()" 
+                  class="bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-all duration-300 flex items-center gap-3">
+               <div class="bg-green-500 rounded-full p-2">
+                    <i class="fas fa-route text-white"></i>
+               </div>
+               <div class="text-left">
+                    <p class="font-bold text-gray-800">Need a Custom Tour?</p>
+                    <p class="text-sm text-gray-600">Contact us for personalization</p>
+               </div>
+          </button>
+     </div>
+
+     <!-- Contact Modal -->
+     <div id="contactModal" 
+          class="fixed inset-0 bg-black/50 z-[60] hidden flex items-center justify-center">
+          <div class="bg-white rounded-xl max-w-md w-full mx-4 transform transition-all duration-300">
+               <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                         <h4 class="text-xl font-bold">Contact Us for Custom Tours</h4>
+                         <button onclick="closeContactModal()" class="text-gray-400 hover:text-gray-600">
+                              <i class="fas fa-times"></i>
+                         </button>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-6">
+                         Want to customize this tour or create a unique itinerary? 
+                         We're here to help design your perfect Moroccan adventure!
+                    </p>
+
+                    <div class="space-y-4">
+                         <!-- Email -->
+                         <a href="mailto:contact@moroccotravelexperts.com" 
+                            class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                              <div class="bg-blue-500 rounded-full p-3">
+                                   <i class="fas fa-envelope text-white"></i>
+                              </div>
+                              <div>
+                                   <p class="font-medium">Email Us</p>
+                                   <p class="text-sm text-gray-600">contact@moroccotravelexperts.com</p>
+                              </div>
+                         </a>
+
+                         <!-- WhatsApp -->
+                         <a href="https://wa.me/212XXXXXXXXX" 
+                            target="_blank"
+                            class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                              <div class="bg-green-500 rounded-full p-3">
+                                   <i class="fab fa-whatsapp text-white"></i>
+                              </div>
+                              <div>
+                                   <p class="font-medium">WhatsApp</p>
+                                   <p class="text-sm text-gray-600">+212 XX XX XX XX XX</p>
+                              </div>
+                         </a>
+
+                         <!-- Instagram -->
+                         <a href="https://instagram.com/moroccotravelexperts" 
+                            target="_blank"
+                            class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                              <div class="bg-gradient-to-tr from-purple-600 to-pink-500 rounded-full p-3">
+                                   <i class="fab fa-instagram text-white"></i>
+                              </div>
+                              <div>
+                                   <p class="font-medium">Instagram</p>
+                                   <p class="text-sm text-gray-600">@moroccotravelexperts</p>
+                              </div>
+                         </a>
+                    </div>
+               </div>
+          </div>
      </div>
 
      <%- include('../partials/footer') %>
@@ -529,6 +616,31 @@
                          behavior: 'smooth'
                     });
                });
+          });
+
+          // Contact Modal Functions
+          function openContactModal() {
+               document.getElementById('contactModal').classList.remove('hidden');
+               document.body.style.overflow = 'hidden';
+          }
+
+          function closeContactModal() {
+               document.getElementById('contactModal').classList.add('hidden');
+               document.body.style.overflow = 'auto';
+          }
+
+          // Close modal on escape key
+          document.addEventListener('keydown', (e) => {
+               if (e.key === 'Escape') {
+                    closeContactModal();
+               }
+          });
+
+          // Close modal when clicking outside
+          document.getElementById('contactModal').addEventListener('click', (e) => {
+               if (e.target === e.currentTarget) {
+                    closeContactModal();
+               }
           });
      </script>
 </body>
