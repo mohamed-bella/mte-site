@@ -5,8 +5,8 @@
      <%- include('../partials/head', { title: 'About Us - Morocco Tours | Your Trusted Travel Partner Since 2010' }) %>
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
      <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js"></script>
-     <link rel="stylesheet" href="https://unpkg.com/progressive-image.js/dist/progressive-image.css">
-     <script src="https://unpkg.com/progressive-image.js/dist/progressive-image.js"></script>
+     <!-- <link rel="stylesheet" href="https://unpkg.com/progressive-image.js/dist/progressive-image.css"> -->
+     <!-- <script src="https://unpkg.com/progressive-image.js/dist/progressive-image.js"></script> -->
 </head>
 
 <body class="bg-gray-50">
@@ -109,9 +109,7 @@
      <%- include('../partials/footer') %>
 
      <script>
-          // Lazy loading initialization
-          const observer = lozad('.lozad');
-          observer.observe();
+       
 
           // Modal functionality
           function openModal(imgContainer) {
@@ -139,14 +137,7 @@
      </script>
 
      <style>
-          .progressive img.preview {
-               filter: blur(2px);
-               transition: all 0.3s ease-out;
-          }
-          
-          .progressive img.preview.loaded {
-               filter: blur(0);
-          }
+         
 
           #gallery {
                column-gap: 1rem;
