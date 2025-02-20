@@ -151,27 +151,37 @@ router.post('/tours/new', upload.fields([
 
 // Helper function to upload to GitHub
 async function uploadToGithub(file) {
-    const imageBuffer = file.buffer;
-    const fileName = `tours/${Date.now()}-${file.originalname}`;
-    const base64Image = imageBuffer.toString('base64');
+    try {
+        const imageBuffer = file.buffer;
+        const fileName = `IMG-${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9.]/g, '-')}`;
+        const base64Image = imageBuffer.toString('base64');
 
-    const response = await fetch(`https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${fileName}`, {
-        method: 'PUT',
-        headers: {
-            'Authorization': `token ${process.env.GITHUB_TOKEN}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            message: 'Upload tour image',
-            content: base64Image
-        })
-    });
+        const response = await fetch(`https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${fileName}`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/vnd.github.v3+json',
+                'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: 'Upload image via API',
+                content: base64Image,
+                branch: 'main'
+            })
+        });
 
-    if (response.ok) {
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`GitHub API Error: ${errorData.message}`);
+        }
+
         const data = await response.json();
-        return data.content.download_url;
+        // Return the raw content URL instead of the API URL
+        return `https://raw.githubusercontent.com/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/main/${fileName}`;
+    } catch (error) {
+        console.error('GitHub Upload Error:', error);
+        throw new Error(`Failed to upload image to GitHub: ${error.message}`);
     }
-    throw new Error('Failed to upload image to GitHub');
 }
 
 router.get('/tours/:id/edit', async (req, res) => {

@@ -5,15 +5,69 @@ const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 const mongoose = require('mongoose');
 const path = require('path');
+const compression = require('compression');
 require('dotenv').config();
 
 const app = express();
+
+// Compression middleware
+app.use(compression({
+    level: 6, // compression level (0-9)
+    threshold: 1024, // only compress responses above 1KB
+    filter: (req, res) => {
+        // don't compress responses with this request header
+        if (req.headers['x-no-compression']) return false;
+        // fallback to standard filter function
+        return compression.filter(req, res);
+    }
+}));
+
+// Cache Control Middleware
+const cacheControl = (duration) => {
+    return (req, res, next) => {
+        if (req.method === 'GET') {
+            res.set('Cache-Control', `public, max-age=${duration}`);
+        } else {
+            res.set('Cache-Control', 'no-store');
+        }
+        next();
+    };
+};
+
+// Static files caching configuration
+const staticOptions = {
+    dotfiles: 'ignore',
+    etag: true,
+    extensions: ['htm', 'html'],
+    immutable: true,
+    lastModified: true,
+    maxAge: '1y',
+    setHeaders: (res, path) => {
+        // Cache images and static assets for 1 year
+        if (path.match(/\.(jpg|jpeg|png|gif|ico|webp|svg|css|js|woff2)$/)) {
+            res.set('Cache-Control', 'public, max-age=31536000, immutable');
+        }
+        // Cache HTML and other files for 1 day
+        else {
+            res.set('Cache-Control', 'public, max-age=86400');
+        }
+    }
+};
 
 // Essential middleware setup
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve static files with caching
+app.use('/images', express.static(path.join(__dirname, 'public/images'), staticOptions));
+app.use('/css', express.static(path.join(__dirname, 'public/css'), staticOptions));
+app.use('/js', express.static(path.join(__dirname, 'public/js'), staticOptions));
+app.use('/fonts', express.static(path.join(__dirname, 'public/fonts'), staticOptions));
+app.use(express.static(path.join(__dirname, 'public'), staticOptions));
+
+// Apply cache control to all routes
+app.use(cacheControl(86400)); // 24 hours default cache
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
