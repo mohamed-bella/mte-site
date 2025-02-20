@@ -6,9 +6,13 @@ const flash = require('connect-flash');
 const mongoose = require('mongoose');
 const path = require('path');
 const compression = require('compression');
+const { inject } = require('@vercel/analytics');
 require('dotenv').config();
 
 const app = express();
+
+// Initialize Vercel Analytics
+inject();
 
 // Compression middleware
 app.use(compression({
