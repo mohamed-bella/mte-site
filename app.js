@@ -27,34 +27,30 @@ app.use(compression({
 }));
 
 // Cache Control Middleware
-const cacheControl = (duration) => {
-    return (req, res, next) => {
-        if (req.method === 'GET') {
-            res.set('Cache-Control', `public, max-age=${duration}`);
-        } else {
-            res.set('Cache-Control', 'no-store');
-        }
-        next();
-    };
-};
+// const cacheControl = (duration) => {
+//     return (req, res, next) => {
+//         if (req.method === 'GET') {
+//             res.set('Cache-Control', `public, max-age=${duration}`);
+//         } else {
+//             res.set('Cache-Control', 'no-store');
+//         }
+//         next();
+//     };
+// };
 
 // Static files caching configuration
 const staticOptions = {
     dotfiles: 'ignore',
-    etag: true,
+    etag: false, // Disable etag
     extensions: ['htm', 'html'],
-    immutable: true,
-    lastModified: true,
-    maxAge: '1y',
+    immutable: false, // Disable immutable
+    lastModified: false, // Disable last-modified
+    maxAge: 0, // Disable maxAge
     setHeaders: (res, path) => {
-        // Cache images and static assets for 1 year
-        if (path.match(/\.(jpg|jpeg|png|gif|ico|webp|svg|css|js|woff2)$/)) {
-            res.set('Cache-Control', 'public, max-age=31536000, immutable');
-        }
-        // Cache HTML and other files for 1 day
-        else {
-            res.set('Cache-Control', 'public, max-age=86400');
-        }
+        // Disable caching for all static files
+        res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+        res.set('Pragma', 'no-cache');
+        res.set('Expires', '-1');
     }
 };
 
@@ -63,15 +59,23 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files with caching
+// Add no-cache middleware for all routes
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '-1');
+    next();
+});
+
+// Serve static files with no caching
 app.use('/images', express.static(path.join(__dirname, 'public/images'), staticOptions));
 app.use('/css', express.static(path.join(__dirname, 'public/css'), staticOptions));
 app.use('/js', express.static(path.join(__dirname, 'public/js'), staticOptions));
 app.use('/fonts', express.static(path.join(__dirname, 'public/fonts'), staticOptions));
 app.use(express.static(path.join(__dirname, 'public'), staticOptions));
 
-// Apply cache control to all routes
-app.use(cacheControl(86400)); // 24 hours default cache
+// Comment out the cache control middleware
+// app.use(cacheControl(86400)); // 24 hours default cache
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
