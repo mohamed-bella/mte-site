@@ -1,0 +1,234 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main class="reviews-page">
+    <div class="reviews-header">
+        <h1>Customer Reviews</h1>
+        <div class="rating-summary">
+            <div class="average-rating">
+                <span class="rating-number"><%= averageRating.toFixed(1) %></span>
+                <div class="stars">
+                    <% for(let i = 1; i <= 5; i++) { %>
+                        <% if (i <= Math.floor(averageRating)) { %>
+                            <i class="fas fa-star"></i>
+                        <% } else if (i - 0.5 <= averageRating) { %>
+                            <i class="fas fa-star-half-alt"></i>
+                        <% } else { %>
+                            <i class="far fa-star"></i>
+                        <% } %>
+                    <% } %>
+                </div>
+                <span class="total-reviews">Based on <%= totalReviews %> reviews</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="reviews-grid">
+        <% if (reviews && reviews.length > 0) { %>
+            <% reviews.forEach(function(review) { %>
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <% if (review.profilePhoto) { %>
+                                <img src="<%= review.profilePhoto %>" alt="<%= review.author %>" class="profile-photo">
+                            <% } else { %>
+                                <div class="profile-initial"><%= review.author.charAt(0).toUpperCase() %></div>
+                            <% } %>
+                            <span class="author-name"><%= review.author %></span>
+                        </div>
+                        <div class="review-rating">
+                            <% for(let i = 1; i <= 5; i++) { %>
+                                <i class="fas fa-star <%= i <= review.rating ? 'filled' : '' %>"></i>
+                            <% } %>
+                        </div>
+                    </div>
+                    
+                    <div class="review-content">
+                        <% if (review.text.length > 200) { %>
+                            <div class="review-text collapsed">
+                                <p><%= review.text %></p>
+                            </div>
+                            <button class="read-more">Read more</button>
+                        <% } else { %>
+                            <div class="review-text">
+                                <p><%= review.text %></p>
+                            </div>
+                        <% } %>
+                    </div>
+                    
+                    <div class="review-footer">
+                        <span class="review-date"><%= review.date %></span>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div class="no-reviews">
+                <p>No reviews available at the moment. Check back later!</p>
+            </div>
+        <% } %>
+    </div>
+</main>
+
+<style>
+.reviews-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.reviews-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.rating-summary {
+    margin-top: 1.5rem;
+}
+
+.average-rating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.rating-number {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.stars {
+    color: #ffd700;
+    font-size: 1.5rem;
+}
+
+.total-reviews {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.review-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    transition: transform 0.2s;
+}
+
+.review-card:hover {
+    transform: translateY(-5px);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.reviewer-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profile-photo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-initial {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #333;
+}
+
+.author-name {
+    font-weight: 600;
+    color: #333;
+}
+
+.review-rating {
+    color: #ffd700;
+}
+
+.review-content {
+    margin: 1rem 0;
+}
+
+.review-text {
+    color: #444;
+    line-height: 1.6;
+}
+
+.review-text.collapsed {
+    max-height: 100px;
+    overflow: hidden;
+    position: relative;
+}
+
+.read-more {
+    background: none;
+    border: none;
+    color: #0066cc;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.review-footer {
+    margin-top: 1rem;
+    color: #666;
+    font-size: 0.8rem;
+}
+
+.no-reviews {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    background: #f9f9f9;
+    border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+    .reviews-page {
+        padding: 1rem;
+    }
+    
+    .reviews-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const readMoreButtons = document.querySelectorAll('.read-more');
+    
+    readMoreButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const reviewText = this.previousElementSibling;
+            reviewText.classList.toggle('collapsed');
+            this.textContent = reviewText.classList.contains('collapsed') ? 'Read more' : 'Read less';
+        });
+    });
+});
+</script>
+
+<%- include('partials/footer') %> 

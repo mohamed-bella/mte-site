@@ -11,11 +11,10 @@ const path = require('path');
 const dotenv = require('dotenv');
 const nodemailer = require('nodemailer');
 const StartingCity = require('../models/StartingCity');
+const { scrapeGoogleReviews } = require('../utils/reviewScraper');
 
 
 dotenv.config();
-
-
 
 // Middleware to load settings
 const loadSettings = async (req, res, next) => {
@@ -439,6 +438,26 @@ router.get('/terms', (req, res) => {
           metaDescription: res.locals.settings?.metaDescription,
           metaKeywords: res.locals.settings?.metaKeywords
      });
+});
+
+// Reviews route
+router.get('/reviews', async (req, res) => {
+  try {
+    const googleMapsUrl = 'https://www.google.com/maps/place/Morocco+Travel+Experts/@31.6294,-7.9810,15z';
+    const reviewsData = await scrapeGoogleReviews(googleMapsUrl, process.env.FIRECRAWL_API_KEY);
+    
+    res.render('reviews', {
+      title: 'Customer Reviews - Morocco Travel Experts',
+      description: 'Read authentic reviews from our satisfied customers about their experiences with Morocco Travel Experts.',
+      ...reviewsData
+    });
+  } catch (error) {
+    console.error('Error in reviews route:', error);
+    res.status(500).render('error', {
+      message: 'Failed to load reviews',
+      error: { status: 500, stack: process.env.NODE_ENV === 'development' ? error.stack : '' }
+    });
+  }
 });
 
 module.exports = router;

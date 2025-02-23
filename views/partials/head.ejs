@@ -100,7 +100,7 @@
           function googleTranslateElementInit() {
                new google.translate.TranslateElement({
                     pageLanguage: 'en',
-                    includedLanguages: 'en,fr,es,it,ar,ja',
+                    includedLanguages: 'en,fr,es,it,ar,ja,zh,pl',
                     layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
                     autoDisplay: false,
                     multilanguagePage: true,
@@ -108,45 +108,120 @@
                     gaId: ''
                }, 'google_translate_element');
 
-               // Remove Google Translate top bar and fix body position
-               const removeTopBar = () => {
+               // Add toggle button for Google Translate navbar
+               const header = document.querySelector('header');
+               const toggleButton = document.createElement('button');
+               toggleButton.id = 'translate-toggle';
+               toggleButton.className = 'fixed top-4 right-4 z-50 bg-orange-500 hover:bg-orange-600 text-white rounded-full p-2 shadow-lg transition-all duration-300 transform hover:scale-105';
+               toggleButton.innerHTML = '<i class="fas fa-language text-lg"></i>';
+               toggleButton.style.display = 'none'; // Initially hidden
+               document.body.appendChild(toggleButton);
+
+               // Handle toggle button click
+               toggleButton.addEventListener('click', () => {
                     const frame = document.querySelector('.goog-te-banner-frame');
-                    if (frame) frame.style.display = 'none';
-                    document.body.style.top = '0px';
-               };
-
-               // Apply fixes after translation
-               const observer = new MutationObserver(() => {
-                    removeTopBar();
-                    
-                    // Add globe icon to the translate button
-                    const menuValue = document.querySelector('.goog-te-menu-value');
-                    if (menuValue && !menuValue.querySelector('.fa-globe')) {
-                         const globeIcon = document.createElement('i');
-                         globeIcon.className = 'fas fa-globe text-gray-600 mr-1';
-                         menuValue.insertBefore(globeIcon, menuValue.firstChild);
-
-                         // Add down arrow icon
-                         const arrowIcon = document.createElement('i');
-                         arrowIcon.className = 'fas fa-chevron-down text-gray-600 ml-1';
-                         menuValue.appendChild(arrowIcon);
+                    if (frame) {
+                         if (frame.style.display === 'none') {
+                              frame.style.display = 'block';
+                              toggleButton.classList.add('active');
+                         } else {
+                              frame.style.display = 'none';
+                              toggleButton.classList.remove('active');
+                         }
                     }
+               });
 
-                    // Clean up any extra elements
-                    const gadget = document.querySelector('.goog-te-gadget');
-                    if (gadget) {
-                         Array.from(gadget.childNodes).forEach(node => {
-                              if (node.nodeType === 3) { // Text node
-                                   node.textContent = '';
+               // Function to close the language modal
+               function closeLanguageModal() {
+                    // Find all elements with x-data that might contain languageModal
+                    document.querySelectorAll('[x-data]').forEach(el => {
+                         if (el.__x) {
+                              // Try to set languageModal to false
+                              try {
+                                   el.__x.$data.languageModal = false;
+                              } catch (e) {
+                                   // Ignore if the element doesn't have languageModal
                               }
-                         });
+                         }
+                    });
+
+                    // Also try to find and click any close button in the modal
+                    const closeButton = document.querySelector('[x-show="languageModal"] button[type="button"]');
+                    if (closeButton) {
+                         closeButton.click();
                     }
+               }
+
+               // Show toggle button when translation is active
+               const observer = new MutationObserver((mutations) => {
+                    mutations.forEach(mutation => {
+                         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                              // Check for Google Translate elements
+                              const frame = document.querySelector('.goog-te-banner-frame');
+                              if (frame) {
+                                   frame.style.display = 'none';
+                                   toggleButton.style.display = 'block';
+                              }
+
+                              // Add globe icon and enhance dropdown
+                              const menuValue = document.querySelector('.goog-te-menu-value');
+                              if (menuValue && !menuValue.querySelector('.fa-globe')) {
+                                   const globeIcon = document.createElement('i');
+                                   globeIcon.className = 'fas fa-globe text-[#3e3065] mr-2';
+                                   menuValue.insertBefore(globeIcon, menuValue.firstChild);
+
+                                   // Add custom dropdown arrow
+                                   const arrowIcon = document.createElement('i');
+                                   arrowIcon.className = 'fas fa-chevron-down text-[#3e3065] ml-2 transition-transform duration-300';
+                                   menuValue.appendChild(arrowIcon);
+                              }
+
+                              // Clean up any extra elements
+                              const gadget = document.querySelector('.goog-te-gadget');
+                              if (gadget) {
+                                   Array.from(gadget.childNodes).forEach(node => {
+                                        if (node.nodeType === 3) {
+                                             node.textContent = '';
+                                        }
+                                   });
+                              }
+
+                              // Handle language selection
+                              const languageSelect = document.querySelector('.goog-te-combo');
+                              if (languageSelect && !languageSelect.dataset.eventAttached) {
+                                   languageSelect.dataset.eventAttached = 'true';
+                                   languageSelect.addEventListener('change', () => {
+                                        setTimeout(closeLanguageModal, 50);
+                                   });
+                              }
+
+                              // Handle menu item clicks
+                              const menuItems = document.querySelectorAll('.goog-te-menu2-item');
+                              menuItems.forEach(item => {
+                                   if (!item.dataset.eventAttached) {
+                                        item.dataset.eventAttached = 'true';
+                                        item.addEventListener('click', () => {
+                                             setTimeout(closeLanguageModal, 50);
+                                        });
+                                   }
+                              });
+                         }
+                    });
                });
 
                observer.observe(document.body, {
                     childList: true,
-                    subtree: true
+                    subtree: true,
+                    attributes: true,
+                    characterData: true
                });
+
+               // Add event listener for the Google Translate callback
+               if (window.google && window.google.translate) {
+                    window.google.translate.TranslateService.getInstance().addEventListener('translate', function() {
+                         closeLanguageModal();
+                    });
+               }
           }
      </script>
      <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async defer></script>
@@ -158,6 +233,126 @@
                --secondary-color: #0f172a;
                --accent-color: #22c55e;
           }
+
+          /* Enhanced Google Translate Styles */
+          .goog-te-gadget-icon {
+               display: none !important;
+          }
+
+          .goog-te-gadget-simple {
+               background-color: #ecebf0 !important;
+               border: 0 !important;
+               font-size: 10pt !important;
+               font-weight: 800 !important;
+               font-family: 'Poppins', sans-serif !important;
+               display: inline-flex !important;
+               align-items: center !important;
+               padding: 8px 16px !important;
+               cursor: pointer !important;
+               border-radius: 9999px !important;
+               transition: all 0.2s ease-in-out !important;
+               min-width: 160px !important;
+          }
+
+          .goog-te-gadget-simple:hover {
+               background-color: #e2e1e6 !important;
+               box-shadow: 0 2px 8px rgba(62, 48, 101, 0.1) !important;
+               transform: translateY(-1px) !important;
+          }
+
+          .goog-te-gadget-simple span {
+               color: #3e3065 !important;
+               font-family: 'Poppins', sans-serif !important;
+               font-size: 0.875rem !important;
+          }
+
+          .goog-te-menu-value {
+               display: flex !important;
+               align-items: center !important;
+               justify-content: space-between !important;
+               width: 100% !important;
+               padding: 0 4px !important;
+          }
+
+          .goog-te-menu-value span {
+               border: none !important;
+               color: #3e3065 !important;
+               font-weight: 600 !important;
+          }
+
+          .goog-te-menu-value span:last-child {
+               display: none !important;
+          }
+
+          .goog-te-menu-frame {
+               box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+               border-radius: 12px !important;
+               border: 1px solid #e5e7eb !important;
+               padding: 8px !important;
+          }
+
+          .goog-te-menu2 {
+               border: none !important;
+               padding: 8px !important;
+               border-radius: 12px !important;
+          }
+
+          .goog-te-menu2-item div {
+               padding: 8px 12px !important;
+               font-family: 'Poppins', sans-serif !important;
+               color: #3e3065 !important;
+               border-radius: 8px !important;
+               transition: all 0.2s !important;
+          }
+
+          .goog-te-menu2-item:hover div {
+               background-color: #ecebf0 !important;
+          }
+
+          .goog-te-menu2-item-selected div {
+               background-color: #3e3065 !important;
+               color: white !important;
+          }
+
+          /* Toggle Button Styles */
+          #translate-toggle {
+               opacity: 0.9;
+          }
+
+          #translate-toggle:hover {
+               opacity: 1;
+          }
+
+          #translate-toggle.active {
+               background-color: #3e3065 !important;
+               transform: rotate(180deg);
+          }
+
+          /* Hide Google Translate attribution */
+          .goog-logo-link {
+               display: none !important;
+          }
+
+          .goog-te-gadget {
+               color: transparent !important;
+               margin: 0 !important;
+          }
+
+          .goog-te-banner-frame {
+               display: none !important;
+               box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+          }
+
+          #goog-gt-tt, .goog-te-balloon-frame {
+               display: none !important;
+          }
+
+          .goog-text-highlight {
+               background: none !important;
+               box-shadow: none !important;
+          }
+
+          /* Rest of your critical CSS */
           body {
                font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
                text-rendering: optimizeLegibility;
@@ -170,7 +365,6 @@
           .critical-visible {
                display: block;
           }
-          /* Add more critical CSS here */
      </style>
 
      <!-- Tailwind Config -->
@@ -249,6 +443,9 @@
           ]
      }
      </script>
+     <style>
+         
+     </style>
 </head>
 
 <body class="bg-gray-50" itemscope itemtype="https://schema.org/WebPage">
