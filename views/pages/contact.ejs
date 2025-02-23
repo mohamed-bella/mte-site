@@ -8,97 +8,128 @@
 <body class="bg-gray-50">
      <%- include('../partials/header') %>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <div class="text-center mb-16">
-        <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl">Get in Touch</h1>
-        <p class="mt-4 text-xl text-gray-600">We'd love to hear from you. Let us help plan your perfect Moroccan adventure.</p>
-    </div>
+     <main class="min-h-screen py-20">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+               <!-- Header Section -->
+               <div class="text-center max-w-2xl mx-auto mb-16">
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Get in Touch</h1>
+                    <p class="text-lg text-gray-600">Have questions about our tours? We're here to help plan your perfect Moroccan adventure.</p>
+               </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        <!-- Contact Information -->
-        <div class="bg-white rounded-2xl shadow-sm p-8">
-            <div class="space-y-8">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 bg-blue-100 rounded-full p-4">
-                        <i class="fas fa-envelope text-2xl text-blue-600"></i>
-                    </div>
-                    <div class="ml-6">
-                        <p class="text-sm font-medium text-gray-500">Email</p>
-                        <a href="mailto:contact@moroccotravelexperts.com" class="text-lg font-medium text-gray-900 hover:text-blue-600 transition">
-                            contact@moroccotravelexperts.com
-                        </a>
-                    </div>
-                </div>
+               <div class="grid lg:grid-cols-2 gap-12 items-start">
+                    <!-- Contact Information -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 lg:sticky lg:top-24">
+                         <!-- Direct Contact -->
+                         <div class="space-y-6">
+                              <h2 class="text-xl font-semibold text-gray-900 mb-6">Contact Information</h2>
 
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 bg-green-100 rounded-full p-4">
-                        <i class="fas fa-phone text-2xl text-green-600"></i>
-                    </div>
-                    <div class="ml-6">
-                        <p class="text-sm font-medium text-gray-500">Phone</p>
-                        <a href="tel:+212123456789" class="text-lg font-medium text-gray-900 hover:text-green-600 transition">
-                            +212-526-555512
-                        </a>
-                    </div>
-                </div>
+                              <!-- Email -->
+                              <div class="flex items-center p-4 bg-gray-50 rounded-xl transition-all hover:bg-gray-100">
+                                   <div class="flex-shrink-0">
+                                        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                        </svg>
+                                   </div>
+                                   <div class="ml-4">
+                                        <p class="text-sm text-gray-500">Email</p>
+                                        <a href="mailto:contact@moroccotravelexperts.com" class="text-base font-medium text-gray-900 hover:text-orange-600">
+                                             contact@moroccotravelexperts.com
+                                        </a>
+                                   </div>
+                              </div>
 
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 bg-pink-100 rounded-full p-4">
-                        <i class="fab fa-instagram text-2xl text-pink-600"></i>
-                    </div>
-                    <div class="ml-6">
-                        <p class="text-sm font-medium text-gray-500">Instagram</p>
-                        <a href="https://instagram.com/el_maimouni_97" target="_blank" class="text-lg font-medium text-gray-900 hover:text-pink-600 transition">
-                            @el_maimouni_97
-                        </a>
-                    </div>
-                </div>
+                              <!-- Phone -->
+                              <div class="flex items-center p-4 bg-gray-50 rounded-xl transition-all hover:bg-gray-100">
+                                   <div class="flex-shrink-0">
+                                        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                        </svg>
+                                   </div>
+                                   <div class="ml-4">
+                                        <p class="text-sm text-gray-500">Phone / WhatsApp</p>
+                                        <a href="tel:+212526555512" class="text-base font-medium text-gray-900 hover:text-orange-600">
+                                             +212-526-555512
+                                        </a>
+                                   </div>
+                              </div>
 
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 bg-indigo-100 rounded-full p-4">
-                        <i class="fab fa-facebook text-2xl text-indigo-600"></i>
-                    </div>
-                    <div class="ml-6">
-                        <p class="text-sm font-medium text-gray-500">Facebook</p>
-                        <a href="https://www.facebook.com/profile.php?id=100023315713003" target="_blank" class="text-lg font-medium text-gray-900 hover:text-indigo-600 transition">
-                            Hamid EL maimouni
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+                              <!-- Social Media Section -->
+                              <div class="pt-6 mt-6 border-t border-gray-100">
+                                   <h3 class="text-sm font-medium text-gray-900 mb-4">Follow Us</h3>
+                                   <div class="flex space-x-4">
+                                        <a href="https://instagram.com/el_maimouni_97" target="_blank" 
+                                           class="p-2 text-gray-600 hover:text-orange-600 transition-colors">
+                                             <span class="sr-only">Instagram</span>
+                                             <i class="fab fa-instagram text-xl"></i>
+                                        </a>
+                                        <a href="https://www.facebook.com/profile.php?id=100023315713003" target="_blank"
+                                           class="p-2 text-gray-600 hover:text-orange-600 transition-colors">
+                                             <span class="sr-only">Facebook</span>
+                                             <i class="fab fa-facebook text-xl"></i>
+                                        </a>
+                                        <a href="https://wa.me/212526555512" target="_blank"
+                                           class="p-2 text-gray-600 hover:text-orange-600 transition-colors">
+                                             <span class="sr-only">WhatsApp</span>
+                                             <i class="fab fa-whatsapp text-xl"></i>
+                                        </a>
+                                   </div>
+                              </div>
 
-        <!-- Location -->
-        <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-            <div class="p-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-6">Visit Our Office</h2>
-                <div class="flex items-start">
-                    <div class="flex-shrink-0 bg-red-100 rounded-full p-4">
-                        <i class="fas fa-map-marker-alt text-2xl text-red-600"></i>
+                              <!-- Trust Badges -->
+                              <div class="pt-6 mt-6 border-t border-gray-100">
+                                   <div class="grid grid-cols-2 gap-4 text-center">
+                                        <div class="p-4 bg-gray-50 rounded-xl">
+                                             <p class="text-2xl font-bold text-gray-900">1000+</p>
+                                             <p class="text-sm text-gray-600">Happy Travelers</p>
+                                        </div>
+                                        <div class="p-4 bg-gray-50 rounded-xl">
+                                             <p class="text-2xl font-bold text-gray-900">5.0</p>
+                                             <p class="text-sm text-gray-600">Google Rating</p>
+                                        </div>
+                                   </div>
+                              </div>
+                         </div>
                     </div>
-                    <div class="ml-6">
-                        <p class="text-sm font-medium text-gray-500">Address</p>
-                        <div class="mt-2 text-gray-900">
-                            <p class="text-lg">123 Tourism Street</p>
-                            <p class="text-lg">Marrakech Medina</p>
-                            <p class="text-lg">40000 Marrakech</p>
-                            <p class="text-lg">Morocco</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="h-96 w-full">
-                <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3397.119166508315!2d-7.989843684885611!3d31.631044981330687!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xdafee8d973333db%3A0x570a6b6c8651a3ef!2sMarrakech%20Medina!5e0!3m2!1sen!2sma!4v1645567894321!5m2!1sen!2sma"
-                    class="w-full h-full"
-                    style="border:0;" 
-                    allowfullscreen="" 
-                    loading="lazy">
-                </iframe>
-            </div>
-        </div>
-    </div>
-</div>
 
-<%- include('../partials/footer') %>
+                    <!-- Location Section -->
+                    <div class="space-y-8">
+                         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                              <h2 class="text-xl font-semibold text-gray-900 mb-6">Visit Our Office</h2>
+                              <div class="flex items-start space-x-4">
+                                   <div class="flex-shrink-0">
+                                        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        </svg>
+                                   </div>
+                                   <div>
+                                        <address class="not-italic">
+                                             <p class="text-gray-900">123 Tourism Street</p>
+                                             <p class="text-gray-900">Marrakech Medina</p>
+                                             <p class="text-gray-900">40000 Marrakech</p>
+                                             <p class="text-gray-900">Morocco</p>
+                                        </address>
+                                   </div>
+                              </div>
+                         </div>
+
+                         <!-- Map -->
+                         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                              <div class="h-[400px] w-full">
+                                   <iframe 
+                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3397.119166508315!2d-7.989843684885611!3d31.631044981330687!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xdafee8d973333db%3A0x570a6b6c8651a3ef!2sMarrakech%20Medina!5e0!3m2!1sen!2sma!4v1645567894321!5m2!1sen!2sma"
+                                        class="w-full h-full"
+                                        style="border:0;" 
+                                        allowfullscreen="" 
+                                        loading="lazy">
+                                   </iframe>
+                              </div>
+                         </div>
+                    </div>
+               </div>
+          </div>
+     </main>
+
+     <%- include('../partials/footer') %>
+</body>
+</html>
