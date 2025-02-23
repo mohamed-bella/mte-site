@@ -9,87 +9,133 @@
      <%- include('../partials/header') %>
 
      <!-- Main Content -->
-     <main class="min-h-screen pt-16">
-          <!-- Filters Section -->
-          <section id="filters" class=" top-16 z-10 py-6 bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200">
-               <div class="container mx-auto px-4">
-                    <form class="space-y-4 md:space-y-0 md:grid md:grid-cols-12 md:gap-6 items-end">
+     <main class="min-h-screen pt-16" x-data="{ filtersOpen: false }">
+          <!-- Filter Button -->
+          <div class="fixed bottom-6 right-6 z-50">
+               <button 
+                    @click="filtersOpen = true"
+                    class="flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
+               >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                    </svg>
+                    <span class="font-medium">Filters</span>
+               </button>
+          </div>
+
+          <!-- Filters Modal -->
+          <div x-cloak>
+               <!-- Backdrop -->
+               <div
+                    x-show="filtersOpen"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
+                    class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+                    @click="filtersOpen = false"
+               ></div>
+
+               <!-- Modal -->
+               <div
+                    x-show="filtersOpen"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="translate-y-full"
+                    x-transition:enter-end="translate-y-0"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="translate-y-0"
+                    x-transition:leave-end="translate-y-full"
+                    class="fixed inset-x-0 bottom-0 z-50 bg-white rounded-t-3xl shadow-2xl transform md:max-w-2xl md:mx-auto md:inset-auto md:top-1/2 md:-translate-y-1/2 md:rounded-2xl"
+                    @click.away="filtersOpen = false"
+               >
+                    <form class="p-6 space-y-6" id="tourFiltersForm" method="GET" action="/tours">
+                         <!-- Header -->
+                         <div class="flex items-center justify-between">
+                              <h3 class="text-xl font-semibold text-gray-900">Filter Tours</h3>
+                              <button type="button" @click="filtersOpen = false" class="p-2 text-gray-400 hover:text-gray-500">
+                                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                   </svg>
+                              </button>
+                         </div>
+
                          <!-- Starting City Filter -->
-                         <div class="md:col-span-3 group">
-                              <label class="block text-sm font-medium text-gray-700 mb-2 group-hover:text-orange-600 transition-colors">Starting City</label>
-                              <div class="relative">
-                                   <select name="city" class="w-full rounded-lg border-2 border-gray-200 pl-4 pr-10 py-2.5 appearance-none bg-white focus:border-orange-400 focus:ring focus:ring-orange-200 transition-all duration-300">
-                                        <option value="">All Cities</option>
-                                        <% startingCities.forEach(city => { %>
-                                             <option value="<%= city.city %>" <%= selectedCity === city.city ? 'selected' : '' %>>
-                                                  <%= city.city %>
-                                             </option>
-                                        <% }) %>
-                                   </select>
-                                   <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                   </div>
-                              </div>
+                         <div class="space-y-2">
+                              <label class="block text-sm font-medium text-gray-700">Starting City</label>
+                              <select name="city" class="w-full rounded-lg border-2 border-gray-200 px-4 py-2.5 focus:border-orange-400 focus:ring focus:ring-orange-200 transition-all">
+                                   <option value="">All Cities</option>
+                                   <% startingCities.forEach(city => { %>
+                                        <option value="<%= city.city %>" <%= selectedCity === city.city ? 'selected' : '' %>>
+                                             <%= city.city %>
+                                        </option>
+                                   <% }) %>
+                              </select>
                          </div>
 
                          <!-- Price Range -->
-                         <div class="md:col-span-3 group">
-                              <label class="block text-sm font-medium text-gray-700 mb-2 group-hover:text-orange-600 transition-colors">Price Range</label>
-                              <div class="flex gap-3">
-                                   <div class="relative flex-1">
+                         <div class="space-y-2">
+                              <label class="block text-sm font-medium text-gray-700">Price Range</label>
+                              <div class="grid grid-cols-2 gap-4">
+                                   <div class="relative">
                                         <span class="absolute left-3 top-2.5 text-gray-500">$</span>
                                         <input type="number" name="minPrice" placeholder="Min" value="<%= filters.minPrice %>"
-                                             class="w-full pl-7 pr-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-orange-400 focus:ring focus:ring-orange-200 transition-all">
+                                             class="w-full pl-7 pr-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-orange-400 focus:ring focus:ring-orange-200">
                                    </div>
-                                   <div class="relative flex-1">
+                                   <div class="relative">
                                         <span class="absolute left-3 top-2.5 text-gray-500">$</span>
                                         <input type="number" name="maxPrice" placeholder="Max" value="<%= filters.maxPrice %>"
-                                             class="w-full pl-7 pr-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-orange-400 focus:ring focus:ring-orange-200 transition-all">
+                                             class="w-full pl-7 pr-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-orange-400 focus:ring focus:ring-orange-200">
                                    </div>
                               </div>
                          </div>
 
                          <!-- Duration Range -->
-                         <div class="md:col-span-3 group">
-                              <label class="block text-sm font-medium text-gray-700 mb-2 group-hover:text-orange-600 transition-colors">Duration</label>
-                              <div class="flex gap-3">
-                                   <input type="number" name="minDays" placeholder="Min days" value="<%= filters.minDays %>"
-                                        class="w-full px-4 py-2.5 rounded-lg border-2 border-gray-200 focus:border-orange-400 focus:ring focus:ring-orange-200 transition-all">
-                                   <input type="number" name="maxDays" placeholder="Max days" value="<%= filters.maxDays %>"
-                                        class="w-full px-4 py-2.5 rounded-lg border-2 border-gray-200 focus:border-orange-400 focus:ring focus:ring-orange-200 transition-all">
-                              </div>
-                         </div>
-
-                         <!-- Sort -->
-                         <div class="md:col-span-2 group">
-                              <label class="block text-sm font-medium text-gray-700 mb-2 group-hover:text-orange-600 transition-colors">Sort By</label>
-                              <div class="relative">
-                                   <select name="sort" class="w-full rounded-lg border-2 border-gray-200 pl-4 pr-10 py-2.5 appearance-none bg-white focus:border-orange-400 focus:ring focus:ring-orange-200 transition-all">
-                                        <option value="">Default</option>
-                                        <option value="price-asc" <%= filters.sort === 'price-asc' ? 'selected' : '' %>>Price: Low to High</option>
-                                        <option value="price-desc" <%= filters.sort === 'price-desc' ? 'selected' : '' %>>Price: High to Low</option>
-                                        <option value="duration-asc" <%= filters.sort === 'duration-asc' ? 'selected' : '' %>>Duration: Short to Long</option>
-                                        <option value="duration-desc" <%= filters.sort === 'duration-desc' ? 'selected' : '' %>>Duration: Long to Short</option>
-                                   </select>
-                                   <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                        </svg>
+                         <div class="space-y-2">
+                              <label class="block text-sm font-medium text-gray-700">Duration (Days)</label>
+                              <div class="grid grid-cols-2 gap-4">
+                                   <div class="relative">
+                                        <input type="number" name="minDays" placeholder="Min days" value="<%= filters.minDays %>"
+                                             min="1" max="30"
+                                             class="w-full px-4 py-2.5 rounded-lg border-2 border-gray-200 focus:border-orange-400 focus:ring focus:ring-orange-200">
+                                   </div>
+                                   <div class="relative">
+                                        <input type="number" name="maxDays" placeholder="Max days" value="<%= filters.maxDays %>"
+                                             min="1" max="30"
+                                             class="w-full px-4 py-2.5 rounded-lg border-2 border-gray-200 focus:border-orange-400 focus:ring focus:ring-orange-200">
                                    </div>
                               </div>
                          </div>
 
-                         <button type="submit" class="md:col-span-1 w-full px-6 py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 active:bg-orange-700 transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 flex items-center justify-center gap-2">
-                              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                              </svg>
-                              Filter
-                         </button>
+                         <!-- Sort -->
+                         <div class="space-y-2">
+                              <label class="block text-sm font-medium text-gray-700">Sort By</label>
+                              <select name="sort" class="w-full rounded-lg border-2 border-gray-200 px-4 py-2.5 focus:border-orange-400 focus:ring focus:ring-orange-200">
+                                   <option value="">Default</option>
+                                   <option value="price-asc" <%= filters.sort === 'price-asc' ? 'selected' : '' %>>Price: Low to High</option>
+                                   <option value="price-desc" <%= filters.sort === 'price-desc' ? 'selected' : '' %>>Price: High to Low</option>
+                                   <option value="duration-asc" <%= filters.sort === 'duration-asc' ? 'selected' : '' %>>Duration: Short to Long</option>
+                                   <option value="duration-desc" <%= filters.sort === 'duration-desc' ? 'selected' : '' %>>Duration: Long to Short</option>
+                              </select>
+                         </div>
+
+                         <!-- Action Buttons -->
+                         <div class="flex gap-4 pt-4">
+                              <button 
+                                   type="button" 
+                                   @click="document.getElementById('tourFiltersForm').reset(); window.location.href = '/tours';"
+                                   class="flex-1 px-6 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                              >
+                                   Reset
+                              </button>
+                              <button type="submit" class="flex-1 px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">
+                                   Apply Filters
+                              </button>
+                         </div>
                     </form>
                </div>
-          </section>
+          </div>
 
           <!-- Popular Tours Grid -->
           <section id="tours" class="py-20 bg-gradient-to-b from-gray-50 to-white">
