@@ -98,12 +98,6 @@
                                         <%= booking.specialRequests || 'None' %>
                                    </dd>
                               </div>
-
-                              <div>
-                                   <dt class="text-sm font-medium text-gray-500">Total Price</dt>
-                                   <dd class="mt-1 text-lg font-semibold text-gray-900">$<%= booking.totalPrice.toLocaleString() %>
-                                   </dd>
-                              </div>
                          </dl>
                     </div>
                </div>
@@ -249,20 +243,19 @@
                               </div>
                          </section>
 
-                         <!-- Payment Details -->
+                         <!-- Pricing Note -->
                          <section class="bg-stone-50 rounded-xl p-6 border border-stone-100">
-                              <h2 class="text-2xl font-serif text-stone-800 mb-6">Payment Details</h2>
-                              <div class="grid md:grid-cols-2 gap-6">
-                                   <div class="space-y-2">
-                                        <p class="text-sm font-medium text-stone-500">Total Amount</p>
-                                        <p class="text-2xl font-medium text-stone-900">$<%= booking.totalPrice.toLocaleString() %>
-                                        </p>
-                                   </div>
-                                   <div class="space-y-2">
-                                        <p class="text-sm font-medium text-stone-500">Status</p>
-                                        <p class="text-lg text-emerald-600 font-medium">
-                                             <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
-                                        </p>
+                              <h2 class="text-2xl font-serif text-stone-800 mb-6">Pricing Information</h2>
+                              <div class="space-y-4">
+                                   <p class="text-lg text-stone-900">Our team will contact you shortly with personalized pricing details for your tour.</p>
+                                   <div class="bg-orange-50 border-l-4 border-orange-500 p-4">
+                                        <p class="text-orange-700">We offer flexible pricing based on:</p>
+                                        <ul class="mt-2 list-disc list-inside text-orange-600">
+                                             <li>Group size</li>
+                                             <li>Season of travel</li>
+                                             <li>Accommodation preferences</li>
+                                             <li>Additional services requested</li>
+                                        </ul>
                                    </div>
                               </div>
                          </section>

@@ -74,23 +74,6 @@
                               </select>
                          </div>
 
-                         <!-- Price Range -->
-                         <div class="space-y-2">
-                              <label class="block text-sm font-medium text-gray-700">Price Range</label>
-                              <div class="grid grid-cols-2 gap-4">
-                                   <div class="relative">
-                                        <span class="absolute left-3 top-2.5 text-gray-500">$</span>
-                                        <input type="number" name="minPrice" placeholder="Min" value="<%= filters.minPrice %>"
-                                             class="w-full pl-7 pr-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-orange-400 focus:ring focus:ring-orange-200">
-                                   </div>
-                                   <div class="relative">
-                                        <span class="absolute left-3 top-2.5 text-gray-500">$</span>
-                                        <input type="number" name="maxPrice" placeholder="Max" value="<%= filters.maxPrice %>"
-                                             class="w-full pl-7 pr-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-orange-400 focus:ring focus:ring-orange-200">
-                                   </div>
-                              </div>
-                         </div>
-
                          <!-- Duration Range -->
                          <div class="space-y-2">
                               <label class="block text-sm font-medium text-gray-700">Duration (Days)</label>
@@ -207,9 +190,9 @@
                                                   <!-- Footer -->
                                                   <div class="flex items-center justify-between pt-4 border-t border-gray-100">
                                                        <div class="flex flex-col">
-                                                            <span class="text-sm text-gray-500">Starting from</span>
-                                                            <span class="text-2xl font-bold text-orange-500">
-                                                                 $<%= tour.price.toLocaleString() %>
+                                                            <span class="text-sm text-gray-500">Price</span>
+                                                            <span class="text-lg font-medium text-orange-500">
+                                                                 Contact us for details
                                                             </span>
                                                        </div>
 

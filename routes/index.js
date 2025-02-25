@@ -113,30 +113,36 @@ router.get('/tours', async (req, res) => {
                     tours = startingCity.tours;
                }
           } else {
-               // If no city filter, get all tours from all starting cities with filters
-               const startingCities = await StartingCity.find()
-                    .populate({
-                         path: 'tours',
-                         match: {
-                              $and: [
-                                   // Price filter
-                                   req.query.minPrice ? { price: { $gte: parseInt(req.query.minPrice) } } : {},
-                                   req.query.maxPrice ? { price: { $lte: parseInt(req.query.maxPrice) } } : {},
-                                   // Duration filter
-                                   req.query.minDays ? { duration: { $gte: parseInt(req.query.minDays) } } : {},
-                                   req.query.maxDays ? { duration: { $lte: parseInt(req.query.maxDays) } } : {}
-                              ]
-                         }
+               // If no city filter, check if any other filters are applied
+               if (req.query.minPrice || req.query.maxPrice || req.query.minDays || req.query.maxDays) {
+                    // If other filters are applied, get all tours from all starting cities with filters
+                    const startingCities = await StartingCity.find()
+                         .populate({
+                              path: 'tours',
+                              match: {
+                                   $and: [
+                                        // Price filter
+                                        req.query.minPrice ? { price: { $gte: parseInt(req.query.minPrice) } } : {},
+                                        req.query.maxPrice ? { price: { $lte: parseInt(req.query.maxPrice) } } : {},
+                                        // Duration filter
+                                        req.query.minDays ? { duration: { $gte: parseInt(req.query.minDays) } } : {},
+                                        req.query.maxDays ? { duration: { $lte: parseInt(req.query.maxDays) } } : {}
+                                   ]
+                              }
+                         });
+                    
+                    // Combine all tours from all cities, removing duplicates
+                    const tourSet = new Set();
+                    startingCities.forEach(city => {
+                         city.tours.forEach(tour => {
+                              tourSet.add(tour);
+                         });
                     });
-               
-               // Combine all tours from all cities, removing duplicates
-               const tourSet = new Set();
-               startingCities.forEach(city => {
-                    city.tours.forEach(tour => {
-                         tourSet.add(tour);
-                    });
-               });
-               tours = Array.from(tourSet);
+                    tours = Array.from(tourSet);
+               } else {
+                    // No filters at all, get all tours directly
+                    tours = await Tour.find();
+               }
           }
 
           // Sort tours if requested
@@ -156,6 +162,8 @@ router.get('/tours', async (req, res) => {
                          break;
                }
           }
+
+          // console.log(tours)
 
           res.render('pages/tours', {
                title: 'Our Tours',
@@ -223,7 +231,8 @@ router.post('/tours/:slug/book', async (req, res) => {
                date: new Date(req.body.date),
                groupSize: req.body.groupSize,
                specialRequests: req.body.specialRequests,
-               totalPrice: tour.price * req.body.groupSize
+               status: 'pending', // Set initial status as pending
+               totalPrice: 0 // Set default price as 0 for flexible pricing
           });
 
           await booking.save();
@@ -238,7 +247,8 @@ router.post('/tours/:slug/book', async (req, res) => {
                - Tour: ${tour.title}
                - Date: ${booking.date.toLocaleDateString()}
                - Number of People: ${booking.groupSize}
-               - Total Price: $${booking.totalPrice}
+
+               Our team will contact you shortly with pricing details and next steps.
 
                You can view your booking confirmation at:
                https://moroccotravelexperts.com/bookings/${booking._id}/confirmation

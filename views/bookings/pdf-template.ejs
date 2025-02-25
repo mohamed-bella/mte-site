@@ -7,21 +7,40 @@
      <style>
           body {
                font-family: Arial, sans-serif;
-               line-height: 1.6;
+               line-height: 1.4;
                color: #333;
+               max-width: 800px;
+               margin: 0 auto;
+               padding: 40px 20px;
           }
 
           .header {
-               text-align: center;
+               border-bottom: 2px solid #f97316;
+               padding-bottom: 20px;
                margin-bottom: 30px;
+               display: flex;
+               justify-content: space-between;
+               align-items: center;
           }
 
           .logo {
-               max-width: 200px;
-               margin-bottom: 20px;
+               max-width: 150px;
           }
 
-          .booking-details {
+          .booking-ref {
+               text-align: right;
+               color: #666;
+          }
+
+          .booking-ref span {
+               color: #f97316;
+               font-weight: bold;
+          }
+
+          .grid-container {
+               display: grid;
+               grid-template-columns: 1fr 1fr;
+               gap: 30px;
                margin-bottom: 30px;
           }
 
@@ -29,114 +48,124 @@
                margin-bottom: 20px;
           }
 
-          .table {
-               width: 100%;
-               border-collapse: collapse;
-               margin-bottom: 20px;
+          .section h2 {
+               color: #f97316;
+               font-size: 18px;
+               margin: 0 0 15px 0;
+               padding-bottom: 8px;
+               border-bottom: 1px solid #eee;
           }
 
-          .table th,
-          .table td {
-               padding: 10px;
-               border: 1px solid #ddd;
+          .info-grid {
+               display: grid;
+               grid-template-columns: auto 1fr;
+               gap: 8px 15px;
+          }
+
+          .label {
+               font-weight: bold;
+               color: #666;
+          }
+
+          .value {
+               color: #333;
+          }
+
+          .pricing-note {
+               background-color: #fff9f5;
+               border: 1px solid #f97316;
+               padding: 15px;
+               margin: 20px 0;
+               color: #666;
+          }
+
+          .pricing-note h3 {
+               color: #f97316;
+               margin: 0 0 10px 0;
+               font-size: 16px;
+          }
+
+          .pricing-note ul {
+               margin: 0;
+               padding-left: 20px;
           }
 
           .footer {
+               margin-top: 40px;
+               padding-top: 20px;
+               border-top: 1px solid #eee;
                text-align: center;
-               margin-top: 50px;
                font-size: 12px;
                color: #666;
+          }
+
+          .contact {
+               color: #f97316;
+               font-weight: bold;
+               text-decoration: none;
           }
      </style>
 </head>
 
 <body>
      <div class="header">
-          <img src="<%= process.env.BASE_URL %>/images/logo.png" alt="Morocco Tours" class="logo">
-          <h1>Booking Confirmation</h1>
-          <p>Booking Reference: <%= booking._id %>
-          </p>
+          <img src="<%= process.env.BASE_URL %>/images/logo.png" alt="Morocco Travel Experts" class="logo">
+          <div class="booking-ref">
+               <p>Booking Reference:<br><span><%= booking._id %></span></p>
+               <p>Date: <%= new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+          </div>
      </div>
 
-     <div class="booking-details">
+     <div class="grid-container">
           <div class="section">
                <h2>Tour Details</h2>
-               <table class="table">
-                    <tr>
-                         <th>Tour Name</th>
-                         <td>
-                              <%= booking.tour.title %>
-                         </td>
-                    </tr>
-                    <tr>
-                         <th>Duration</th>
-                         <td>
-                              <%= booking.tour.duration %> days
-                         </td>
-                    </tr>
-                    <tr>
-                         <th>Start Location</th>
-                         <td>
-                              <%= booking.tour.startLocation %>
-                         </td>
-                    </tr>
-               </table>
+               <div class="info-grid">
+                    <div class="label">Tour Name:</div>
+                    <div class="value"><%= booking.tour.title %></div>
+                    
+                    <div class="label">Duration:</div>
+                    <div class="value"><%= booking.tour.duration %> days</div>
+                    
+                    <div class="label">Start Location:</div>
+                    <div class="value"><%= booking.tour.startLocation %></div>
+                    
+                    <div class="label">Tour Date:</div>
+                    <div class="value"><%= new Date(booking.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></div>
+               </div>
           </div>
 
           <div class="section">
                <h2>Customer Information</h2>
-               <table class="table">
-                    <tr>
-                         <th>Name</th>
-                         <td>
-                              <%= booking.firstName %>
-                                   <%= booking.lastName %>
-                         </td>
-                    </tr>
-                    <tr>
-                         <th>Email</th>
-                         <td>
-                              <%= booking.email %>
-                         </td>
-                    </tr>
-                    <tr>
-                         <th>Group Size</th>
-                         <td>
-                              <%= booking.groupSize %> people
-                         </td>
-                    </tr>
-                    <tr>
-                         <th>Tour Date</th>
-                         <td>
-                              <%= new Date(booking.date).toLocaleDateString('en-US', { year: 'numeric' , month: 'long' , day: 'numeric' }) %>
-                         </td>
-                    </tr>
-               </table>
-          </div>
-
-          <div class="section">
-               <h2>Payment Details</h2>
-               <table class="table">
-                    <tr>
-                         <th>Total Amount</th>
-                         <td>$<%= booking.totalPrice.toLocaleString() %>
-                         </td>
-                    </tr>
-                    <tr>
-                         <th>Status</th>
-                         <td>
-                              <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
-                         </td>
-                    </tr>
-               </table>
+               <div class="info-grid">
+                    <div class="label">Name:</div>
+                    <div class="value"><%= booking.firstName %> <%= booking.lastName %></div>
+                    
+                    <div class="label">Email:</div>
+                    <div class="value"><%= booking.email %></div>
+                    
+                    <div class="label">Group Size:</div>
+                    <div class="value"><%= booking.groupSize %> people</div>
+                    
+                    <div class="label">Status:</div>
+                    <div class="value">Pending Confirmation</div>
+               </div>
           </div>
      </div>
 
+     <div class="pricing-note">
+          <h3>Pricing Information</h3>
+          <p>We offer personalized pricing based on group size, season, accommodation preferences, and additional services. Our team will contact you shortly with a detailed quote tailored to your requirements.</p>
+          <ul>
+               <li>Customized pricing for your group of <%= booking.groupSize %> people</li>
+               <li>Flexible payment options available</li>
+               <li>Special rates for early bookings</li>
+          </ul>
+     </div>
+
      <div class="footer">
-          <p>Thank you for choosing Morocco Tours</p>
-          <p>For any inquiries, please contact us at support@morocctours.com</p>
-          <p>Generated on <%= new Date().toLocaleString() %>
-          </p>
+          <p>Thank you for choosing Morocco Travel Experts for your adventure!</p>
+          <p>For any inquiries, please contact us at <span class="contact">contact@moroccotravelexperts.com</span></p>
+          <p>Morocco Travel Experts - Your Gateway to Authentic Moroccan Experiences</p>
      </div>
 </body>
 
