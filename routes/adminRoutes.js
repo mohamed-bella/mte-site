@@ -9,6 +9,7 @@ const multer = require('multer');
 const path = require('path');
 const Setting = require('../models/Setting');
 const StartingCity = require('../models/StartingCity');
+const CustomTourRequest = require('../models/CustomTourRequest');
 
 const storage = multer.memoryStorage(); // Change to memory storage for GitHub uploads
 
@@ -775,5 +776,71 @@ router.get('/starting-cities/:id/edit', async (req, res) => {
     }
 });
 
+// Custom Tour Requests Routes
+router.get('/custom-requests', async (req, res) => {
+    try {
+        const customRequests = await CustomTourRequest.find()
+            .populate('baseTour', 'title')
+            .sort({ createdAt: -1 });
+        
+        res.render('admin/custom-requests', {
+            title: 'Custom Tour Requests',
+            path: '/admin/custom-requests',
+            customRequests
+        });
+    } catch (error) {
+        console.error('Error loading custom requests:', error);
+        req.flash('error', 'Error loading custom tour requests');
+        res.redirect('/admin/dashboard');
+    }
+});
+
+router.get('/custom-requests/:id', async (req, res) => {
+    try {
+        const customRequest = await CustomTourRequest.findById(req.params.id)
+            .populate('baseTour', 'title price duration startLocation');
+        
+        if (!customRequest) {
+            req.flash('error', 'Custom tour request not found');
+            return res.redirect('/admin/custom-requests');
+        }
+        
+        res.render('admin/custom-request-details', {
+            title: 'Custom Request Details',
+            path: '/admin/custom-requests',
+            customRequest
+        });
+    } catch (error) {
+        console.error('Error loading custom request details:', error);
+        req.flash('error', 'Error loading custom request details');
+        res.redirect('/admin/custom-requests');
+    }
+});
+
+router.post('/custom-requests/:id/update-status', async (req, res) => {
+    try {
+        const { status } = req.body;
+        const customRequest = await CustomTourRequest.findByIdAndUpdate(
+            req.params.id,
+            { 
+                status,
+                updatedAt: Date.now() 
+            },
+            { new: true }
+        );
+        
+        if (!customRequest) {
+            req.flash('error', 'Custom tour request not found');
+            return res.redirect('/admin/custom-requests');
+        }
+        
+        req.flash('success', 'Custom tour request status updated successfully');
+        res.redirect('/admin/custom-requests');
+    } catch (error) {
+        console.error('Error updating custom request status:', error);
+        req.flash('error', 'Error updating custom request status');
+        res.redirect('/admin/custom-requests');
+    }
+});
 
 module.exports = router;

@@ -1,24 +1,28 @@
 // // controllers/adminController.js
 // const Tour = require('../models/Tour');
 // const Booking = require('../models/Booking');
+const CustomTourRequest = require('../models/CustomTourRequest');
 // const slugify = require('slugify');
 
-// // Tour Management
+// Tour Management
 exports.getDashboard = async (req, res) => {
      try {
-          const totalTours = await Tour.countDocuments() || 0;
-          const totalBookings = await Booking.countDocuments() || 0;
-          // const recentBookings = await Booking.find()
-          //      .populate('tour', 'title')
-
-          //      .sort('-createdAt')
-          //      .limit(5);
+          const [tourCount, bookingCount, pendingBookings, customRequestsCount] = await Promise.all([
+               Tour.countDocuments() || 0,
+               Booking.countDocuments() || 0,
+               Booking.countDocuments({ status: 'pending' }) || 0,
+               CustomTourRequest.countDocuments() || 0
+          ]);
 
           res.render('admin/dashboard', {
                title: 'Admin Dashboard',
-               totalTours,
-               totalBookings,
-               // recentBookings
+               path: '/admin/dashboard',
+               stats: {
+                    tourCount,
+                    bookingCount,
+                    pendingBookings,
+                    customRequestsCount
+               }
           });
      } catch (error) {
           req.flash('error', 'Error loading dashboard');
@@ -275,5 +279,67 @@ exports.getDashboard = async (req, res) => {
 //           title: 'Admin Settings'
 //      });
 // };
+
+// Custom Tour Requests Management
+exports.getAllCustomRequests = async (req, res) => {
+     try {
+          const customRequests = await CustomTourRequest.find()
+               .populate('baseTour', 'title')
+               .sort('-createdAt');
+
+          res.render('admin/custom-requests', {
+               title: 'Custom Tour Requests',
+               customRequests
+          });
+     } catch (error) {
+          req.flash('error', 'Error loading custom tour requests');
+          res.redirect('/admin/dashboard');
+     }
+};
+
+exports.getCustomRequestDetails = async (req, res) => {
+     try {
+          const customRequest = await CustomTourRequest.findById(req.params.id)
+               .populate('baseTour', 'title price duration startLocation');
+
+          if (!customRequest) {
+               req.flash('error', 'Custom tour request not found');
+               return res.redirect('/admin/custom-requests');
+          }
+
+          res.render('admin/custom-request-details', {
+               title: 'Custom Request Details',
+               customRequest
+          });
+     } catch (error) {
+          req.flash('error', 'Error loading custom request details');
+          res.redirect('/admin/custom-requests');
+     }
+};
+
+exports.updateCustomRequestStatus = async (req, res) => {
+     try {
+          const { status } = req.body;
+          const customRequest = await CustomTourRequest.findByIdAndUpdate(
+               req.params.id,
+               { 
+                    status,
+                    updatedAt: Date.now() 
+               },
+               { new: true }
+          );
+
+          if (!customRequest) {
+               req.flash('error', 'Custom tour request not found');
+               return res.redirect('/admin/custom-requests');
+          }
+
+          req.flash('success', 'Custom tour request status updated successfully');
+          res.redirect('/admin/custom-requests');
+     } catch (error) {
+          req.flash('error', 'Error updating custom request status');
+          res.redirect('/admin/custom-requests');
+     }
+};
 
 // module.exports = exports;

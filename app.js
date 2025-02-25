@@ -129,6 +129,7 @@ const authenticateAdmin = (req, res, next) => {
 // Routes
 const adminRouter = require('./routes/adminRoutes');
 const indexRouter = require('./routes/index');
+const bookingRouter = require('./routes/bookingRoutes');
 
 // Admin login page
 app.get('/admin/login', (req, res) => {
@@ -162,6 +163,7 @@ app.post('/admin/login', (req, res) => {
 
 // Route usage - Move index router after admin routes to prevent conflicts
 app.use('/admin', authenticateAdmin, adminRouter);
+app.use('/bookings', bookingRouter);
 app.get('/admin', (req, res) => {
      res.redirect('/admin/dashboard');
 });
