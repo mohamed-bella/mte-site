@@ -295,37 +295,37 @@
                     <div class="space-y-4">
                          <% tour.itinerary.forEach((day, index) => { %>
                          <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                              <div class="collapse-header cursor-pointer w-full px-6 py-4 flex items-center justify-between text-left"
+                              <div class="collapse-header cursor-pointer w-full px-4 sm:px-6 py-4 flex items-center justify-between text-left"
                                    onclick="toggleCollapse(this)">
-                                   <div class="flex items-center gap-4">
-                                        <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                                             <span class="text-white font-bold">Day <%= day.day %></span>
-                                        </div>
+                                   <div class="flex items-center gap-3 sm:gap-4">
+                                       
                                         <div>
-                                             <h3 class="text-lg font-semibold"><%= day.title %></h3>
+                                             <h3 class="text-base sm:text-lg font-bold text-gray-800">
+                                                  <span class="hidden sm:inline text-orange-600">Day <%= day.day %>:</span> <%= day.title %>
+                                             </h3>
                                              <% if(day.distance) { %>
-                                             <p class="text-sm text-gray-500">Distance: <%= day.distance %></p>
+                                             <p class="text-xs sm:text-sm text-gray-500">Distance: <%= day.distance %></p>
                                              <% } %>
                                         </div>
                                    </div>
-                                   <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-300">
+                                   <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                              d="M19 9l-7 7-7-7"/>
                                    </svg>
                               </div>
 
-                              <div class="collapse-content hidden px-6 pb-6">
-                                   <p class="text-gray-600 mb-6"><%= day.description %></p>
+                              <div class="collapse-content hidden px-4 sm:px-6 pb-5">
+                                   <p class="text-sm sm:text-base text-gray-600 mb-5"><%= day.description %></p>
                                    
                                    <% if (day.highlights && day.highlights.length > 0) { %>
-                                   <div class="space-y-4">
-                                        <h4 class="font-medium flex items-center gap-2">
+                                   <div class="space-y-3">
+                                        <h4 class="text-sm sm:text-base font-medium flex items-center gap-2">
                                              <i class="fas fa-star text-orange-500"></i>
                                              Highlights
                                         </h4>
                                         <div class="flex flex-wrap gap-2">
                                              <% day.highlights.forEach(highlight => { %>
-                                             <span class="px-3 py-1.5 bg-orange-50 text-orange-700 rounded-lg text-sm">
+                                             <span class="px-2 sm:px-3 py-1 sm:py-1.5 bg-orange-50 text-orange-700 rounded-lg text-xs sm:text-sm">
                                                   <%= highlight %>
                                              </span>
                                              <% }) %>
