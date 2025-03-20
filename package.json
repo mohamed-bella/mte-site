@@ -26,6 +26,7 @@
     "@vercel/analytics": "^1.5.0",
     "alpinejs": "^3.13.3",
     "aos": "^2.3.4",
+    "axios": "^1.8.4",
     "bcryptjs": "^2.4.3",
     "chart.js": "^4.0.0",
     "cheerio": "^1.0.0",

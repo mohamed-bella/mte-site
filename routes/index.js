@@ -15,6 +15,7 @@ const { scrapeGoogleReviews } = require('../utils/reviewScraper');
 const Blog = require('../models/Blog');
 const homeController = require('../controllers/homeController');
 const { csrfProtection } = require('../middleware/security');
+const axios = require('axios');
 
 dotenv.config();
 
@@ -399,6 +400,56 @@ router.get('/reviews', async (req, res) => {
       error: { status: 500, stack: process.env.NODE_ENV === 'development' ? error.stack : '' }
     });
   }
+});
+
+// First-time visitor notification route - will be called via fetch from the frontend
+router.post('/visitor-notification', async (req, res) => {
+    try {
+        const { 
+            browser, 
+            language, 
+            screenSize, 
+            referrer, 
+            tour,
+            tourPrice,
+            tourDuration
+        } = req.body;
+        
+        const siteUrl = process.env.BASE_URL || 'https://moroccotravelexperts.com';
+        
+        // Format the message with detailed visitor information
+        const message = `🌟 New Visitor!\n\n` +
+            `🔍 Viewing: ${tour || 'Homepage'}\n` +
+            (tourPrice ? `💲 Tour Price: ${tourPrice}\n` : '') +
+            (tourDuration ? `⏱️ Duration: ${tourDuration}\n\n` : '\n') +
+            `📱 Device: ${browser}\n` +
+            `🌐 Language: ${language}\n` +
+            `🖥️ Screen: ${screenSize}\n` +
+            `🔗 Referrer: ${referrer}\n` +
+            `🔌 IP: ${req.ip || 'Unknown'}\n` +
+            `🌍 Website: ${siteUrl}\n` +
+            `⏰ Time: ${new Date().toLocaleString()}`;
+            
+        // Phone number to API key mapping
+        const phoneConfigs = [
+            { phone: '212704969534', apiKey: '1595998' },
+            { phone: '212632244668', apiKey: '7574261' }  // New number with its specific API key
+        ];
+        
+        // Send to all phone numbers with their respective API keys
+        const promises = phoneConfigs.map(async (config) => {
+            const apiUrl = `https://api.callmebot.com/whatsapp.php?phone=${config.phone}&text=${encodeURIComponent(message)}&apikey=${config.apiKey}`;
+            return axios.get(apiUrl);
+        });
+        
+        // Wait for all requests to complete
+        await Promise.all(promises);
+        
+        return res.status(200).json({ success: true });
+    } catch (error) {
+        console.error('Error sending visitor notification:', error);
+        return res.status(500).json({ success: false });
+    }
 });
 
 module.exports = router;

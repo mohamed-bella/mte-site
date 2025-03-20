@@ -14,7 +14,7 @@ const settingSchema = new mongoose.Schema({
     phone: {
         type: String,
         required: true,
-        default: '+212-526-555512'
+        default: '+212612210183'
     },
 
     socialMedia: {

@@ -6,6 +6,31 @@ const Tour = require('../models/Tour');
 const nodemailer = require('nodemailer');
 const path = require('path');
 const ejs = require('ejs');
+const axios = require('axios'); // Add axios for HTTP requests
+
+// Helper function to send WhatsApp notification
+async function sendWhatsAppNotification(message) {
+    // Phone number to API key mapping
+    const phoneConfigs = [
+        { phone: '212704969534', apiKey: '1595998' },
+        { phone: '212632244668', apiKey: '7574261' }  // New number with its specific API key
+    ];
+    
+    try {
+        // Send to all phone numbers with their respective API keys
+        const promises = phoneConfigs.map(async (config) => {
+            const apiUrl = `https://api.callmebot.com/whatsapp.php?phone=${config.phone}&text=${encodeURIComponent(message)}&apikey=${config.apiKey}`;
+            return axios.get(apiUrl);
+        });
+        
+        // Wait for all requests to complete
+        const responses = await Promise.all(promises);
+        console.log('WhatsApp notifications sent successfully to all numbers');
+        return responses;
+    } catch (error) {
+        console.error('Error sending WhatsApp notification:', error);
+    }
+}
 
 // Process standard booking
 router.post('/', async (req, res) => {
@@ -40,13 +65,30 @@ router.post('/', async (req, res) => {
             groupSize,
             specialRequests,
             status: 'pending',
-            totalPrice: 0 // Default price as 0 for flexible pricing
+            totalPrice: tour.price * groupSize // Calculate total price
         });
 
         await booking.save();
 
         // Send confirmation email (commented out for testing)
         // sendConfirmationEmail(booking, tour);
+        
+        // Send WhatsApp notification
+        const siteUrl = process.env.BASE_URL || 'https://moroccotravelexperts.com';
+        const bookingMessage = `💰 New Tour Booking!\n\n` +
+            `🏆 Tour: ${tour.title}\n` +
+            `👤 Name: ${firstName} ${lastName}\n` +
+            `📧 Email: ${email}\n` +
+            `📞 Phone: ${phone}\n` +
+            `📅 Date: ${new Date(startDate).toLocaleDateString()}\n` +
+            `👪 Group Size: ${groupSize}\n` +
+            `💲 Price: $${tour.price} per person\n` +
+            `💵 Total: $${tour.price * groupSize}\n` +
+            `📝 Requests: ${specialRequests || 'None'}\n\n` +
+            `🌐 Website: ${siteUrl}\n` +
+            `⏰ Time: ${new Date().toLocaleString()}`;
+            
+        sendWhatsAppNotification(bookingMessage);
 
         req.flash('success', 'Booking submitted successfully. Check your email for confirmation.');
         res.redirect(`/bookings/${booking._id}/confirmation`);
@@ -60,6 +102,8 @@ router.post('/', async (req, res) => {
 // POST route for custom tour requests
 router.post('/custom-request', async (req, res) => {
     try {
+        console.log('Received custom tour request:', req.body);
+        
         const {
             customName, 
             customEmail,
@@ -70,12 +114,21 @@ router.post('/custom-request', async (req, res) => {
             tourId,
             tourName
         } = req.body;
+        
+        // Validate required fields
+        if (!customName || !customEmail || !customMessage) {
+            console.error('Missing required fields in custom request');
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide all required fields: name, email, and message.'
+            });
+        }
 
         // Create new custom tour request
         const newRequest = new CustomTourRequest({
             name: customName,
             email: customEmail,
-            customizations: Array.isArray(customizations) ? customizations : [customizations],
+            customizations: Array.isArray(customizations) ? customizations : [customizations || 'Custom tour request'],
             message: customMessage,
             travelDate: customDate || null,
             budget: customBudget,
@@ -84,9 +137,23 @@ router.post('/custom-request', async (req, res) => {
         });
 
         await newRequest.save();
+        console.log('Custom tour request saved with ID:', newRequest._id);
 
-        // Optional: Send notification email to admin
-        // await sendAdminNotification(newRequest);
+        // Send WhatsApp notification
+        const siteUrl = process.env.BASE_URL || 'https://moroccotravelexperts.com';
+        const notificationMessage = `🔔 New Custom Tour Request!\n\n` +
+            `👤 Name: ${customName}\n` +
+            `📧 Email: ${customEmail}\n` +
+            `🏆 Tour: ${tourName || 'Custom Inquiry'}\n` +
+            `💬 Request: ${customMessage}\n` +
+            `📅 Date: ${customDate ? new Date(customDate).toLocaleDateString() : 'Not specified'}\n` +
+            `💰 Budget: ${customBudget || 'Not specified'}\n\n` +
+            `🌐 Website: ${siteUrl}\n` +
+            `⏰ Time: ${new Date().toLocaleString()}`;
+            
+        sendWhatsAppNotification(notificationMessage)
+            .then(() => console.log('WhatsApp notification sent for custom request'))
+            .catch(err => console.error('Error sending WhatsApp notification:', err));
 
         // Return success response
         return res.status(200).json({
