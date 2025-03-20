@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+     <%- include('../partials/head', { 
+          title: `${tour.title} | Morocco Travel Experts - Desert Tours & Adventures`,
+          metaDescription: `Experience ${tour.title} with Morocco Travel Experts. ${tour.duration} days tour from ${tour.startLocation}. Professional guides, authentic experiences. Book now from $${tour.price}!`,
+          metaKeywords: `morocco tours, ${tour.startLocation} tours, morocco travel, ${tour.duration} day tours, ${tour.title}, desert adventure`,
+          canonicalUrl: `https://moroccotravelexperts.com/tours/${tour.slug}`,
+          ogImage: tour.mainImage,
+          ogImageAlt: `${tour.title} - Morocco Tours and Travel Experiences`,
+          ogType: 'product',
+          price: tour.price,
+          currency: 'USD',
+          availability: 'instock',
+          tourDuration: tour.duration
+     }) %>
+     
+     <!-- Schema.org markup for Tour -->
+     <script type="application/ld+json">
+     {
+          "@context": "https://schema.org",
+          "@type": "TouristTrip",
+          "name": "<%= tour.title %>",
+          "description": "<%= tour.description %>",
+          "image": ["<%= tour.mainImage %>", "<% if (tour.gallery && tour.gallery.length) { %><%= tour.gallery[0] %><% } %>"],
+          "url": "https://moroccotravelexperts.com/tours/<%= tour.slug %>",
+          "touristType": ["Adventure Travel", "Cultural Tourism", "Desert Tours", "Morocco Tours", "Moroccan Experiences"],
+          "provider": {
+               "@type": "TravelAgency",
+               "name": "Morocco Travel Experts",
+               "url": "https://moroccotravelexperts.com",
+               "logo": "https://moroccotravelexperts.com/images/logo.png",
+               "priceRange": "$$",
+               "telephone": "+212123456789",
+               "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": "123 Tourism Street",
+                    "addressLocality": "Marrakech",
+                    "addressRegion": "Marrakech-Safi",
+                    "postalCode": "40000",
+                    "addressCountry": "MA"
+               }
+          },
+          "offers": {
+               "@type": "Offer",
+               "price": "<%= tour.price %>",
+               "priceCurrency": "USD",
+               "url": "https://moroccotravelexperts.com/tours/<%= tour.slug %>",
+               "availability": "https://schema.org/InStock",
+               "validFrom": "2025-01-01",
+               "priceValidUntil": "2025-12-31"
+          },
+          "duration": "P<%= tour.duration %>D",
+          "maximumAttendeeCapacity": <%= tour.groupSize %>,
+          "itinerary": {
+               "@type": "ItemList",
+               "itemListElement": [
+                    <% if (tour.itinerary && tour.itinerary.length) { %>
+                    <% tour.itinerary.forEach((day, index) => { %>
+                    {
+                         "@type": "ListItem",
+                         "position": <%= index + 1 %>,
+                         "item": {
+                              "@type": "TouristDestination",
+                              "name": "Day <%= index + 1 %>: <%= day.title %>",
+                              "description": "<%= day.description %>"
+                         }
+                    }<%= index < tour.itinerary.length - 1 ? ',' : '' %>
+                    <% }); %>
+                    <% } else { %>
+                    {
+                         "@type": "ListItem",
+                         "position": 1,
+                         "item": {
+                              "@type": "TouristDestination",
+                              "name": "Complete Morocco Experience",
+                              "description": "<%= tour.description %>"
+                         }
+                    }
+                    <% } %>
+               ]
+          },
+          "startingLocation": {
+               "@type": "Place",
+               "name": "<%= tour.startLocation %>",
+               "address": {
+                    "@type": "PostalAddress",
+                    "addressCountry": "MA",
+                    "addressLocality": "<%= tour.startLocation %>"
+               }
+          },
+          "isAccessibleForFree": false,
+          "aggregateRating": {
+               "@type": "AggregateRating",
+               "ratingValue": "<%= tour.rating %>",
+               "reviewCount": "<%= tour.reviewsCount %>",
+               "bestRating": "5",
+               "worstRating": "1"
+          },
+          "review": [
+               <% if (tour.reviews && tour.reviews.length) { %>
+               <% tour.reviews.slice(0, 3).forEach((review, index) => { %>
+               {
+                    "@type": "Review",
+                    "author": {
+                         "@type": "Person",
+                         "name": "<%= review.name %>"
+                    },
+                    "datePublished": "<%= new Date(review.date).toISOString() %>",
+                    "reviewRating": {
+                         "@type": "Rating",
+                         "ratingValue": "<%= review.rating %>",
+                         "bestRating": "5"
+                    },
+                    "reviewBody": "<%= review.text %>"
+               }<%= index < Math.min(tour.reviews.length, 3) - 1 ? ',' : '' %>
+               <% }); %>
+               <% } else { %>
+               {
+                    "@type": "Review",
+                    "author": {
+                         "@type": "Person",
+                         "name": "John Smith"
+                    },
+                    "datePublished": "2025-03-15T12:00:00Z",
+                    "reviewRating": {
+                         "@type": "Rating",
+                         "ratingValue": "5",
+                         "bestRating": "5"
+                    },
+                    "reviewBody": "An amazing experience exploring Morocco. The tour was well organized and our guide was knowledgeable and friendly."
+               }
+               <% } %>
+          ],
+          "includesObject": [
+               <% tour.includes.forEach((item, index) => { %>
+               {
+                    "@type": "Offer",
+                    "name": "<%= item %>"
+               }<%= index < tour.includes.length - 1 ? ',' : '' %>
+               <% }) %>
+          ]
+     }
+     </script>
+
+     <!-- Additional Product Schema.org for rich search results -->
+     <script type="application/ld+json">
+     {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "name": "<%= tour.title %>",
+          "image": ["<%= tour.mainImage %>", "<% if (tour.gallery && tour.gallery.length) { %><%= tour.gallery[0] %><% } %>"],
+          "description": "<%= tour.description %>",
+          "sku": "TOUR-<%= tour._id %>",
+          "mpn": "MTE-<%= tour._id %>",
+          "brand": {
+               "@type": "Brand",
+               "name": "Morocco Travel Experts"
+          },
+          "offers": {
+               "@type": "Offer",
+               "url": "https://moroccotravelexperts.com/tours/<%= tour.slug %>",
+               "priceCurrency": "USD",
+               "price": "<%= tour.price %>",
+               "priceValidUntil": "2025-12-31",
+               "availability": "https://schema.org/InStock",
+               "seller": {
+                    "@type": "Organization",
+                    "name": "Morocco Travel Experts"
+               }
+          },
+          "aggregateRating": {
+               "@type": "AggregateRating",
+               "ratingValue": "<%= tour.rating %>",
+               "reviewCount": "<%= tour.reviewsCount %>",
+               "bestRating": "5",
+               "worstRating": "1"
+          }
+     }
+     </script>
+
+     <!-- Leaflet CSS -->
+     <link href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" rel="stylesheet">
+     
+     <!-- Lightbox CSS -->
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50">
+     <%- include('../partials/header') %>
+
+     <!-- Hero Section with Parallax -->
+     <section class="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
+          <div class="absolute inset-0 transform scale-105" style="background: url('<%= tour.mainImage %>') center/cover no-repeat;" data-parallax="scroll" data-speed="0.3"></div>
+          <div class="absolute inset-0 bg-gradient-to-b from-black/60 to-black/40"></div>
+
+          <div class="relative container mx-auto px-4 py-20 text-center text-white">
+               <div class="max-w-4xl mx-auto">
+                    <span class="inline-block px-4 py-2 bg-orange-500/90 rounded-full text-sm font-medium mb-6">
+                         <%= tour.duration %> Days Adventure
+                    </span>
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                         <%= tour.title %>
+                    </h1>
+                    
+                    <!-- Hero Action Buttons -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+                         <a href="#booking" class="w-full sm:w-auto px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-full shadow-lg transition-all duration-300 flex items-center justify-center gap-2">
+                              <i class="fas fa-calendar-check"></i>
+                              <span>Book This Tour</span>
+                         </a>
+                         <button onclick="openCustomizeModal()" class="w-full sm:w-auto px-8 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-full shadow-lg transition-all duration-300 flex items-center justify-center gap-2">
+                              <i class="fas fa-magic"></i>
+                              <span>Customize This Tour</span>
+                         </button>
+                    </div>
+                    
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto mt-8">
+                         <div class="bg-white/20 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:bg-white/30 transition-all duration-300">
+                              <i class="fas fa-clock text-orange-400 text-3xl mb-3"></i>
+                              <p class="text-sm text-gray-100 font-medium">Duration</p>
+                              <p class="font-bold text-xl"><%= tour.duration %> Days</p>
+                         </div>
+                         <div class="bg-white/20 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:bg-white/30 transition-all duration-300">
+                              <i class="fas fa-users text-orange-400 text-3xl mb-3"></i>
+                              <p class="text-sm text-gray-100 font-medium">Group Size</p>
+                              <p class="font-bold text-xl">Max <%= tour.groupSize %></p>
+                         </div>
+                         <div class="bg-white/20 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:bg-white/30 transition-all duration-300">
+                              <i class="fas fa-map-marker-alt text-orange-400 text-3xl mb-3"></i>
+                              <p class="text-sm text-gray-100 font-medium">Starting Point</p>
+                              <p class="font-bold text-xl"><%= tour.startLocation %></p>
+                         </div>
+                         <div class="bg-white/20 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:bg-white/30 transition-all duration-300">
+                              <i class="fas fa-star text-orange-400 text-3xl mb-3"></i>
+                              <p class="text-sm text-gray-100 font-medium">Rating</p>
+                              <p class="font-bold text-xl"><%= tour.rating %>/5</p>
+                         </div>
+                    </div>
+               </div>
+          </div>
+
+          <!-- Scroll Indicator -->
+          <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+               <a href="#overview" class="text-white/80 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                    </svg>
+               </a>
+          </div>
+     </section>
+
+     <!-- Modified Sticky Navigation Slider - Right Side With Improved Z-Index -->
+     <div class="fixed right-4 top-1/2 transform -translate-y-1/2 z-50 hidden lg:block">
+          <div class="bg-white rounded-xl shadow-lg p-4 space-y-3">
+               <a href="#overview" class="nav-link flex items-center space-x-2 text-sm text-gray-600 hover:text-orange-500 transition-colors">
+                    <div class="w-2 h-2 rounded-full bg-orange-500"></div>
+                    <span>Overview</span>
+               </a>
+               <a href="#route" class="nav-link flex items-center space-x-2 text-sm text-gray-600 hover:text-orange-500 transition-colors">
+                    <div class="w-2 h-2 rounded-full bg-orange-500"></div>
+                    <span>Route</span>
+               </a>
+               <a href="#gallery" class="nav-link flex items-center space-x-2 text-sm text-gray-600 hover:text-orange-500 transition-colors">
+                    <div class="w-2 h-2 rounded-full bg-orange-500"></div>
+                    <span>Gallery</span>
+               </a>
+               <a href="#itinerary" class="nav-link flex items-center space-x-2 text-sm text-gray-600 hover:text-orange-500 transition-colors">
+                    <div class="w-2 h-2 rounded-full bg-orange-500"></div>
+                    <span>Itinerary</span>
+               </a>
+               <a href="#details" class="nav-link flex items-center space-x-2 text-sm text-gray-600 hover:text-orange-500 transition-colors">
+                    <div class="w-2 h-2 rounded-full bg-orange-500"></div>
+                    <span>Details</span>
+               </a>
+               <a href="#booking" class="nav-link flex items-center space-x-2 text-sm text-gray-600 hover:text-orange-500 transition-colors">
+                    <div class="w-2 h-2 rounded-full bg-orange-500"></div>
+                    <span>Book</span>
+               </a>
+          </div>
+     </div>
+
+     <!-- Modified Action Button Layout for Mobile -->
+     <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-[70] pb-safe">
+          <div class="container flex items-center justify-between p-3 gap-2">
+               <a href="#booking" class="w-1/2 text-center py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow transition-colors flex items-center justify-center gap-2">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Book Tour</span>
+               </a>
+               <button onclick="openCustomizeModal()" class="w-1/2 text-center py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg shadow transition-colors flex items-center justify-center gap-2">
+                    <i class="fas fa-magic"></i>
+                    <span>Customize</span>
+               </button>
+          </div>
+     </div>
+
+     <!-- Modified Mobile Navigation - Placed above action buttons -->
+     <div class="lg:hidden fixed bottom-[72px] left-1/2 transform -translate-x-1/2 z-50 w-[90%] max-w-md">
+          <div class="bg-white rounded-full shadow-lg p-2 overflow-x-auto hide-scrollbar">
+               <div class="flex space-x-4 px-2 justify-between">
+                    <a href="#overview" class="nav-link whitespace-nowrap px-3 py-1 text-sm text-gray-600 hover:text-orange-500 transition-colors">Overview</a>
+                    <a href="#route" class="nav-link whitespace-nowrap px-3 py-1 text-sm text-gray-600 hover:text-orange-500 transition-colors">Route</a>
+                    <a href="#gallery" class="nav-link whitespace-nowrap px-3 py-1 text-sm text-gray-600 hover:text-orange-500 transition-colors">Gallery</a>
+                    <a href="#itinerary" class="nav-link whitespace-nowrap px-3 py-1 text-sm text-gray-600 hover:text-orange-500 transition-colors">Itinerary</a>
+                    <a href="#details" class="nav-link whitespace-nowrap px-3 py-1 text-sm text-gray-600 hover:text-orange-500 transition-colors">Details</a>
+                    <a href="#booking" class="nav-link whitespace-nowrap px-3 py-1 text-sm text-gray-600 hover:text-orange-500 transition-colors">Book</a>
+               </div>
+          </div>
+     </div>
+
+     <!-- Overview Section -->
+     <section id="overview" class="py-20 bg-white">
+          <div class="container mx-auto px-4">
+               <div class="grid lg:grid-cols-2 gap-12 items-start">
+                    <!-- Tour Overview -->
+                    <div>
+                         <h2 class="text-3xl font-bold mb-6">Tour Overview</h2>
+                         <div class="prose prose-lg">
+                              <%= tour.description %>
+                         </div>
+                         
+                         <!-- Includes & Excludes -->
+                         <div class="grid md:grid-cols-2 gap-8 mt-12">
+                              <div class="bg-gray-50 rounded-xl p-6">
+                                   <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-green-500"></i>
+                                        What's Included
+                                   </h3>
+                                   <ul class="space-y-3">
+                                        <% tour.includes.forEach(item => { %>
+                                        <li class="flex items-start gap-2">
+                                             <i class="fas fa-check text-green-500 mt-1"></i>
+                                             <span><%= item %></span>
+                                        </li>
+                                        <% }) %>
+                                   </ul>
+                              </div>
+                              <div class="bg-gray-50 rounded-xl p-6">
+                                   <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                                        <i class="fas fa-times-circle text-red-500"></i>
+                                        What's Not Included
+                                   </h3>
+                                   <ul class="space-y-3">
+                                        <% tour.excludes.forEach(item => { %>
+                                        <li class="flex items-start gap-2">
+                                             <i class="fas fa-times text-red-500 mt-1"></i>
+                                             <span><%= item %></span>
+                                        </li>
+                                        <% }) %>
+                                   </ul>
+                              </div>
+                         </div>
+                    </div>
+
+                    <!-- Map -->
+                    <div class="lg:sticky lg:top-24">
+                         <div class="bg-gray-50 rounded-xl p-6">
+                              <h3 class="text-xl font-bold mb-4">Tour Route</h3>
+                              <% if (tour.mapImage) { %>
+                                   <img src="<%= tour.mapImage %>" 
+                                        alt="Tour route map" 
+                                        class="w-full rounded-lg shadow-md">
+                              <% } else { %>
+                                   <p class="text-gray-500 text-center py-8">No route map available</p>
+                              <% } %>
+                         </div>
+                    </div>
+               </div>
+          </div>
+     </section>
+
+     <!-- Route Section -->
+     <section id="route" class="py-20 bg-gray-50">
+          <div class="container mx-auto px-4">
+               <div class="text-center mb-12">
+                    <span class="text-orange-500 font-medium">Your Journey</span>
+                    <h2 class="text-3xl font-bold mt-2">Day by Day Itinerary</h2>
+               </div>
+
+               <div class="max-w-4xl mx-auto">
+                    <div class="space-y-4">
+                         <% tour.itinerary.forEach((day, index) => { %>
+                         <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                              <div class="collapse-header cursor-pointer w-full px-4 sm:px-6 py-4 flex items-center justify-between text-left"
+                                   onclick="toggleCollapse(this)">
+                                   <div class="flex items-center gap-3 sm:gap-4">
+                                       
+                                        <div>
+                                             <h3 class="text-base sm:text-lg font-bold text-gray-800">
+                                                  <span class="hidden sm:inline text-orange-600">Day <%= day.day %>:</span> <%= day.title %>
+                                             </h3>
+                                             <% if(day.distance) { %>
+                                             <p class="text-xs sm:text-sm text-gray-500">Distance: <%= day.distance %></p>
+                                             <% } %>
+                                        </div>
+                                   </div>
+                                   <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                             d="M19 9l-7 7-7-7"/>
+                                   </svg>
+                              </div>
+
+                              <div class="collapse-content hidden px-4 sm:px-6 pb-5">
+                                   <p class="text-sm sm:text-base text-gray-600 mb-5"><%= day.description %></p>
+                                   
+                                   <% if (day.highlights && day.highlights.length > 0) { %>
+                                   <div class="space-y-3">
+                                        <h4 class="text-sm sm:text-base font-medium flex items-center gap-2">
+                                             <i class="fas fa-star text-orange-500"></i>
+                                             Highlights
+                                        </h4>
+                                        <div class="flex flex-wrap gap-2">
+                                             <% day.highlights.forEach(highlight => { %>
+                                             <span class="px-2 sm:px-3 py-1 sm:py-1.5 bg-orange-50 text-orange-700 rounded-lg text-xs sm:text-sm">
+                                                  <%= highlight %>
+                                             </span>
+                                             <% }) %>
+                                        </div>
+                                   </div>
+                                   <% } %>
+                              </div>
+                         </div>
+                         <% }) %>
+                    </div>
+               </div>
+          </div>
+     </section>
+
+     <!-- Gallery Section -->
+     <section id="gallery" class="py-20 bg-white">
+          <div class="container mx-auto px-4 py-8">
+               <!-- Main Gallery Grid -->
+               <div class="grid grid-cols-4 gap-2 h-[480px] rounded-xl overflow-hidden">
+                    <!-- Main large image -->
+                    <div class="col-span-2 row-span-2 relative group">
+                         <img src="<%= tour.images[0] %>" 
+                              alt="<%= tour.title %> - Main View"
+                              class="w-full h-full object-cover cursor-pointer hover:brightness-90 transition">
+                    </div>
+                    
+                    <!-- Grid of smaller images -->
+                    <% tour.images.slice(1, 5).forEach((image, index) => { %>
+                    <div class="relative group">
+                         <img src="<%= image %>" 
+                              alt="<%= tour.title %> - View <%= index + 2 %>"
+                              class="w-full h-full object-cover cursor-pointer hover:brightness-90 transition">
+                    </div>
+                    <% }) %>
+
+                    <!-- Show all photos button -->
+                    <button onclick="openGalleryModal()" 
+                            class="absolute bottom-4 right-8 bg-white px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-shadow
+                                   flex items-center gap-2 font-medium">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                         </svg>
+                         Show all photos
+                    </button>
+               </div>
+          </div>
+
+          <!-- Full Screen Modal Gallery -->
+          <div id="galleryModal" class="fixed inset-0 bg-black z-50 hidden">
+               <div class="h-full relative">
+                    <!-- Close button -->
+                    <button onclick="closeGalleryModal()" 
+                            class="absolute top-4 left-4 text-white bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors z-10">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                         </svg>
+                    </button>
+
+                    <!-- Swiper container -->
+                    <div class="swiper h-full">
+                         <div class="swiper-wrapper">
+                              <% tour.images.forEach((image, index) => { %>
+                              <div class="swiper-slide">
+                                   <div class="flex items-center justify-center h-full">
+                                        <img src="<%= image %>" 
+                                             alt="<%= tour.title %> - View <%= index + 1 %>"
+                                             class="max-h-full max-w-full object-contain">
+                                   </div>
+                              </div>
+                              <% }) %>
+                         </div>
+                         
+                         <!-- Navigation -->
+                         
+                         <!-- Pagination -->
+                         <div class="swiper-pagination"></div>
+                    </div>
+               </div>
+          </div>
+     </section>
+
+     <!-- Itinerary Section -->
+     <section id="itinerary" class="py-20 bg-white">
+          <div class="container mx-auto px-4">
+               <div class="text-center mb-12">
+                    <span class="text-orange-500 font-medium">Your Journey</span>
+                    <h2 class="text-3xl font-bold mt-2">Day by Day Itinerary</h2>
+               </div>
+
+               <div class="max-w-4xl mx-auto">
+                    <div class="space-y-4">
+                         <% tour.itinerary.forEach((day, index) => { %>
+                         <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                              <div class="collapse-header cursor-pointer w-full px-4 sm:px-6 py-4 flex items-center justify-between text-left"
+                                   onclick="toggleCollapse(this)">
+                                   <div class="flex items-center gap-3 sm:gap-4">
+                                       
+                                        <div>
+                                             <h3 class="text-base sm:text-lg font-bold text-gray-800">
+                                                  <span class="hidden sm:inline text-orange-600">Day <%= day.day %>:</span> <%= day.title %>
+                                             </h3>
+                                             <% if(day.distance) { %>
+                                             <p class="text-xs sm:text-sm text-gray-500">Distance: <%= day.distance %></p>
+                                             <% } %>
+                                        </div>
+                                   </div>
+                                   <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                             d="M19 9l-7 7-7-7"/>
+                                   </svg>
+                              </div>
+
+                              <div class="collapse-content hidden px-4 sm:px-6 pb-5">
+                                   <p class="text-sm sm:text-base text-gray-600 mb-5"><%= day.description %></p>
+                                   
+                                   <% if (day.highlights && day.highlights.length > 0) { %>
+                                   <div class="space-y-3">
+                                        <h4 class="text-sm sm:text-base font-medium flex items-center gap-2">
+                                             <i class="fas fa-star text-orange-500"></i>
+                                             Highlights
+                                        </h4>
+                                        <div class="flex flex-wrap gap-2">
+                                             <% day.highlights.forEach(highlight => { %>
+                                             <span class="px-2 sm:px-3 py-1 sm:py-1.5 bg-orange-50 text-orange-700 rounded-lg text-xs sm:text-sm">
+                                                  <%= highlight %>
+                                             </span>
+                                             <% }) %>
+                                        </div>
+                                   </div>
+                                   <% } %>
+                              </div>
+                         </div>
+                         <% }) %>
+                    </div>
+               </div>
+          </div>
+     </section>
+
+     <!-- Details Section -->
+     <section id="details" class="py-20 bg-gray-50">
+          <div class="container mx-auto px-4">
+               <div class="text-center mb-12">
+                    <span class="text-orange-500 font-medium">Tour Details</span>
+                    <h2 class="text-3xl font-bold mt-2">Additional Information</h2>
+               </div>
+
+               <div class="max-w-4xl mx-auto">
+                    <div class="space-y-4">
+                         <div class="flex justify-between items-center pb-4 border-b">
+                              <span class="text-gray-600">Price</span>
+                              <span class="text-lg text-orange-600">Contact us for flexible pricing</span>
+                         </div>
+                         <div class="flex justify-between items-center pb-4 border-b">
+                              <span class="text-gray-600">Duration</span>
+                              <span class="font-medium"><%= tour.duration %> Days</span>
+                         </div>
+                         <div class="flex justify-between items-center pb-4 border-b">
+                              <span class="text-gray-600">Group Size</span>
+                              <span class="font-medium">Max <%= tour.groupSize %> People</span>
+                         </div>
+                         <div class="flex justify-between items-center pb-4 border-b">
+                              <span class="text-gray-600">Starting Point</span>
+                              <span class="font-medium"><%= tour.startLocation %></span>
+                         </div>
+                         <div class="flex justify-between items-center">
+                              <span class="text-gray-600">Accommodation</span>
+                              <span class="font-medium"><%= tour.accommodation %></span>
+                         </div>
+                    </div>
+               </div>
+          </div>
+     </section>
+
+     <!-- Modified Booking Section - More clear choices between direct booking & customization -->
+     <section id="booking" class="py-20 bg-gray-50 pb-32 lg:pb-20">
+          <div class="container mx-auto px-4 max-w-6xl">
+               <div class="text-center mb-12">
+                    <span class="text-orange-500 font-medium">Ready to Experience Morocco?</span>
+                    <h2 class="text-3xl font-bold mt-2">Book Your Adventure</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto mt-3">
+                         Choose between our standard tour package or customize it to fit your specific preferences and needs.
+                    </p>
+               </div>
+
+               <div class="grid lg:grid-cols-2 gap-12">
+                    <!-- Tour Details -->
+                    <div class="lg:sticky lg:top-24 h-fit">
+                         <div class="bg-white rounded-xl shadow-lg p-8">
+                              <h3 class="text-2xl font-bold mb-6">Tour Details</h3>
+                              <div class="space-y-4">
+                                   <div class="flex justify-between items-center pb-4 border-b">
+                                        <span class="text-gray-600">Price</span>
+                                        <span class="text-lg text-orange-600">Contact us for flexible pricing</span>
+                                   </div>
+                                   <div class="flex justify-between items-center pb-4 border-b">
+                                        <span class="text-gray-600">Duration</span>
+                                        <span class="font-medium"><%= tour.duration %> Days</span>
+                                   </div>
+                                   <div class="flex justify-between items-center pb-4 border-b">
+                                        <span class="text-gray-600">Group Size</span>
+                                        <span class="font-medium">Max <%= tour.groupSize %> People</span>
+                                   </div>
+                                   <div class="flex justify-between items-center pb-4 border-b">
+                                        <span class="text-gray-600">Starting Point</span>
+                                        <span class="font-medium"><%= tour.startLocation %></span>
+                                   </div>
+                                   <div class="flex justify-between items-center pb-4">
+                                        <span class="text-gray-600">Accommodation</span>
+                                        <span class="font-medium"><%= tour.accommodation %></span>
+                                   </div>
+                              </div>
+
+                              <!-- Booking Options -->
+                              <div class="mt-8 space-y-6">
+                                   <div class="bg-orange-50 rounded-xl p-6 border border-orange-100">
+                                        <h4 class="font-bold text-xl mb-3 flex items-center">
+                                             <i class="fas fa-calendar-check text-orange-500 mr-2"></i>
+                                             Standard Tour Booking
+                                        </h4>
+                                        <p class="text-gray-600 mb-4">
+                                             Book our standard tour package with the itinerary as described. Our team will contact you to confirm your booking details.
+                                        </p>
+                                        <a href="#standard-booking-form" class="block text-center bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg shadow transition-colors">
+                                             Book Standard Tour
+                                        </a>
+                                   </div>
+
+                                   <div class="bg-green-50 rounded-xl p-6 border border-green-100">
+                                        <h4 class="font-bold text-xl mb-3 flex items-center">
+                                             <i class="fas fa-magic text-green-500 mr-2"></i>
+                                             Customized Tour Request
+                                        </h4>
+                                        <p class="text-gray-600 mb-4">
+                                             Want to modify this tour? Adjust the duration, add specific activities, or change accommodations to match your preferences.
+                                        </p>
+                                        <button onclick="openCustomizeModal()" class="block w-full text-center bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg shadow transition-colors">
+                                             Customize This Tour
+                                        </button>
+                                   </div>
+                              </div>
+                         </div>
+                    </div>
+
+                    <!-- Booking Form -->
+                    <div id="standard-booking-form">
+                         <div class="bg-white rounded-xl shadow-lg p-8">
+                              <h3 class="text-2xl font-bold mb-6">Book Your Tour</h3>
+                              <p class="text-gray-600 mb-6">
+                                   Fill out the form below to book this tour. Our team will contact you with pricing details based on your preferences.
+                              </p>
+
+                              <form action="/bookings" method="POST" class="space-y-6">
+                                   <input type="hidden" name="tourId" value="<%= tour._id %>">
+                                   <input type="hidden" name="tourName" value="<%= tour.title %>">
+                                   
+                                   <!-- Customer Information -->
+                                   <div class="grid md:grid-cols-2 gap-6">
+                                        <div>
+                                             <label for="firstName" class="block text-gray-600 mb-2">First Name *</label>
+                                             <input type="text" id="firstName" name="firstName" required
+                                                  class="w-full px-4 py-3 rounded-lg border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
+                                        </div>
+                                        <div>
+                                             <label for="lastName" class="block text-gray-600 mb-2">Last Name *</label>
+                                             <input type="text" id="lastName" name="lastName" required
+                                                  class="w-full px-4 py-3 rounded-lg border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
+                                        </div>
+                                   </div>
+
+                                   <div class="grid md:grid-cols-2 gap-6">
+                                        <div>
+                                             <label for="email" class="block text-gray-600 mb-2">Email *</label>
+                                             <input type="email" id="email" name="email" required
+                                                  class="w-full px-4 py-3 rounded-lg border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
+                                        </div>
+                                        <div>
+                                             <label for="phone" class="block text-gray-600 mb-2">Phone Number *</label>
+                                             <input type="tel" id="phone" name="phone" required
+                                                  class="w-full px-4 py-3 rounded-lg border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
+                                        </div>
+                                   </div>
+
+                                   <!-- Booking Details -->
+                                   <div class="grid md:grid-cols-2 gap-6">
+                                        <div>
+                                             <label for="startDate" class="block text-gray-600 mb-2">Preferred Start Date *</label>
+                                             <input type="date" id="startDate" name="startDate" required
+                                                  min="<%= new Date().toISOString().split('T')[0] %>"
+                                                  class="w-full px-4 py-3 rounded-lg border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
+                                        </div>
+                                        <div>
+                                             <label for="groupSize" class="block text-gray-600 mb-2">Number of People *</label>
+                                             <input type="number" id="groupSize" name="groupSize" min="1" max="<%= tour.groupSize %>" required
+                                                  class="w-full px-4 py-3 rounded-lg border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
+                                        </div>
+                                   </div>
+
+                                   <div>
+                                        <label for="specialRequests" class="block text-gray-600 mb-2">Special Requests</label>
+                                        <textarea name="specialRequests" rows="4" 
+                                             class="w-full px-4 py-3 rounded-lg border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"></textarea>
+                                   </div>
+
+                                   <button type="submit" 
+                                        class="w-full bg-gradient-to-r from-orange-600 to-orange-500 text-white py-4 rounded-lg 
+                                        font-medium hover:from-orange-700 hover:to-orange-600 transform hover:scale-[1.02] 
+                                        transition-all duration-300">
+                                        Book This Tour
+                                   </button>
+
+                                   <p class="text-sm text-gray-500 text-center">
+                                        By booking, you agree to our <a href="/terms" class="text-orange-500 hover:underline">Terms & Conditions</a>
+                                   </p>
+                              </form>
+                         </div>
+                    </div>
+               </div>
+          </div>
+     </section>
+
+     <!-- Redesigned Custom Tour Modal - Mobile Friendly -->
+     <div id="customizeModal" 
+          class="fixed inset-0 bg-black/50 z-[80] hidden overflow-y-auto">
+          <div class="min-h-screen px-4 text-center flex items-center justify-center">
+               <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeCustomizeModal()"></div>
+               
+               <div class="inline-block w-full max-w-lg p-6 my-8 text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl relative max-h-[90vh] overflow-y-auto">
+                    <!-- Modal header with sticky position -->
+                    <div class="sticky top-0 bg-white pt-2 pb-4 border-b border-gray-100 flex justify-between items-center">
+                         <h4 class="text-xl sm:text-2xl font-bold text-gray-800">Customize Your Tour</h4>
+                         <button onclick="closeCustomizeModal()" class="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                         </button>
+                    </div>
+                    
+                    <div class="mt-4">
+                         <p class="text-gray-600 mb-6">
+                              Tell us how you'd like to customize <%= tour.title %>. Our travel experts will work with you to create your perfect Moroccan adventure.
+                         </p>
+
+                         <form id="customizeForm" class="space-y-6">
+                              <input type="hidden" name="tourId" value="<%= tour._id %>">
+                              <input type="hidden" name="tourName" value="<%= tour.title %>">
+                              
+                              <!-- Basic Info - Simplified grid for better mobile display -->
+                              <div class="space-y-4">
+                                   <div>
+                                        <label for="customName" class="block text-gray-600 mb-2 text-sm font-medium">Your Name *</label>
+                                        <input type="text" id="customName" name="customName" required
+                                             class="w-full px-4 py-3 rounded-lg border focus:border-green-500 focus:ring-2 focus:ring-green-500/20">
+                                   </div>
+                                   <div>
+                                        <label for="customEmail" class="block text-gray-600 mb-2 text-sm font-medium">Email *</label>
+                                        <input type="email" id="customEmail" name="customEmail" required
+                                             class="w-full px-4 py-3 rounded-lg border focus:border-green-500 focus:ring-2 focus:ring-green-500/20">
+                                   </div>
+                              </div>
+                              
+                              <!-- Customization Options -->
+                              <div class="bg-gray-50 p-4 rounded-lg">
+                                   <h5 class="font-medium text-gray-800 mb-3 text-sm">What would you like to customize?</h5>
+                                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <div class="flex items-center">
+                                             <input type="checkbox" id="customDuration" name="customizations[]" value="duration" class="w-4 h-4 text-green-500">
+                                             <label for="customDuration" class="ml-2 text-sm">Tour Duration</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                             <input type="checkbox" id="customAccommodation" name="customizations[]" value="accommodation" class="w-4 h-4 text-green-500">
+                                             <label for="customAccommodation" class="ml-2 text-sm">Accommodation</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                             <input type="checkbox" id="customActivities" name="customizations[]" value="activities" class="w-4 h-4 text-green-500">
+                                             <label for="customActivities" class="ml-2 text-sm">Activities & Experiences</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                             <input type="checkbox" id="customTransportation" name="customizations[]" value="transportation" class="w-4 h-4 text-green-500">
+                                             <label for="customTransportation" class="ml-2 text-sm">Transportation</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                             <input type="checkbox" id="customItinerary" name="customizations[]" value="itinerary" class="w-4 h-4 text-green-500">
+                                             <label for="customItinerary" class="ml-2 text-sm">Itinerary Changes</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                             <input type="checkbox" id="customGroup" name="customizations[]" value="group" class="w-4 h-4 text-green-500">
+                                             <label for="customGroup" class="ml-2 text-sm">Group Size</label>
+                                        </div>
+                                   </div>
+                              </div>
+                              
+                              <div>
+                                   <label for="customMessage" class="block text-gray-600 mb-2 text-sm font-medium">Tell us about your ideal tour</label>
+                                   <textarea id="customMessage" name="customMessage" rows="4" 
+                                        placeholder="Please describe your preferences, changes you'd like to make to this tour, or any special requests..."
+                                        class="w-full px-4 py-3 rounded-lg border focus:border-green-500 focus:ring-2 focus:ring-green-500/20"></textarea>
+                              </div>
+
+                              <div class="space-y-4">
+                                   <div>
+                                        <label for="customDate" class="block text-gray-600 mb-2 text-sm font-medium">Approximate Travel Date</label>
+                                        <input type="date" id="customDate" name="customDate"
+                                             min="<%= new Date().toISOString().split('T')[0] %>"
+                                             class="w-full px-4 py-3 rounded-lg border focus:border-green-500 focus:ring-2 focus:ring-green-500/20">
+                                   </div>
+                                   <div>
+                                        <label for="customBudget" class="block text-gray-600 mb-2 text-sm font-medium">Budget Range (per person)</label>
+                                        <select id="customBudget" name="customBudget"
+                                             class="w-full px-4 py-3 rounded-lg border focus:border-green-500 focus:ring-2 focus:ring-green-500/20">
+                                             <option value="">Select a range</option>
+                                             <option value="$500-$1000">$500-$1000</option>
+                                             <option value="$1000-$2000">$1000-$2000</option>
+                                             <option value="$2000-$3000">$2000-$3000</option>
+                                             <option value="$3000+">$3000+</option>
+                                        </select>
+                                   </div>
+                              </div>
+
+                              <!-- Submit button - sticky for better UX -->
+                              <div class="sticky bottom-0 pt-4 pb-2 bg-white border-t">
+                                   <button type="submit" 
+                                        class="w-full bg-gradient-to-r from-green-600 to-green-500 text-white py-4 rounded-lg 
+                                        font-medium hover:from-green-700 hover:to-green-600 transform hover:scale-[1.02] 
+                                        transition-all duration-300 flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                        Submit Customization Request
+                                   </button>
+                                   <p class="text-sm text-gray-500 text-center mt-3">
+                                        Our travel experts will contact you within 24 hours to discuss your custom tour options.
+                                   </p>
+                              </div>
+                         </form>
+                    </div>
+               </div>
+          </div>
+     </div>
+
+     <!-- Contact Modal -->
+     <div id="contactModal" 
+          class="fixed inset-0 bg-black/50 z-[60] hidden flex items-center justify-center">
+          <div class="bg-white rounded-xl max-w-md w-full mx-4 transform transition-all duration-300">
+               <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                         <h4 class="text-xl font-bold">Contact Us for Custom Tours</h4>
+                         <button onclick="closeContactModal()" class="text-gray-400 hover:text-gray-600">
+                              <i class="fas fa-times"></i>
+                         </button>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-6">
+                         Want to customize this tour or create a unique itinerary? 
+                         We're here to help design your perfect Moroccan adventure!
+                    </p>
+
+                    <div class="space-y-4">
+                         <!-- Email -->
+                         <a href="mailto:contact@moroccotravelexperts.com" 
+                            class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                              <div class="bg-blue-500 rounded-full p-3">
+                                   <i class="fas fa-envelope text-white"></i>
+                              </div>
+                              <div>
+                                   <p class="font-medium">Email Us</p>
+                                   <p class="text-sm text-gray-600">contact@moroccotravelexperts.com</p>
+                              </div>
+                         </a>
+
+                         <!-- WhatsApp -->
+                         <a href="https://wa.me/+212-526-555512" 
+                            target="_blank"
+                            class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                              <div class="bg-green-500 rounded-full p-3">
+                                   <i class="fab fa-whatsapp text-white"></i>
+                              </div>
+                              <div>
+                                   <p class="font-medium">WhatsApp</p>
+                                   <p class="text-sm text-gray-600">+212-526-555512</p>
+                              </div>
+                         </a>
+
+                         <!-- Instagram -->
+                         <a href="https://instagram.com/el_maimouni_97" 
+                            target="_blank"
+                            class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                              <div class="bg-gradient-to-tr from-purple-600 to-pink-500 rounded-full p-3">
+                                   <i class="fab fa-instagram text-white"></i>
+                              </div>
+                              <div>
+                                   <p class="font-medium">Instagram</p>
+                                   <p class="text-sm text-gray-600">@el_maimouni_97</p>
+                              </div>
+                         </a>
+                    </div>
+               </div>
+          </div>
+     </div>
+
+     <%- include('../partials/footer') %>
+
+     <!-- Scripts -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+     <script>
+          let swiper;
+
+          // Gallery functionality
+          function openGalleryModal() {
+               document.getElementById('galleryModal').classList.remove('hidden');
+               if (!swiper) {
+                    swiper = new Swiper('.swiper', {
+                         loop: true,
+                         navigation: {
+                              nextEl: '.swiper-button-next',
+                              prevEl: '.swiper-button-prev',
+                         },
+                         pagination: {
+                              el: '.swiper-pagination',
+                              type: 'fraction',
+                         },
+                         keyboard: {
+                              enabled: true,
+                         },
+                    });
+               }
+               // Prevent body scroll
+               document.body.style.overflow = 'hidden';
+          }
+
+          function closeGalleryModal() {
+               document.getElementById('galleryModal').classList.add('hidden');
+               document.body.style.overflow = 'auto';
+          }
+
+          // Customize tour modal
+          function openCustomizeModal() {
+               // Show the modal
+               document.getElementById('customizeModal').classList.remove('hidden');
+               
+               // Prevent background scrolling
+               document.body.style.overflow = 'hidden';
+               
+               // Focus the first input for better accessibility
+               setTimeout(() => {
+                    document.getElementById('customName').focus();
+               }, 100);
+               
+               // Add event listener to trap focus within modal for accessibility
+               document.addEventListener('keydown', trapFocusInModal);
+          }
+
+          function closeCustomizeModal() {
+               // Hide the modal
+               document.getElementById('customizeModal').classList.add('hidden');
+               
+               // Re-enable body scrolling
+               document.body.style.overflow = 'auto';
+               document.body.style.overflowX = 'hidden';
+               
+               // Remove the focus trap event listener
+               document.removeEventListener('keydown', trapFocusInModal);
+          }
+
+          // Helper function to trap focus inside modal for accessibility
+          function trapFocusInModal(e) {
+               if (e.key === 'Tab') {
+                    const modal = document.getElementById('customizeModal');
+                    const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                    
+                    const firstElement = focusableElements[0];
+                    const lastElement = focusableElements[focusableElements.length - 1];
+                    
+                    // If shift+tab and on first element, move to last element
+                    if (e.shiftKey && document.activeElement === firstElement) {
+                         e.preventDefault();
+                         lastElement.focus();
+                    } 
+                    // If tab and on last element, move to first element
+                    else if (!e.shiftKey && document.activeElement === lastElement) {
+                         e.preventDefault();
+                         firstElement.focus();
+                    }
+               }
+          }
+
+          // Contact modal
+          function openContactModal() {
+               document.getElementById('contactModal').classList.remove('hidden');
+               document.body.style.overflow = 'hidden';
+          }
+
+          function closeContactModal() {
+               document.getElementById('contactModal').classList.add('hidden');
+               document.body.style.overflow = 'auto';
+          }
+
+          // Close on escape key
+          document.addEventListener('keydown', (e) => {
+               if (e.key === 'Escape') {
+                    closeGalleryModal();
+                    closeCustomizeModal();
+                    closeContactModal();
+               }
+          });
+
+          // Open gallery when clicking any image
+          document.querySelectorAll('.grid img').forEach((img, index) => {
+               img.addEventListener('click', () => {
+                    openGalleryModal();
+                    swiper.slideTo(index);
+               });
+          });
+
+          // Collapse functionality
+          function toggleCollapse(element) {
+               const content = element.nextElementSibling;
+               const arrow = element.querySelector('svg');
+               
+               // Toggle content visibility
+               content.classList.toggle('hidden');
+               
+               // Rotate arrow
+               if (content.classList.contains('hidden')) {
+                    arrow.style.transform = 'rotate(0deg)';
+               } else {
+                    arrow.style.transform = 'rotate(180deg)';
+               }
+          }
+
+          // Smooth scroll
+          document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+               anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    const headerOffset = 100;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                         top: offsetPosition,
+                         behavior: 'smooth'
+                    });
+               });
+          });
+
+          // Enhanced customize form submission with AJAX
+          document.getElementById('customizeForm').addEventListener('submit', function(e) {
+               e.preventDefault();
+               
+               // Form data
+               const formData = new FormData(this);
+               const formObject = {};
+               
+               // Convert FormData to object
+               formData.forEach((value, key) => {
+                    if (key === 'customizations[]') {
+                         if (!formObject.customizations) {
+                              formObject.customizations = [];
+                         }
+                         formObject.customizations.push(value);
+                    } else {
+                         formObject[key] = value;
+                    }
+               });
+               
+               // Send to server
+               fetch('/bookings/custom-request', {
+                    method: 'POST',
+                    headers: {
+                         'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formObject)
+               })
+               .then(response => response.json())
+               .then(data => {
+                    if (data.success) {
+                         // Show success message
+                         this.innerHTML = `
+                              <div class="text-center py-8">
+                                   <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i class="fas fa-check text-2xl text-green-500"></i>
+                                   </div>
+                                   <h4 class="text-xl font-bold text-gray-800 mb-2">Request Submitted!</h4>
+                                   <p class="text-gray-600">
+                                        Thank you for your customization request. Our travel experts will contact you within 24 hours.
+                                   </p>
+                                   <button type="button" onclick="closeCustomizeModal()" class="mt-6 px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors">
+                                        Close
+                                   </button>
+                              </div>
+                         `;
+                    } else {
+                         // Show error message
+                         const formContent = this.innerHTML;
+                         this.innerHTML = `
+                              <div class="text-center py-8">
+                                   <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i class="fas fa-exclamation-triangle text-2xl text-red-500"></i>
+                                   </div>
+                                   <h4 class="text-xl font-bold text-gray-800 mb-2">Something went wrong</h4>
+                                   <p class="text-gray-600">
+                                        ${data.message || 'Please try again or contact us directly.'}
+                                   </p>
+                                   <button type="button" id="retryCustomForm" class="mt-6 px-6 py-2 bg-green-500 text-white hover:bg-green-600 rounded-lg transition-colors">
+                                        Try Again
+                                   </button>
+                              </div>
+                         `;
+                         
+                         // Add event listener to retry button
+                         document.getElementById('retryCustomForm').addEventListener('click', () => {
+                              this.innerHTML = formContent;
+                         });
+                    }
+               })
+               .catch(error => {
+                    console.error('Error:', error);
+                    // Show generic error message
+                    const formContent = this.innerHTML;
+                    this.innerHTML = `
+                         <div class="text-center py-8">
+                              <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                   <i class="fas fa-exclamation-triangle text-2xl text-red-500"></i>
+                              </div>
+                              <h4 class="text-xl font-bold text-gray-800 mb-2">Connection Error</h4>
+                              <p class="text-gray-600">
+                                   We couldn't process your request. Please check your internet connection and try again.
+                              </p>
+                              <button type="button" id="retryCustomForm" class="mt-6 px-6 py-2 bg-green-500 text-white hover:bg-green-600 rounded-lg transition-colors">
+                                   Try Again
+                              </button>
+                         </div>
+                    `;
+                    
+                    // Add event listener to retry button
+                    document.getElementById('retryCustomForm').addEventListener('click', () => {
+                         this.innerHTML = formContent;
+                    });
+               });
+          });
+
+          // Highlight active section in navigation
+          document.addEventListener('DOMContentLoaded', function() {
+               const sections = document.querySelectorAll('section[id]');
+               const navLinks = document.querySelectorAll('.nav-link');
+
+               function highlightNavigation() {
+                    const scrollY = window.scrollY;
+                    
+                    sections.forEach(section => {
+                         const sectionTop = section.offsetTop - 100;
+                         const sectionBottom = sectionTop + section.offsetHeight;
+                         const sectionId = section.getAttribute('id');
+                         
+                         if (scrollY >= sectionTop && scrollY < sectionBottom) {
+                              navLinks.forEach(link => {
+                                   link.classList.remove('text-orange-500');
+                                   if (link.getAttribute('href') === `#${sectionId}`) {
+                                        link.classList.add('text-orange-500');
+                                   }
+                              });
+                         }
+                    });
+               }
+
+               window.addEventListener('scroll', highlightNavigation);
+               highlightNavigation(); // Initial check
+          });
+     </script>
+
+     <!-- Add this style to your CSS -->
+     <style>
+          .hide-scrollbar {
+               -ms-overflow-style: none;
+               scrollbar-width: none;
+          }
+          .hide-scrollbar::-webkit-scrollbar {
+               display: none;
+          }
+          
+          /* Extra padding at the bottom for mobile to prevent button overlap */
+          @media (max-width: 1024px) {
+               #booking {
+                    padding-bottom: 10rem;
+               }
+               .fixed.bottom-0 {
+                    padding-bottom: env(safe-area-inset-bottom, 0);
+               }
+          }
+          
+          /* Mobile-specific styles for the customization modal */
+          @media (max-width: 640px) {
+               /* Ensure modal takes full height on mobile */
+               #customizeModal .inline-block {
+                    width: 100%;
+               }
+               
+               /* Adjust padding for better space usage */
+               #customizeModal .p-6 {
+                    padding: 1rem;
+               }
+               
+               /* Ensure inputs are easy to tap */
+               #customizeModal input[type="checkbox"] {
+                    min-width: 1.25rem;
+                    min-height: 1.25rem;
+               }
+               
+               /* Improve label readability */
+               #customizeModal label {
+                    font-size: 0.9rem;
+               }
+               
+               /* Fix iOS input issues */
+               #customizeModal input, 
+               #customizeModal select,
+               #customizeModal textarea {
+                    font-size: 16px; /* Prevents iOS zoom on focus */
+                    border-radius: 8px;
+               }
+               
+               /* Better submit button for touch */
+               #customizeModal button[type="submit"] {
+                    padding: 0.75rem;
+                    margin-bottom: env(safe-area-inset-bottom, 0.5rem);
+               }
+          }
+     </style>
+</body>
+</html>

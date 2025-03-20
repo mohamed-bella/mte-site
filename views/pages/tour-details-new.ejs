@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
     <%- include('../partials/head', { 
         title: `${tour.title} | Morocco Travel Experts`,
         metaDescription: `Experience ${tour.title}. ${tour.duration} days from ${tour.startLocation}. Book now!`,
-        metaKeywords: `morocco tours, ${tour.startLocation} tours, morocco travel, ${tour.duration} day tours, ${tour.title}`,
+        metaKeywords: `morocco tours, ${tour.startLocation} tours, morocco travel, ${tour.duration} day tours, ${tour.title}, desert adventure`,
         canonicalUrl: `https://moroccotravelexperts.com/tours/${tour.slug}`,
         ogImage: tour.mainImage,
-        ogImageAlt: `${tour.title} - Experience Morocco Travel`,
+        ogImageAlt: `${tour.title} - Morocco Tours and Travel Experiences`,
         ogType: 'product',
         price: tour.price,
         currency: 'USD',
@@ -15,6 +16,33 @@
         tourDuration: tour.duration
     }) %>
     
+    <!-- Schema.org markup - Kept for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "TouristTrip",
+        "name": "<%= tour.title %>",
+        "description": "<%= tour.description %>",
+        "image": ["<%= tour.mainImage %>", "<% if (tour.gallery && tour.gallery.length) { %><%= tour.gallery[0] %><% } %>"],
+        "url": "https://moroccotravelexperts.com/tours/<%= tour.slug %>",
+        "touristType": ["Adventure Travel", "Cultural Tourism", "Desert Tours", "Morocco Tours"],
+        "provider": {
+            "@type": "TravelAgency",
+            "name": "Morocco Travel Experts",
+            "url": "https://moroccotravelexperts.com"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": "<%= tour.price %>",
+            "priceCurrency": "USD",
+            "url": "https://moroccotravelexperts.com/tours/<%= tour.slug %>",
+            "availability": "https://schema.org/InStock"
+        },
+        "duration": "P<%= tour.duration %>D",
+        "maximumAttendeeCapacity": <%= tour.groupSize %>
+    }
+    </script>
+
     <!-- Essential CSS -->
     <link href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
@@ -24,41 +52,50 @@
             scroll-behavior: smooth;
             scroll-padding-top: 70px;
         }
+        
         .hide-scrollbar {
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        
         .hide-scrollbar::-webkit-scrollbar {
             display: none;
         }
+        
         details > summary {
             list-style: none;
         }
+        
         details > summary::-webkit-details-marker {
             display: none;
         }
-        details[open] summary svg {
+        
+        details[open] summary > .chevron {
             transform: rotate(180deg);
         }
+        
         @media (max-width: 768px) {
             #booking {
                 padding-bottom: 5rem;
             }
         }
+        
         .pb-safe {
             padding-bottom: env(safe-area-inset-bottom, 1rem);
         }
     </style>
 </head>
 
-<body class="bg-gray-50">
+<body class="bg-gray-50 text-gray-800">
     <%- include('../partials/header') %>
 
     <!-- Clean Hero Section -->
-    <section class="relative h-[60vh] flex items-center">
+    <section class="relative h-[60vh] md:h-[70vh] flex items-center">
+        <!-- Background image with subtle overlay -->
         <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('<%= tour.mainImage %>');"></div>
         <div class="absolute inset-0 bg-black/30"></div>
         
+        <!-- Tour title and essential info -->
         <div class="container mx-auto px-4 relative z-10 text-white">
             <div class="max-w-3xl">
                 <h1 class="text-3xl md:text-5xl font-bold mb-4"><%= tour.title %></h1>
@@ -72,96 +109,44 @@
         </div>
     </section>
 
-    <!-- Simple Navigation -->
+    <!-- Simplified Navigation -->
     <div class="sticky top-0 bg-white shadow-sm z-30 border-b">
         <div class="container mx-auto px-4">
             <div class="flex overflow-x-auto hide-scrollbar py-3 gap-6">
-                <a href="#overview" class="nav-link whitespace-nowrap text-gray-600 hover:text-orange-500">Overview</a>
-                <a href="#itinerary" class="nav-link whitespace-nowrap text-gray-600 hover:text-orange-500">Itinerary</a>
-                <a href="#gallery" class="nav-link whitespace-nowrap text-gray-600 hover:text-orange-500">Gallery</a>
-                <a href="#details" class="nav-link whitespace-nowrap text-gray-600 hover:text-orange-500">Details</a>
-                <a href="#booking" class="nav-link whitespace-nowrap text-gray-600 hover:text-orange-500">Book</a>
+                <a href="#overview" class="nav-item whitespace-nowrap text-gray-600 hover:text-orange-500">Overview</a>
+                <a href="#itinerary" class="nav-item whitespace-nowrap text-gray-600 hover:text-orange-500">Itinerary</a>
+                <a href="#gallery" class="nav-item whitespace-nowrap text-gray-600 hover:text-orange-500">Gallery</a>
+                <a href="#details" class="nav-item whitespace-nowrap text-gray-600 hover:text-orange-500">Details</a>
+                <a href="#booking" class="nav-item whitespace-nowrap text-gray-600 hover:text-orange-500">Book</a>
             </div>
         </div>
     </div>
 
-    <!-- Overview Section -->
+    <!-- Simplified Overview Section -->
     <section id="overview" class="py-12 bg-white">
         <div class="container mx-auto px-4">
-            <h2 class="text-2xl md:text-3xl font-bold mb-8">Tour Overview</h2>
-            
-            <!-- Key highlights -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-                <div class="bg-orange-50 rounded-lg p-4 text-center">
-                    <div class="text-orange-600 mb-1"><i class="fas fa-clock text-2xl"></i></div>
-                    <div class="font-bold"><%= tour.duration %> Days</div>
-                    <div class="text-sm text-gray-600">Duration</div>
-                </div>
-                <div class="bg-orange-50 rounded-lg p-4 text-center">
-                    <div class="text-orange-600 mb-1"><i class="fas fa-map-marker-alt text-2xl"></i></div>
-                    <div class="font-bold"><%= tour.startLocation %></div>
-                    <div class="text-sm text-gray-600">Starting Point</div>
-                </div>
-                <div class="bg-orange-50 rounded-lg p-4 text-center">
-                    <div class="text-orange-600 mb-1"><i class="fas fa-users text-2xl"></i></div>
-                    <div class="font-bold">Max <%= tour.groupSize %></div>
-                    <div class="text-sm text-gray-600">Group Size</div>
-                </div>
-                <div class="bg-orange-50 rounded-lg p-4 text-center">
-                    <div class="text-orange-600 mb-1"><i class="fas fa-star text-2xl"></i></div>
-                    <div class="font-bold"><%= tour.rating %>/5</div>
-                    <div class="text-sm text-gray-600">Rating</div>
-                </div>
-            </div>
+            <h2 class="text-2xl md:text-3xl font-bold mb-6">Tour Overview</h2>
             
             <div class="grid md:grid-cols-3 gap-8">
-                <!-- Left: Description with styled highlights -->
-                <div class="md:col-span-2">
-                    <div class="prose max-w-none mb-6">
-                        <%= tour.description %>
-                    </div>
-                    
-                    <!-- Tour highlights -->
-                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-100 mt-8">
-                        <h3 class="font-bold text-xl mb-4">Tour Highlights</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <% const highlightsArray = tour.highlights || ['Authentic local experiences', 'Expert guides', 'Comfortable transport', 'Unique accommodations']; %>
-                            <% highlightsArray.forEach(highlight => { %>
-                            <div class="flex items-start gap-2">
-                                <svg class="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <span><%= highlight %></span>
-                            </div>
-                            <% }) %>
-                        </div>
-                    </div>
+                <!-- Left: Tour description -->
+                <div class="md:col-span-2 prose max-w-none">
+                    <%= tour.description %>
                 </div>
                 
-                <!-- Right: Booking info -->
+                <!-- Right: Key information -->
                 <div class="space-y-6">
-                    <!-- Price box -->
-                    <div class="bg-white shadow-md rounded-lg border border-gray-200 overflow-hidden">
-                        <div class="bg-orange-500 text-white p-4">
-                            <div class="text-xl font-bold">Tour Price</div>
-                        </div>
-                        <div class="p-6">
-                            <div class="text-3xl font-bold text-orange-600 mb-2">$<%= tour.price %></div>
-                            <p class="text-sm text-gray-600 mb-4">per person</p>
-                            <a href="#booking" class="block text-center bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg transition-colors">
-                                Book Now
-                            </a>
-                        </div>
+                    <!-- Tour price -->
+                    <div class="bg-orange-50 p-6 rounded-lg border border-orange-100">
+                        <div class="text-3xl font-bold text-orange-600 mb-2">$<%= tour.price %></div>
+                        <p class="text-sm text-gray-600">per person</p>
+                        <a href="#booking" class="block text-center bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg mt-4 transition-colors">
+                            Book Now
+                        </a>
                     </div>
                     
-                    <!-- What's included -->
-                    <div class="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-                        <h3 class="font-bold mb-4 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            What's Included
-                        </h3>
+                    <!-- Included features -->
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="font-bold mb-4">What's Included</h3>
                         <ul class="space-y-2">
                             <% tour.includes.slice(0, 5).forEach(item => { %>
                             <li class="flex items-start gap-2 text-sm">
@@ -172,19 +157,14 @@
                             </li>
                             <% }) %>
                             <% if (tour.includes.length > 5) { %>
-                            <li class="text-sm text-orange-500 mt-2">+ <%= tour.includes.length - 5 %> more included</li>
+                            <li class="text-sm text-orange-500">+ <%= tour.includes.length - 5 %> more included</li>
                             <% } %>
                         </ul>
                     </div>
                     
-                    <!-- What's not included -->
-                    <div class="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-                        <h3 class="font-bold mb-4 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            What's Not Included
-                        </h3>
+                    <!-- Not included -->
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="font-bold mb-4">What's Not Included</h3>
                         <ul class="space-y-2">
                             <% tour.excludes.slice(0, 3).forEach(item => { %>
                             <li class="flex items-start gap-2 text-sm">
@@ -195,7 +175,7 @@
                             </li>
                             <% }) %>
                             <% if (tour.excludes.length > 3) { %>
-                            <li class="text-sm text-red-500 mt-2">+ <%= tour.excludes.length - 3 %> more not included</li>
+                            <li class="text-sm text-red-500">+ <%= tour.excludes.length - 3 %> more not included</li>
                             <% } %>
                         </ul>
                     </div>
@@ -204,7 +184,7 @@
         </div>
     </section>
 
-    <!-- Map Section (if available) -->
+    <!-- Map Section (If available) -->
     <% if (tour.mapImage) { %>
     <section class="py-8 bg-gray-50">
         <div class="container mx-auto px-4">
@@ -220,19 +200,21 @@
     </section>
     <% } %>
 
-    <!-- Itinerary Section -->
+    <!-- Clean Itinerary Section -->
     <section id="itinerary" class="py-12 bg-white">
         <div class="container mx-auto px-4">
             <h2 class="text-2xl md:text-3xl font-bold mb-6">Daily Itinerary</h2>
             
             <div class="max-w-3xl mx-auto space-y-4">
                 <% tour.itinerary.forEach((day, index) => { %>
-                <details class="bg-white rounded-lg p-6 shadow-sm hover:shadow transition">
+                <details class="bg-white rounded-lg p-6 shadow-sm hover:shadow transition group">
                     <summary class="flex justify-between items-center cursor-pointer">
                         <h3 class="font-bold">Day <%= day.day %>: <%= day.title %></h3>
-                        <svg class="w-5 h-5 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
+                        <span class="chevron transition-transform duration-200">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </span>
                     </summary>
                     <div class="pt-4 text-gray-600">
                         <p><%= day.description %></p>
@@ -256,7 +238,7 @@
         </div>
     </section>
 
-    <!-- Gallery Section -->
+    <!-- Simplified Gallery Section -->
     <section id="gallery" class="py-12 bg-gray-50">
         <div class="container mx-auto px-4">
             <h2 class="text-2xl md:text-3xl font-bold mb-6">Tour Gallery</h2>
@@ -301,7 +283,7 @@
         </div>
     </section>
 
-    <!-- Details Section -->
+    <!-- Clean Details Section -->
     <section id="details" class="py-12 bg-white">
         <div class="container mx-auto px-4">
             <h2 class="text-2xl md:text-3xl font-bold mb-6">Tour Details</h2>
@@ -341,7 +323,7 @@
         </div>
     </section>
 
-    <!-- Booking Section -->
+    <!-- Simplified Booking Section -->
     <section id="booking" class="py-12 bg-gray-50 pb-32 md:pb-16">
         <div class="container mx-auto px-4">
             <h2 class="text-2xl md:text-3xl font-bold mb-6">Book Your Tour</h2>
@@ -411,7 +393,10 @@
                 <!-- Option to customize -->
                 <div class="mt-6 text-center">
                     <p class="text-gray-600 mb-2">Want to customize this tour?</p>
-                    <button onclick="openCustomizeModal()" class="text-orange-500 hover:underline font-medium">
+                    <button onclick="openCustomizeModal()" class="text-orange-500 hover:underline font-medium flex items-center justify-center gap-1 mx-auto">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
                         Contact us for a personalized itinerary
                     </button>
                 </div>
@@ -432,7 +417,7 @@
         </div>
     </div>
 
-    <!-- Simple Customization Modal -->
+    <!-- Simplified Customization Modal -->
     <div id="customizeModal" class="fixed inset-0 bg-black/50 z-40 hidden">
         <div class="min-h-screen flex items-center justify-center p-4">
             <div class="bg-white w-full max-w-md rounded-lg shadow-lg">
@@ -485,7 +470,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Navigation highlighting
             const sections = document.querySelectorAll('section[id]');
-            const navLinks = document.querySelectorAll('.nav-link');
+            const navItems = document.querySelectorAll('.nav-item');
             
             function highlightNav() {
                 const scrollY = window.scrollY;
@@ -495,10 +480,10 @@
                     const sectionId = section.getAttribute('id');
                     
                     if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
-                        navLinks.forEach(link => {
-                            link.classList.remove('text-orange-500', 'font-medium');
-                            if (link.getAttribute('href') === `#${sectionId}`) {
-                                link.classList.add('text-orange-500', 'font-medium');
+                        navItems.forEach(item => {
+                            item.classList.remove('text-orange-500', 'font-medium');
+                            if (item.getAttribute('href') === `#${sectionId}`) {
+                                item.classList.add('text-orange-500', 'font-medium');
                             }
                         });
                     }
@@ -508,14 +493,14 @@
             window.addEventListener('scroll', highlightNav);
             highlightNav();
             
-            // Lightbox initialization
+            // Initialize lightbox
             lightbox.option({
                 'resizeDuration': 200,
                 'wrapAround': true,
                 'disableScrolling': true
             });
             
-            // Modal functions
+            // Customize modal functions
             window.openCustomizeModal = function() {
                 document.getElementById('customizeModal').classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
@@ -549,7 +534,7 @@
                     formObject[key] = value;
                 });
                 
-                // Send form data
+                // Send form data with fetch
                 fetch('/bookings/custom-request', {
                     method: 'POST',
                     headers: {

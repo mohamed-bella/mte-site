@@ -196,7 +196,7 @@ router.get('/tours', async (req, res) => {
         const query = {};
         
         if (city) {
-            query.startLocation = city;
+            query.startLocation = { $regex: city, $options: 'i' };
         }
         
         if (duration) {
@@ -209,7 +209,7 @@ router.get('/tours', async (req, res) => {
         const [tours, totalTours, startingCities, settings] = await Promise.all([
             Tour.find(query).skip(skip).limit(limit).sort({ createdAt: -1 }),
             Tour.countDocuments(query),
-            StartingCity.find().sort({ name: 1 }),
+            StartingCity.find().sort({ city: 1 }),
             Setting.findOne()
         ]);
         
@@ -265,10 +265,11 @@ router.get('/tours/:slug', async (req, res, next) => {
             startLocation: tour.startLocation 
         }).limit(3);
         
-        res.render('pages/tour-detail', {
+        res.render('pages/tour-details', {
                title: tour.title,
                tour,
-            relatedTours
+               relatedTours,
+               metaKeywords: `morocco tours, ${tour.startLocation} tours, morocco travel, ${tour.duration} day tours, ${tour.title}, desert adventure`
           });
      } catch (error) {
         console.error('Error fetching tour:', error);
