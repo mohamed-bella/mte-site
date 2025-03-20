@@ -1,134 +1,119 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 
-<%- include('../partials/head', { title: 'Discover Morocco - Your Desert Adventure Awaits' }) %>
+<%- include('../partials/head', { 
+    title: 'Morocco Travel Experts - Best Morocco Tours & Desert Experiences', 
+    metaDescription: 'Premium Morocco travel agency offering expert-guided tours, desert adventures, and authentic cultural experiences. Book your dream Morocco tour today!',
+    metaKeywords: 'morocco tours, morocco travel agency, sahara desert tours, morocco vacation packages, marrakech tours, morocco private tours'
+}) %>
 
 <%- include('../partials/header') %>
 
 <main class="min-h-screen">
-    <!-- Hero Section -->
-    <section class="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gray-900">
+    <!-- Hero Section - Simplified and Cleaner -->
+    <section class="relative min-h-[90vh] md:min-h-[85vh] flex items-center overflow-hidden bg-gray-900">
         <!-- Background Image with Gradient Overlay -->
         <div class="absolute inset-0">
             <img 
                 src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0004.webp" 
-                alt="Morocco Desert Landscape" 
+                alt="Morocco Desert Landscape - Sahara Desert Tours" 
                 class="w-full h-full object-cover opacity-60"
                 loading="eager"
             />
             <div class="absolute inset-0 bg-gradient-to-b from-gray-900/90 via-gray-900/70 to-gray-900/90"></div>
         </div>
 
-        <!-- Content Container -->
-        <div class="relative w-full max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-            <div class="max-w-3xl mx-auto text-center" data-aos="fade-up" data-aos-delay="100">
+        <!-- Content Container - Simplified -->
+        <div class="relative w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center" data-aos="fade-up" data-aos-delay="100">
                 <!-- Main Heading -->
-                <h1 class="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight leading-tight">
-                    Discover the Magic of 
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
-                        Morocco
-                    </span>
+                <h1 class="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+                    Premium <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">Morocco Tours</span> & Desert Adventures
                 </h1>
 
-                <!-- Value Proposition -->
-                <p class="text-lg sm:text-xl md:text-2xl text-gray-200 mb-8 max-w-2xl mx-auto leading-relaxed">
-                    Expert-guided tours across Morocco's most breathtaking destinations, from ancient medinas to endless Sahara dunes.
+                <!-- About Us - Simplified and Integrated -->
+                <p class="text-base sm:text-lg text-gray-200 mb-6 max-w-2xl mx-auto speakable">
+                    Founded by passionate locals, Morocco Travel Experts crafts personalized journeys through our breathtaking country. From ancient medinas to endless Sahara dunes, our expert guides reveal the authentic soul of Morocco with cultural immersion and luxury comfort.
                 </p>
-
-                <!-- Key Features -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 max-w-3xl mx-auto">
-                    <div class="p-4 rounded-lg bg-white/10 backdrop-blur-sm">
-                        <i class="fas fa-map-marked-alt text-orange-500 text-2xl mb-2"></i>
-                        <p class="text-white text-sm">Customized Tours</p>
+                
+                <!-- Combined Features + Trust - Simplified -->
+                <div class="flex flex-wrap justify-center gap-x-6 gap-y-3 mb-8">
+                    <div class="inline-flex items-center text-white">
+                        <i class="fas fa-map-marked-alt text-orange-500 mr-2"></i>
+                        <span class="text-xs sm:text-sm">Customized Tours</span>
                     </div>
-                    <div class="p-4 rounded-lg bg-white/10 backdrop-blur-sm">
-                        <i class="fas fa-users text-orange-500 text-2xl mb-2"></i>
-                        <p class="text-white text-sm">Expert Guides</p>
+                    <div class="inline-flex items-center text-white">
+                        <i class="fas fa-users text-orange-500 mr-2"></i>
+                        <span class="text-xs sm:text-sm">Expert Guides</span>
                     </div>
-                    <div class="p-4 rounded-lg bg-white/10 backdrop-blur-sm">
-                        <i class="fas fa-hotel text-orange-500 text-2xl mb-2"></i>
-                        <p class="text-white text-sm">Luxury Stays</p>
+                    <div class="inline-flex items-center text-white">
+                        <i class="fas fa-star text-yellow-400 mr-2"></i>
+                        <span class="text-xs sm:text-sm">5.0 Rating</span>
                     </div>
-                    <div class="p-4 rounded-lg bg-white/10 backdrop-blur-sm">
-                        <i class="fas fa-shield-alt text-orange-500 text-2xl mb-2"></i>
-                        <p class="text-white text-sm">Safe Travel</p>
+                    <div class="inline-flex items-center text-white">
+                        <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                        <span class="text-xs sm:text-sm">Licensed Agency</span>
                     </div>
                 </div>
 
-                <!-- CTA Buttons -->
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <a href="/tours" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-orange-600 rounded-full shadow-lg hover:bg-orange-700 transform hover:-translate-y-1 transition-all duration-300">
+                <!-- CTA Buttons - Clean and Minimal -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5 mt-8">
+                    <a href="/tours" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-orange-600 rounded-full shadow-lg hover:bg-orange-700 transform hover:-translate-y-1 transition-all duration-300">
                         View Our Tours
-                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                         </svg>
                     </a>
-                    <a href="/contact" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white border-2 border-white/30 rounded-full hover:bg-white/10 backdrop-blur-sm transform hover:-translate-y-1 transition-all duration-300">
+                    <a href="/contact" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white border-2 border-white/30 rounded-full hover:bg-white/10 backdrop-blur-sm transform hover:-translate-y-1 transition-all duration-300">
                         Contact Us
                         <i class="fas fa-envelope ml-2"></i>
                     </a>
                 </div>
-
-                <!-- Trust Indicators -->
-                <div class="mt-12 flex items-center justify-center space-x-6 text-white/80">
-                    <div class="flex items-center">
-                        <i class="fas fa-star text-yellow-400 mr-2"></i>
-                        <span class="text-sm">5.0 Rating</span>
-                    </div>
-                    <div class="hidden sm:flex items-center">
-                        <span class="block w-1 h-1 rounded-full bg-white/30"></span>
-                    </div>
-                    <div class="flex items-center">
-                        <i class="fas fa-users text-orange-400 mr-2"></i>
-                        <span class="text-sm">1000+ Happy Travelers</span>
-                    </div>
-                    <div class="hidden sm:flex items-center">
-                        <span class="block w-1 h-1 rounded-full bg-white/30"></span>
-                    </div>
-                    <div class="flex items-center">
-                        <i class="fas fa-check-circle text-green-400 mr-2"></i>
-                        <span class="text-sm">Licensed Agency</span>
-                    </div>
-                </div>
             </div>
         </div>
-
-        <!-- Decorative Elements -->
-        <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-50 to-transparent"></div>
     </section>
 
+
     <!-- Reviews Section -->
-    <section class="py-20 bg-white">
+    <section class="py-20 bg-orange-50">
         <div class="max-w-6xl mx-auto px-4 sm:px-6">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-12">
-                <div>
-                    <h2 class="text-2xl font-semibold text-gray-900">Customer Reviews</h2>
-                    <div class="flex items-center mt-2">
-                        <div class="flex text-yellow-400">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <span class="ml-2 text-gray-600 text-sm">5.0 ·  reviews on Google</span>
-                    </div>
-                </div>
-                <a href="https://www.google.com/maps/place/Morocco+Travel+Experts/@31.8008346,-7.1506879,6z/data=!4m8!3m7!1s0x8e986267ddccc027:0xbdf3189be2ce9d30!8m2!3d31.8008346!4d-7.1506879!9m1!1b1!16s%2Fg%2F11yc4ftzk9?hl=en-GB&entry=ttu" 
-                   class="flex items-center text-sm text-gray-600 hover:text-gray-900 transition-colors mt-4 sm:mt-0"
-                   target="_blank"
-                   rel="noopener">
-                    <img src="https://www.google.com/favicon.ico" alt="Google" class="w-4 h-4 mr-1">
-                    <span class="whitespace-nowrap">View all reviews on Google</span>
-                    <svg class="w-4 h-4 ml-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                    </svg>
-                </a>
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">What Our Customers Say</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Read reviews from travelers who have experienced our Morocco tours and adventures</p>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="bg-gray-50 p-6 rounded-lg">
-                    <div class="flex items-center mb-4">
+            <!-- Review Platform Tabs -->
+            <div x-data="{ activeTab: 'all' }" class="flex flex-col items-center">
+                <div class="inline-flex bg-white rounded-full shadow-md p-1 mb-8">
+                    <button 
+                        @click="activeTab = 'all'" 
+                        :class="activeTab === 'all' ? 'bg-orange-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+                        class="px-6 py-2 text-sm font-medium rounded-full transition-all duration-200">
+                        All Reviews
+                    </button>
+                    <button 
+                        @click="activeTab = 'google'" 
+                        :class="activeTab === 'google' ? 'bg-orange-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+                        class="px-6 py-2 text-sm font-medium rounded-full transition-all duration-200 flex items-center">
+                        <img src="https://www.google.com/favicon.ico" alt="Google" class="w-4 h-4 mr-2">
+                        Google
+                    </button>
+                    <button 
+                        @click="activeTab = 'tripadvisor'" 
+                        :class="activeTab === 'tripadvisor' ? 'bg-orange-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+                        class="px-6 py-2 text-sm font-medium rounded-full transition-all duration-200 flex items-center">
+                        <img src="https://static.tacdn.com/img2/brand_refresh/Tripadvisor_logomark.svg" alt="TripAdvisor" class="w-4 h-4 mr-2">
+                        TripAdvisor
+                    </button>
+                </div>
+
+                <!-- Reviews Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                    <!-- Google Reviews -->
+                    <template x-if="activeTab === 'all' || activeTab === 'google'">
+                        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center">
                         <img src="https://lh3.googleusercontent.com/a-/ALV-UjWXPIC1NttQ9s_o5Svb2Kudoevirm_UpQvK4iianms8Iy3gp8PQsg=w32-h32-p-rp-mo-br100" 
                              alt="Martin E. Coleman" 
                              class="w-10 h-10 rounded-full">
@@ -141,14 +126,21 @@
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
                             </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-100 p-1 rounded-full">
+                                    <img src="https://www.google.com/favicon.ico" alt="Google" class="w-5 h-5">
                         </div>
                     </div>
                     <p class="text-sm text-gray-600">Hamid is an outstanding guide and driver! He is conscientious and courteous and went above and beyond to make sure we had a great trip...</p>
                     <span class="block mt-4 text-xs text-gray-500">Posted on Google · Feb 23, 2025</span>
                 </div>
+                    </template>
 
-                <div class="bg-gray-50 p-6 rounded-lg">
-                    <div class="flex items-center mb-4">
+                    <template x-if="activeTab === 'all' || activeTab === 'google'">
+                        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center">
                         <img src="https://lh3.googleusercontent.com/a-/ALV-UjUFp2yXpGRNjrClmk1thasuxxqTRNk5XO6rNRysGHx7YXwhEww=w32-h32-p-rp-mo-br100" 
                              alt="Harold Schroeder" 
                              class="w-10 h-10 rounded-full">
@@ -163,12 +155,19 @@
                             </div>
                         </div>
                     </div>
-                    <p class="text-sm text-gray-600">We were very happy with our driver/tour guide. He was friendly and helpful without being intrusive. Made our trip truly memorable.</p>
+                                <div class="bg-gray-100 p-1 rounded-full">
+                                    <img src="https://www.google.com/favicon.ico" alt="Google" class="w-5 h-5">
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600">We were very happy with our driver/tour guide. He was friendly and helpful without being intrusive. Made our trip truly memorable...</p>
                     <span class="block mt-4 text-xs text-gray-500">Posted on Google · Feb 23, 2025</span>
                 </div>
+                    </template>
 
-                <div class="bg-gray-50 p-6 rounded-lg">
-                    <div class="flex items-center mb-4">
+                    <template x-if="activeTab === 'all' || activeTab === 'google'">
+                        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center">
                         <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Iwona" 
                              alt="Iwona Wiśniewska" 
                              class="w-10 h-10 rounded-full">
@@ -181,10 +180,116 @@
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
                             </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-100 p-1 rounded-full">
+                                    <img src="https://www.google.com/favicon.ico" alt="Google" class="w-5 h-5">
                         </div>
                     </div>
                     <p class="text-sm text-gray-600">I recently had the pleasure of exploring Morocco with Hamid as our tour guide. His ability to tell stories brought each location to life...</p>
                     <span class="block mt-4 text-xs text-gray-500">Posted on Google · Feb 17, 2025</span>
+                        </div>
+                    </template>
+
+                    <!-- TripAdvisor Reviews -->
+                    <template x-if="activeTab === 'all' || activeTab === 'tripadvisor'">
+                        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center">
+                                    <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/f6/f2/eb/default-avatar-2020-27.jpg?w=100&h=-1&s=1" 
+                                        alt="JaneDoe123" 
+                                        class="w-10 h-10 rounded-full">
+                                    <div class="ml-3">
+                                        <h4 class="text-sm font-medium text-gray-900">JaneDoe123</h4>
+                                        <div class="flex items-center mt-1">
+                                            <img src="https://static.tacdn.com/img2/brand_refresh/Tripadvisor_Rating_5_of_5.svg" alt="5.0 of 5 bubbles" class="h-4">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-100 p-1 rounded-full">
+                                    <img src="https://static.tacdn.com/img2/brand_refresh/Tripadvisor_logomark.svg" alt="TripAdvisor" class="w-5 h-5">
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600">I LOVED MY TRIP TO MOROCCO WITH HAMID!!!!! It was very accurate to the description, our driver Hamid was THE BEST. He did his best to make sure we were comfortable and enjoying our trip at all times. The professionalism was top notch. I travel quite often and I must say this trip made my top pick of them all. I would totally recommend to any of my friends or family to book and enjoy Morocco with Hamid and Karim.</p>
+                            <span class="block mt-4 text-xs text-gray-500">Posted on TripAdvisor · Mar 8, 2025</span>
+                        </div>
+                    </template>
+
+                    <template x-if="activeTab === 'all' || activeTab === 'tripadvisor'">
+                        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center">
+                                    <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/f6/f2/b8/default-avatar-2020-26.jpg?w=100&h=-1&s=1" 
+                                        alt="GrandTour66343377723" 
+                                        class="w-10 h-10 rounded-full">
+                                    <div class="ml-3">
+                                        <h4 class="text-sm font-medium text-gray-900">GrandTour66343377723</h4>
+                                        <div class="flex items-center mt-1">
+                                            <img src="https://static.tacdn.com/img2/brand_refresh/Tripadvisor_Rating_5_of_5.svg" alt="5.0 of 5 bubbles" class="h-4">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-100 p-1 rounded-full">
+                                    <img src="https://static.tacdn.com/img2/brand_refresh/Tripadvisor_logomark.svg" alt="TripAdvisor" class="w-5 h-5">
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600">Hamid est un excellent guide touristique, très compétent et, dans l'ensemble, une personne extraordinaire, il prend son temps et explique ce pays incroyable. Expérience définitivement 5 étoiles</p>
+                            <span class="block mt-4 text-xs text-gray-500">Avis sur: Nuit dans le désert • Publié sur TripAdvisor · sept. 2023</span>
+                        </div>
+                    </template>
+
+                    <template x-if="activeTab === 'all' || activeTab === 'tripadvisor'">
+                        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center">
+                                    <img src="https://api.dicebear.com/7.x/initials/svg?seed=JD&backgroundColor=ffb144" 
+                                        alt="Jaden D" 
+                                        class="w-10 h-10 rounded-full">
+                                    <div class="ml-3">
+                                        <h4 class="text-sm font-medium text-gray-900">Jaden D</h4>
+                                        <div class="flex items-center mt-1">
+                                            <img src="https://static.tacdn.com/img2/brand_refresh/Tripadvisor_Rating_5_of_5.svg" alt="5.0 of 5 bubbles" class="h-4">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-100 p-1 rounded-full">
+                                    <img src="https://static.tacdn.com/img2/brand_refresh/Tripadvisor_logomark.svg" alt="TripAdvisor" class="w-5 h-5">
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600">Cette visite est faite pour vous ! Hamid était le meilleur guide touristique ! Il était très attentif et veillait toujours à ce que nous soyons très à l'aise. Je ne me suis jamais senti aussi bien accueilli dans un autre pays. Il nous a fait sentir comme une famille et faisait constamment tout son possible pour nous demander si nous avions besoin de quelque chose ou si nous voulions nous arrêter en route...</p>
+                            <span class="block mt-4 text-xs text-gray-500">Publié sur TripAdvisor · sept. 2023</span>
+                        </div>
+                    </template>
+
+                    <!-- Empty State Message when no reviews match the filter -->
+                    <template x-if="(activeTab === 'google' && document.querySelectorAll('[x-if*=\'google\']').length === 0) || 
+                                  (activeTab === 'tripadvisor' && document.querySelectorAll('[x-if*=\'tripadvisor\']').length === 0)">
+                        <div class="col-span-full text-center py-12">
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                                <i class="fas fa-search text-gray-400 text-xl"></i>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-1">No reviews found</h3>
+                            <p class="text-gray-500">No reviews available for this platform at the moment.</p>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- View All Reviews Links -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
+                    <a href="https://www.google.com/maps/place/Morocco+Travel+Experts/@31.8008346,-7.1506879,6z/data=!4m8!3m7!1s0x8e986267ddccc027:0xbdf3189be2ce9d30!8m2!3d31.8008346!4d-7.1506879!9m1!1b1!16s%2Fg%2F11yc4ftzk9?hl=en-GB&entry=ttu" 
+                       class="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-orange-600 rounded-full shadow-lg hover:bg-orange-700 transform hover:-translate-y-1 transition-all duration-300"
+                       target="_blank"
+                       rel="noopener">
+                        <img src="https://www.google.com/favicon.ico" alt="Google" class="w-4 h-4 mr-2">
+                        <span class="whitespace-nowrap">Read More on Google</span>
+                    </a>
+                    <a href="https://www.tripadvisor.fr/Attraction_Review-g293732-d17387732-Reviews-or10-Morocco_Memorable_Tours_Trip_to_Morocco-Casablanca_Casablanca_Settat.html" 
+                       class="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-orange-600 rounded-full shadow-lg hover:bg-orange-700 transform hover:-translate-y-1 transition-all duration-300"
+                       target="_blank"
+                       rel="noopener">
+                        <img src="https://static.tacdn.com/img2/brand_refresh/Tripadvisor_logomark.svg" alt="TripAdvisor" class="w-4 h-4 mr-2">
+                        <span class="whitespace-nowrap">Read More on TripAdvisor</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -193,12 +298,12 @@
     <hr class="border-gray-200 my-8">
 
     <!-- Starting Cities Section -->
-    <section class="py-16 bg-gray-50">
+    <!-- <section class="py-16 bg-gray-50">
         <div class="container mx-auto px-4">
             <div class="mb-16">
-                <h2 class="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Start Your Moroccan Story</h2>
+                <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Morocco Tours from Popular Cities</h2>
                 <div class="w-24 h-1 bg-orange-500 mb-4"></div>
-                <p class="text-gray-600 text-base md:text-lg lg:text-xl">Pick your perfect starting point and let Morocco's magic unfold</p>
+                <p class="text-gray-600 text-base md:text-lg lg:text-xl speakable">Choose your ideal starting location and embark on an unforgettable Morocco adventure with our expert local guides</p>
             </div>
 
             <div class="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -228,7 +333,7 @@
             </div>
 
             <!-- Mobile Slider -->
-            <div class="sm:hidden">
+            <!-- <div class="sm:hidden">
                 <div class="overflow-x-auto hide-scrollbar">
                     <div class="flex space-x-4">
                         <% startingCities.forEach(location => { %>
@@ -265,18 +370,117 @@
                 </div>
             </div>
         </div>
+    </section> -->
+
+    <!-- <hr class="border-gray-200 my-8">  -->
+
+    <!-- Tour Starting Points -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Start Your Moroccan Story</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Begin your journey from any major city in Morocco. Our expert guides will create an unforgettable experience tailored to your preferences.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <% startingCities.slice(0, 6).forEach(city => { %>
+                    <a href="/tours?city=<%= city.city %>" class="block group">
+                        <div class="relative h-64 rounded-xl overflow-hidden">
+                            <img 
+                                src="<%= city.image %>" 
+                                alt="<%= city.city %> Tours"
+                                class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 ease-in-out"
+                            />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent group-hover:from-black/90 transition-colors"></div>
+                            <div class="absolute bottom-0 left-0 p-6">
+                                <h3 class="text-xl font-bold text-white mb-2">From <%= city.city %></h3>
+                                <p class="text-gray-300 text-sm line-clamp-2"><%= city.description %></p>
+                                <span class="inline-flex items-center mt-3 text-orange-300 text-sm font-medium group-hover:text-orange-400 transition-colors">
+                                    View Tours
+                                    <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                <% }); %>
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="/tours" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                    View All Destinations
+                </a>
+            </div>
+        </div>
     </section>
 
-    <hr class="border-gray-200 my-8">
+    <!-- Blog Section -->
+    <% if (recentBlogs && recentBlogs.length > 0) { %>
+    <section class="py-20 bg-orange-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Latest From Our Blog</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Discover travel tips, destination guides, and local insights to help you plan your perfect Moroccan adventure.
+                </p>
+            </div>
 
-    <!-- Tours Section -->
-    <section id="tours" class="py-20 bg-gradient-to-b from-gray-100 to-white">
-        <div class="container mx-auto px-4">
-            <div class="mb-16 text-center" data-aos="fade-up">
-                <span class="text-orange-600 font-medium text-sm tracking-wider uppercase mb-2 block">Curated Experiences</span>
-                <h2 class="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Discover Our Signature Tours</h2>
-                <div class="w-24 h-1 bg-orange-500 mx-auto mb-4"></div>
-                <p class="text-gray-600 text-base md:text-lg lg:text-xl max-w-2xl mx-auto">Embark on carefully crafted journeys through Morocco's most enchanting destinations</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <% recentBlogs.forEach(blog => { %>
+                    <article class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 flex flex-col">
+                        <a href="/blog/<%= blog.slug %>" class="block overflow-hidden">
+                            <img src="<%= blog.featuredImage %>" alt="<%= blog.title %>" class="w-full h-52 object-cover transform hover:scale-105 transition-all duration-500">
+                        </a>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <div class="flex items-center text-sm text-gray-500 mb-3">
+                                <time datetime="<%= blog.publishedAt.toISOString() %>">
+                                    <%= new Date(blog.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                                </time>
+                                <span class="mx-2">•</span>
+                                <span><%= blog.readTime %> min read</span>
+                            </div>
+                            
+                            <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 hover:text-orange-600 transition-colors">
+                                <a href="/blog/<%= blog.slug %>"><%= blog.title %></a>
+                            </h3>
+                            
+                            <p class="text-gray-600 mb-4 line-clamp-3 flex-grow">
+                                <%= blog.summary %>
+                            </p>
+                            
+                            <div class="mt-auto">
+                                <a href="/blog/<%= blog.slug %>" class="inline-flex items-center text-sm font-medium text-orange-600 hover:text-orange-500">
+                                    Read more
+                                    <svg class="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                <% }); %>
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="/blog" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                    Explore All Articles
+                </a>
+            </div>
+        </div>
+    </section>
+    <% } %>
+
+    <!-- Featured Tours -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Discover Our Signature Tours</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Immerse yourself in Morocco's magic with our most popular tours. From vibrant cities to serene deserts, each journey offers unique cultural experiences.
+                </p>
             </div>
 
             <!-- Desktop Grid -->
@@ -447,5 +651,34 @@
         }
     }
 </style>
+
+<!-- Reviews Toggle Enhancement Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if Alpine.js is loaded
+        if (window.Alpine) {
+            // Add a custom event to refresh Alpine.js components after DOM updates
+            window.addEventListener('reviews-filter-change', function() {
+                Alpine.nextTick(() => {
+                    document.querySelectorAll('[x-data]').forEach(el => {
+                        if (el.__x) {
+                            el.__x.updateElements(el);
+                        }
+                    });
+                });
+            });
+            
+            // Add event listeners to tab buttons
+            document.querySelectorAll('[x-data*="activeTab"] button').forEach(button => {
+                button.addEventListener('click', function() {
+                    setTimeout(() => {
+                        window.dispatchEvent(new CustomEvent('reviews-filter-change'));
+                    }, 10);
+                });
+            });
+        }
+    });
+</script>
+
 </body>
 </html>

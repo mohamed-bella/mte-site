@@ -29,6 +29,7 @@
     "bcryptjs": "^2.4.3",
     "chart.js": "^4.0.0",
     "cheerio": "^1.0.0",
+    "cloudinary": "^2.6.0",
     "compression": "^1.8.0",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.7",

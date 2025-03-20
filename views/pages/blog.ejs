@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<%- include('../partials/head', { 
+    title: 'Morocco Travel Blog - Tips, Guides & Experiences',
+    metaDescription: 'Explore our Morocco travel blog for expert tips, destination guides, and authentic experiences to plan your perfect Moroccan adventure.',
+    metaKeywords: 'morocco blog, morocco travel blog, morocco travel tips, morocco travel guide, morocco destinations, morocco experiences'
+}) %>
+
+<%- include('../partials/header') %>
+
+<main class="min-h-screen">
+    <!-- Hero Section -->
+    <section class="relative py-20 md:py-28 bg-gray-900">
+        <!-- Background Image with Gradient Overlay -->
+        <div class="absolute inset-0">
+            <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0004.webp" 
+                alt="Morocco Blog - Travel Tips and Experiences" 
+                class="w-full h-full object-cover opacity-50"
+                loading="eager"
+            />
+            <div class="absolute inset-0 bg-gradient-to-b from-gray-900/90 via-gray-900/70 to-gray-900/90"></div>
+        </div>
+
+        <!-- Content Container -->
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+                Morocco Travel <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">Blog</span>
+            </h1>
+            <p class="text-base sm:text-lg text-gray-200 mb-8 max-w-2xl mx-auto speakable">
+                Discover travel tips, destination guides, and authentic experiences to plan your perfect Moroccan adventure.
+            </p>
+
+            <!-- Search Form -->
+            <div class="max-w-xl mx-auto mt-8">
+                <form action="/blog" method="get" class="flex flex-col sm:flex-row gap-3">
+                    <div class="flex-1">
+                        <label for="search" class="sr-only">Search</label>
+                        <div class="relative rounded-md shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <input 
+                                type="text" 
+                                name="search" 
+                                id="search" 
+                                class="block w-full pl-10 pr-3 py-3 border border-transparent rounded-md leading-5 bg-white/10 backdrop-blur-sm text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent" 
+                                placeholder="Search for travel tips, destinations..."
+                                value="<%= filter.search || '' %>"
+                            >
+                        </div>
+                    </div>
+                    <button type="submit" class="inline-flex items-center justify-center px-5 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                        Search
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Listing Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+                <!-- Main Content Area -->
+                <div class="lg:col-span-8">
+                    <!-- Filter Status/Results -->
+                    <div class="mb-6 flex items-center justify-between">
+                        <div>
+                            <% if (filter.category || filter.tag || filter.search) { %>
+                                <div class="text-sm text-gray-500">
+                                    <span>Filtered by: </span>
+                                    <% if (filter.category) { %>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 mr-2">
+                                            Category: <%= filter.category %>
+                                            <a href="<%= `/blog${filter.search ? `?search=${filter.search}` : ''}${filter.tag ? `&tag=${filter.tag}` : ''}` %>" class="ml-1 text-orange-500 hover:text-orange-700">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </a>
+                                        </span>
+                                    <% } %>
+                                    <% if (filter.tag) { %>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-2">
+                                            Tag: <%= filter.tag %>
+                                            <a href="<%= `/blog${filter.search ? `?search=${filter.search}` : ''}${filter.category ? `&category=${filter.category}` : ''}` %>" class="ml-1 text-blue-500 hover:text-blue-700">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </a>
+                                        </span>
+                                    <% } %>
+                                    <% if (filter.search) { %>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            Search: "<%= filter.search %>"
+                                            <a href="<%= `/blog${filter.category ? `?category=${filter.category}` : ''}${filter.tag ? `${filter.category ? '&' : '?'}tag=${filter.tag}` : ''}` %>" class="ml-1 text-gray-500 hover:text-gray-700">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </a>
+                                        </span>
+                                    <% } %>
+                                </div>
+                            <% } %>
+                            <h2 class="text-2xl font-bold text-gray-900 mt-1">
+                                <%= pagination.totalCount %> <%= pagination.totalCount === 1 ? 'Article' : 'Articles' %>
+                            </h2>
+                        </div>
+                        <% if (filter.category || filter.tag || filter.search) { %>
+                            <a href="/blog" class="text-sm font-medium text-orange-600 hover:text-orange-500">
+                                Clear all filters
+                            </a>
+                        <% } %>
+                    </div>
+
+                    <!-- Blog Posts Grid -->
+                    <div class="grid gap-8 md:grid-cols-2">
+                        <% if (blogs && blogs.length > 0) { %>
+                            <% blogs.forEach(blog => { %>
+                                <article class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 flex flex-col">
+                                    <a href="/blog/<%= blog.slug %>" class="block aspect-w-16 aspect-h-9 overflow-hidden">
+                                        <img src="<%= blog.featuredImage %>" alt="<%= blog.title %>" class="w-full h-48 object-cover transform hover:scale-105 transition duration-500">
+                                    </a>
+                                    <div class="p-6 flex flex-col flex-grow">
+                                        <div class="flex items-center text-sm text-gray-500 mb-3">
+                                            <time datetime="<%= blog.publishedAt.toISOString() %>">
+                                                <%= new Date(blog.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                                            </time>
+                                            <span class="mx-2">•</span>
+                                            <span><%= blog.readTime %> min read</span>
+                                        </div>
+                                        
+                                        <h2 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 hover:text-orange-600 transition-colors">
+                                            <a href="/blog/<%= blog.slug %>"><%= blog.title %></a>
+                                        </h2>
+                                        
+                                        <p class="text-gray-600 mb-4 line-clamp-3 flex-grow">
+                                            <%= blog.summary %>
+                                        </p>
+                                        
+                                        <div class="mt-auto">
+                                            <div class="flex items-center space-x-2 mb-4">
+                                                <% if (blog.category) { %>
+                                                    <a href="<%= `/blog?category=${encodeURIComponent(blog.category)}` %>" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 hover:bg-orange-200 transition-colors">
+                                                        <%= blog.category %>
+                                                    </a>
+                                                <% } %>
+                                            </div>
+                                            
+                                            <a href="/blog/<%= blog.slug %>" class="inline-flex items-center text-sm font-medium text-orange-600 hover:text-orange-500">
+                                                Read more
+                                                <svg class="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </article>
+                            <% }); %>
+                        <% } else { %>
+                            <div class="col-span-2 py-12 text-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                </svg>
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">No blog posts found</h3>
+                                <p class="text-gray-500 mb-6">Try adjusting your search or filter to find what you're looking for.</p>
+                                <a href="/blog" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700">
+                                    Clear filters
+                                </a>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <!-- Pagination -->
+                    <% if (pagination.totalPages > 1) { %>
+                        <div class="mt-12 flex items-center justify-between border-t border-gray-200 pt-6">
+                            <div class="flex flex-1 justify-between items-center">
+                                <% if (pagination.hasPrevPage) { %>
+                                    <a href="<%= `/blog?page=${pagination.page - 1}${filter.category ? `&category=${filter.category}` : ''}${filter.tag ? `&tag=${filter.tag}` : ''}${filter.search ? `&search=${filter.search}` : ''}` %>" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                        <svg class="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                        </svg>
+                                        Previous
+                                    </a>
+                                <% } else { %>
+                                    <div class="opacity-50 cursor-not-allowed relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white">
+                                        <svg class="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                        </svg>
+                                        Previous
+                                    </div>
+                                <% } %>
+
+                                <span class="text-sm text-gray-700">
+                                    Page <span class="font-medium"><%= pagination.page %></span> of <span class="font-medium"><%= pagination.totalPages %></span>
+                                </span>
+
+                                <% if (pagination.hasNextPage) { %>
+                                    <a href="<%= `/blog?page=${pagination.page + 1}${filter.category ? `&category=${filter.category}` : ''}${filter.tag ? `&tag=${filter.tag}` : ''}${filter.search ? `&search=${filter.search}` : ''}` %>" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                        Next
+                                        <svg class="ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </a>
+                                <% } else { %>
+                                    <div class="opacity-50 cursor-not-allowed relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white">
+                                        Next
+                                        <svg class="ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="mt-12 lg:mt-0 lg:col-span-4">
+                    <div class="sticky top-24">
+                        <!-- Categories -->
+                        <div class="bg-white overflow-hidden shadow rounded-lg">
+                            <div class="px-4 py-5 sm:p-6">
+                                <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Categories</h3>
+                                <div class="space-y-3">
+                                    <% if (categoryStats && categoryStats.length > 0) { %>
+                                        <% categoryStats.forEach(category => { %>
+                                            <a href="<%= `/blog?category=${encodeURIComponent(category._id)}` %>" 
+                                               class="group flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md <%= filter.category === category._id ? 'bg-orange-100 text-orange-700' : 'text-gray-600 hover:bg-gray-50' %>">
+                                                <span><%= category._id %></span>
+                                                <span class="px-2 py-0.5 rounded-full text-xs <%= filter.category === category._id ? 'bg-orange-200 text-orange-800' : 'bg-gray-100 text-gray-600 group-hover:bg-gray-200' %>">
+                                                    <%= category.count %>
+                                                </span>
+                                            </a>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <p class="text-sm text-gray-500">No categories found</p>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Popular Tags -->
+                        <div class="bg-white overflow-hidden shadow rounded-lg mt-6">
+                            <div class="px-4 py-5 sm:p-6">
+                                <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Popular Tags</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    <% if (tagStats && tagStats.length > 0) { %>
+                                        <% tagStats.slice(0, 15).forEach(tag => { %>
+                                            <a href="<%= `/blog?tag=${encodeURIComponent(tag._id)}` %>" 
+                                               class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium <%= filter.tag === tag._id ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800 hover:bg-gray-200' %>">
+                                                #<%= tag._id %>
+                                                <span class="ml-1 text-xs <%= filter.tag === tag._id ? 'text-blue-600' : 'text-gray-500' %>">
+                                                    <%= tag.count %>
+                                                </span>
+                                            </a>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <p class="text-sm text-gray-500">No tags found</p>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Posts -->
+                        <div class="bg-white overflow-hidden shadow rounded-lg mt-6">
+                            <div class="px-4 py-5 sm:p-6">
+                                <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Recent Posts</h3>
+                                <div class="space-y-4">
+                                    <% if (recentPosts && recentPosts.length > 0) { %>
+                                        <% recentPosts.forEach(post => { %>
+                                            <a href="/blog/<%= post.slug %>" class="group block">
+                                                <div class="flex items-center">
+                                                    <div class="flex-shrink-0">
+                                                        <img class="h-12 w-12 rounded-md object-cover" src="<%= post.featuredImage %>" alt="<%= post.title %>">
+                                                    </div>
+                                                    <div class="ml-4">
+                                                        <p class="text-sm font-medium text-gray-900 group-hover:text-orange-600 line-clamp-2">
+                                                            <%= post.title %>
+                                                        </p>
+                                                        <p class="text-xs text-gray-500">
+                                                            <%= new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <p class="text-sm text-gray-500">No recent posts</p>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<%- include('../partials/footer') %>
+
+<!-- Custom Script for Line Clamp Fallback -->
+<script>
+    // Line clamp fallback for browsers not supporting the feature
+    if (!CSS.supports('-webkit-line-clamp', '2')) {
+        const elements = document.querySelectorAll('.line-clamp-2, .line-clamp-3');
+        elements.forEach(el => {
+            el.style.overflow = 'hidden';
+            el.style.textOverflow = 'ellipsis';
+            
+            if (el.classList.contains('line-clamp-2')) {
+                el.style.maxHeight = '3em'; // Approximate height for 2 lines
+            } else if (el.classList.contains('line-clamp-3')) {
+                el.style.maxHeight = '4.5em'; // Approximate height for 3 lines
+            }
+        });
+    }
+</script>
+
+</body>
+</html> 

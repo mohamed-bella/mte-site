@@ -2,121 +2,277 @@
 <urlset
       xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:xhtml="http://www.w3.org/1999/xhtml"
+      xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
       xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd
+            http://www.google.com/schemas/sitemap-image/1.1
+            http://www.google.com/schemas/sitemap-image/1.1/sitemap-image.xsd">
 <!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
 
+<!-- Morocco Travel Experts Sitemap - https://www.moroccotravelexperts.com -->
 
 <url>
   <loc>https://www.moroccotravelexperts.com/</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
   <priority>1.00</priority>
+  <image:image>
+    <image:loc>https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0004.webp</image:loc>
+    <image:title>Morocco Travel Experts - Best Morocco Tours</image:title>
+    <image:caption>Premium Morocco travel agency offering customized desert tours and authentic experiences</image:caption>
+  </image:image>
 </url>
+
+<!-- Blog Pages -->
+<url>
+  <loc>https://www.moroccotravelexperts.com/blog</loc>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>daily</changefreq>
+  <priority>0.90</priority>
+  <image:image>
+    <image:loc>https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0004.webp</image:loc>
+    <image:title>Morocco Travel Blog - Tips, Guides and Experiences</image:title>
+    <image:caption>Expert Morocco travel tips, guides, and destination information</image:caption>
+  </image:image>
+</url>
+<!-- Individual blog posts will be dynamically generated and added to sitemap -->
+
 <url>
   <loc>https://www.moroccotravelexperts.com/tours</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
-  <priority>0.80</priority>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.90</priority>
+  <image:image>
+    <image:loc>https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0004.webp</image:loc>
+    <image:title>Best Morocco Tours and Travel Packages</image:title>
+    <image:caption>Explore our collection of Morocco tours and desert experiences</image:caption>
+  </image:image>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/about</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/contact</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/tours?city=casablanca</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
   <priority>0.80</priority>
+  <image:image>
+    <image:loc>https://moroccotravelexperts.com/images/destinations/casablanca.jpg</image:loc>
+    <image:title>Casablanca Morocco Tours</image:title>
+    <image:caption>Premium tours starting from Casablanca, Morocco</image:caption>
+  </image:image>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/tours?city=Marrakech</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
   <priority>0.80</priority>
+  <image:image>
+    <image:loc>https://moroccotravelexperts.com/images/destinations/marrakech.jpg</image:loc>
+    <image:title>Marrakech Morocco Tours</image:title>
+    <image:caption>Expert-guided tours beginning in Marrakech</image:caption>
+  </image:image>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/tours?city=Tanger</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/tours?city=rabat</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/tours?city=fes</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
   <priority>0.80</priority>
+  <image:image>
+    <image:loc>https://moroccotravelexperts.com/images/destinations/fes.jpg</image:loc>
+    <image:title>Fes Morocco Tours</image:title>
+    <image:caption>Authentic tours starting from historic Fes</image:caption>
+  </image:image>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/tours?city=Chefchaouen</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
   <priority>0.80</priority>
+  <image:image>
+    <image:loc>https://moroccotravelexperts.com/images/destinations/chefchaouen.jpg</image:loc>
+    <image:title>Chefchaouen Blue City Tours</image:title>
+    <image:caption>Tours from Morocco's famous blue city</image:caption>
+  </image:image>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/tours?city=Agadir</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/tours/12-day-morocco-tour:-the-great-south-coastal-charms-desert-dunes-and-hidden-oases-1738630828538</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
-  <priority>0.80</priority>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.85</priority>
+  <image:image>
+    <image:loc>https://moroccotravelexperts.com/images/tours/12-day-morocco-tour.jpg</image:loc>
+    <image:title>12 Day Comprehensive Morocco Tour</image:title>
+    <image:caption>Southern Morocco, coastal charm and desert adventure</image:caption>
+    <image:geo_location>Morocco</image:geo_location>
+  </image:image>
+  <PageMap>
+    <DataObject type="product">
+      <Attribute name="name">12 Day Morocco Tour: The Great South</Attribute>
+      <Attribute name="price">1299.00</Attribute>
+      <Attribute name="currency">USD</Attribute>
+      <Attribute name="availability">in stock</Attribute>
+      <Attribute name="rating">4.8</Attribute>
+    </DataObject>
+  </PageMap>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/tours/9-day-private-tour-from-agadir-1739048813467</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
-  <priority>0.80</priority>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.85</priority>
+  <image:image>
+    <image:loc>https://moroccotravelexperts.com/images/tours/9-day-agadir-tour.jpg</image:loc>
+    <image:title>9 Day Private Tour from Agadir</image:title>
+    <image:caption>Customized Morocco experience starting from Agadir</image:caption>
+    <image:geo_location>Agadir, Morocco</image:geo_location>
+  </image:image>
+  <PageMap>
+    <DataObject type="product">
+      <Attribute name="name">9 Day Private Tour from Agadir</Attribute>
+      <Attribute name="price">999.00</Attribute>
+      <Attribute name="currency">USD</Attribute>
+      <Attribute name="availability">in stock</Attribute>
+      <Attribute name="rating">4.9</Attribute>
+    </DataObject>
+  </PageMap>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/tours/moroccan-odyssey-from-dunes-to-souks-1740261447547</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
-  <priority>0.80</priority>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.85</priority>
+  <image:image>
+    <image:loc>https://moroccotravelexperts.com/images/tours/moroccan-odyssey.jpg</image:loc>
+    <image:title>Moroccan Odyssey: From Dunes to Souks</image:title>
+    <image:caption>Experience Morocco's diverse landscapes from desert to city markets</image:caption>
+    <image:geo_location>Marrakech, Morocco</image:geo_location>
+  </image:image>
+  <PageMap>
+    <DataObject type="product">
+      <Attribute name="name">Moroccan Odyssey: From Dunes to Souks</Attribute>
+      <Attribute name="price">1199.00</Attribute>
+      <Attribute name="currency">USD</Attribute>
+      <Attribute name="availability">in stock</Attribute>
+      <Attribute name="rating">4.7</Attribute>
+    </DataObject>
+  </PageMap>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/tours/moroccan-odyssey:-desert-sands-to-blue-cities-1740510560501</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
-  <priority>0.80</priority>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.85</priority>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/tours/moroccan-desert-escape:-from-dades-to-marrakech-1740512579347</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
-  <priority>0.80</priority>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.85</priority>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/tours/epic-moroccan-journey:-deserts-mountains-and-seaside-wonders-1740514275378</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
-  <priority>0.80</priority>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.85</priority>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/privacy</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
-  <priority>0.80</priority>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>yearly</changefreq>
+  <priority>0.50</priority>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/terms</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
-  <priority>0.80</priority>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>yearly</changefreq>
+  <priority>0.50</priority>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/tours/9-day-private-tour-from-agadir-1741570583958</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
-  <priority>0.64</priority>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/tours/morocco-family-adventure:-from-tangier-to-fes-1741573329689</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
-  <priority>0.64</priority>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
 </url>
 <url>
   <loc>https://www.moroccotravelexperts.com/tours/5-day-marrakech-to-merzouga-desert-adventure-1742349419563</loc>
-  <lastmod>2025-03-19T03:51:46+00:00</lastmod>
-  <priority>0.64</priority>
+  <lastmod>2025-04-15T12:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
+  <image:image>
+    <image:loc>https://moroccotravelexperts.com/images/tours/5-day-merzouga-adventure.jpg</image:loc>
+    <image:title>5 Day Marrakech to Merzouga Desert Adventure</image:title>
+    <image:caption>Experience the magic of the Sahara Desert on this 5-day tour</image:caption>
+  </image:image>
 </url>
 
+<!-- Example Blog Post URLs (these would be dynamically generated) -->
+<url>
+  <loc>https://www.moroccotravelexperts.com/blog/ultimate-guide-to-moroccos-imperial-cities</loc>
+  <lastmod>2025-04-10T09:30:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
+  <image:image>
+    <image:loc>https://moroccotravelexperts.com/images/blog/imperial-cities-guide.jpg</image:loc>
+    <image:title>Ultimate Guide to Morocco's Imperial Cities</image:title>
+    <image:caption>Explore the rich history and culture of Marrakech, Fes, Meknes and Rabat</image:caption>
+  </image:image>
+</url>
+<url>
+  <loc>https://www.moroccotravelexperts.com/blog/10-must-try-moroccan-dishes-on-your-travels</loc>
+  <lastmod>2025-04-08T14:15:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
+  <image:image>
+    <image:loc>https://moroccotravelexperts.com/images/blog/moroccan-cuisine.jpg</image:loc>
+    <image:title>10 Must-Try Moroccan Dishes on Your Travels</image:title>
+    <image:caption>From tagines to pastilla, discover Morocco's unique culinary delights</image:caption>
+  </image:image>
+</url>
+<url>
+  <loc>https://www.moroccotravelexperts.com/blog/best-time-to-visit-morocco-season-guide</loc>
+  <lastmod>2025-04-05T11:45:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
+  <image:image>
+    <image:loc>https://moroccotravelexperts.com/images/blog/morocco-seasons.jpg</image:loc>
+    <image:title>Best Time to Visit Morocco: Season Guide</image:title>
+    <image:caption>Plan your perfect Morocco trip with our seasonal guide and travel tips</image:caption>
+  </image:image>
+</url>
 
 </urlset>

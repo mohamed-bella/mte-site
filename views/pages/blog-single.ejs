@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<%- include('../partials/head', { 
+    title: blog.metaTitle || blog.title + ' | Morocco Travel Experts Blog',
+    metaDescription: blog.metaDescription || blog.summary,
+    metaKeywords: blog.metaKeywords || 'morocco blog, morocco travel blog, morocco travel tips',
+    ogImage: blog.featuredImage,
+    ogImageAlt: blog.title + ' - Morocco Travel Blog',
+    ogType: 'article',
+    canonical: `https://www.moroccotravelexperts.com/blog/${blog.slug}`,
+    publishedTime: blog.publishedAt.toISOString(),
+    modifiedTime: blog.lastModified.toISOString(),
+    articleSection: blog.category,
+    articleTags: blog.tags
+}) %>
+
+<!-- Structured Data for Blog Post -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "<%= blog.title %>",
+  "image": "<%= blog.featuredImage %>",
+  "datePublished": "<%= blog.publishedAt.toISOString() %>",
+  "dateModified": "<%= blog.lastModified.toISOString() %>",
+  "author": {
+    "@type": "Person",
+    "name": "<%= blog.author %>"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Morocco Travel Experts",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.moroccotravelexperts.com/images/logo.png",
+      "width": "180",
+      "height": "60"
+    }
+  },
+  "description": "<%= blog.summary.replace(/"/g, '&quot;') %>",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://www.moroccotravelexperts.com/blog/<%= blog.slug %>"
+  },
+  "articleBody": "<%= blog.content.replace(/<[^>]*>/g, '').replace(/"/g, '&quot;').substring(0, 1000) %>...",
+  "wordCount": "<%= blog.content.replace(/<[^>]*>/g, '').split(/\s+/).length %>",
+  "articleSection": "<%= blog.category %>",
+  "keywords": "<%= blog.tags.join(', ') %>"
+}
+</script>
+
+<!-- BreadcrumbList Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://www.moroccotravelexperts.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "https://www.moroccotravelexperts.com/blog"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "<%= blog.title %>",
+      "item": "https://www.moroccotravelexperts.com/blog/<%= blog.slug %>"
+    }
+  ]
+}
+</script>
+
+<%- include('../partials/header') %>
+
+<main class="min-h-screen">
+    <!-- Article Header -->
+    <section class="relative py-16 md:py-24 bg-gray-900">
+        <!-- Background Image with Gradient Overlay -->
+        <div class="absolute inset-0">
+            <img src="<%= blog.featuredImage %>" 
+                alt="<%= blog.title %>" 
+                class="w-full h-full object-cover opacity-40"
+                loading="eager"
+            />
+            <div class="absolute inset-0 bg-gradient-to-b from-gray-900/90 via-gray-900/70 to-gray-900/90"></div>
+        </div>
+
+        <!-- Content Container -->
+        <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Categories -->
+            <div class="flex flex-wrap gap-2 mb-4 justify-center">
+                <% if (blog.category) { %>
+                    <a href="/blog?category=<%= encodeURIComponent(blog.category) %>" 
+                       class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-orange-100 text-orange-800 hover:bg-orange-200">
+                        <%= blog.category %>
+                    </a>
+                <% } %>
+            </div>
+
+            <!-- Title -->
+            <h1 class="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 text-center tracking-tight">
+                <%= blog.title %>
+            </h1>
+
+            <!-- Meta Information -->
+            <div class="flex items-center justify-center text-gray-300 mb-8">
+                <div class="flex items-center">
+                    <span class="mr-2 font-medium"><%= blog.author %></span>
+                </div>
+                <span class="mx-2">•</span>
+                <time datetime="<%= blog.publishedAt.toISOString() %>" class="mr-2">
+                    <%= new Date(blog.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                </time>
+                <span class="mx-2">•</span>
+                <span><%= blog.readTime %> min read</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Article Content -->
+    <section class="py-12 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="prose prose-lg md:prose-xl mx-auto">
+                <!-- Blog Content -->
+                <div class="blog-content">
+                    <%- blog.content %>
+                </div>
+
+                <!-- Tags -->
+                <% if (blog.tags && blog.tags.length > 0) { %>
+                    <div class="mt-12 pt-6 border-t border-gray-200">
+                        <div class="flex flex-wrap gap-2">
+                            <% blog.tags.forEach(tag => { %>
+                                <a href="/blog?tag=<%= encodeURIComponent(tag) %>" 
+                                   class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-gray-100 text-gray-800 hover:bg-gray-200">
+                                    #<%= tag %>
+                                </a>
+                            <% }); %>
+                        </div>
+                    </div>
+                <% } %>
+
+                <!-- Author Info -->
+                <div class="mt-12 pt-6 border-t border-gray-200">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="h-12 w-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold text-xl">
+                                <%= blog.author.charAt(0) %>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <div class="text-lg font-bold"><%= blog.author %></div>
+                            <div class="text-sm text-gray-500">Travel Expert</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Share -->
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <h3 class="text-lg font-medium mb-4">Share this article</h3>
+                    <div class="flex space-x-4">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.moroccotravelexperts.com/blog/<%= blog.slug %>" 
+                           target="_blank" rel="noopener noreferrer"
+                           class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 hover:bg-blue-700 text-white">
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url=https://www.moroccotravelexperts.com/blog/<%= blog.slug %>&text=<%= encodeURIComponent(blog.title) %>" 
+                           target="_blank" rel="noopener noreferrer"
+                           class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-blue-400 hover:bg-blue-500 text-white">
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.moroccotravelexperts.com/blog/<%= blog.slug %>&title=<%= encodeURIComponent(blog.title) %>" 
+                           target="_blank" rel="noopener noreferrer"
+                           class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-blue-700 hover:bg-blue-800 text-white">
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                        <a href="https://api.whatsapp.com/send?text=<%= encodeURIComponent(blog.title) %>%20https://www.moroccotravelexperts.com/blog/<%= blog.slug %>" 
+                           target="_blank" rel="noopener noreferrer"
+                           class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-green-500 hover:bg-green-600 text-white">
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M20.11 3.89C17.95 1.71 14.98 0.5 11.86 0.5C5.5 0.5 0.33 5.67 0.33 12.03C0.33 14.27 0.98 16.44 2.17 18.3L0.21 24.5L6.56 22.58C8.35 23.66 10.38 24.23 12.46 24.23H12.47C18.82 24.23 24 19.05 24 12.7C24 9.6 22.74 6.64 20.11 3.89L20.11 3.89ZM11.86 22.18C10.08 22.18 8.33 21.64 6.81 20.64L6.5 20.45L3.04 21.63L4.25 18.25L4.03 17.92C2.93 16.33 2.35 14.42 2.35 12.42C2.35 6.8 6.6 2.55 11.91 2.55C14.5 2.55 16.96 3.56 18.79 5.41C20.5 7.14 21.5 9.61 21.5 12.21C21.5 17.83 17.25 22.18 11.86 22.18V22.18Z" clip-rule="evenodd" />
+                                <path fill-rule="evenodd" d="M17.3 14.5C17.05 14.38 15.64 13.66 15.39 13.59C15.15 13.52 14.97 13.48 14.78 13.74C14.6 13.99 14.08 14.68 13.92 14.87C13.76 15.05 13.62 15.08 13.37 14.95C13.12 14.83 12.21 14.54 11.13 13.58C10.29 12.83 9.74 11.92 9.6 11.67C9.45 11.41 9.58 11.28 9.72 11.15C9.84 11.04 9.98 10.87 10.11 10.71C10.24 10.55 10.27 10.44 10.35 10.25C10.43 10.06 10.39 9.91 10.33 9.78C10.27 9.66 9.74 8.24 9.51 7.73C9.29 7.25 9.07 7.32 8.9 7.31C8.73 7.3 8.55 7.3 8.37 7.3C8.19 7.3 7.91 7.36 7.67 7.61C7.42 7.87 6.66 8.6 6.66 10.01C6.66 11.42 7.72 12.79 7.85 12.97C7.97 13.16 9.72 15.94 12.46 17.15C13.04 17.4 13.5 17.56 13.86 17.68C14.44 17.88 14.97 17.85 15.39 17.79C15.86 17.72 17.02 17.09 17.26 16.5C17.5 15.91 17.5 15.4 17.44 15.3C17.38 15.2 17.2 15.13 16.95 15.01L17.3 14.5Z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                        <button onclick="copyToClipboard()" 
+                           class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                        </button>
+                        <!-- Copy Link Tooltip -->
+                        <div id="copyTooltip" class="hidden absolute z-10 bg-gray-800 text-white text-sm px-2 py-1 rounded transition-opacity">
+                            Link copied!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Posts -->
+    <section class="py-12 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-8">Related Articles</h2>
+
+            <div class="grid gap-8 md:grid-cols-3">
+                <% if (relatedPosts && relatedPosts.length > 0) { %>
+                    <% relatedPosts.forEach(post => { %>
+                        <article class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 flex flex-col">
+                            <a href="/blog/<%= post.slug %>" class="block aspect-w-16 aspect-h-9 overflow-hidden">
+                                <img src="<%= post.featuredImage %>" alt="<%= post.title %>" class="w-full h-48 object-cover transform hover:scale-105 transition duration-500">
+                            </a>
+                            <div class="p-6 flex flex-col flex-grow">
+                                <div class="flex items-center text-sm text-gray-500 mb-3">
+                                    <time datetime="<%= post.publishedAt.toISOString() %>">
+                                        <%= new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                                    </time>
+                                </div>
+                                
+                                <h3 class="text-lg font-bold text-gray-900 mb-3 line-clamp-2 hover:text-orange-600 transition-colors">
+                                    <a href="/blog/<%= post.slug %>"><%= post.title %></a>
+                                </h3>
+                                
+                                <div class="mt-auto">
+                                    <a href="/blog/<%= post.slug %>" class="inline-flex items-center text-sm font-medium text-orange-600 hover:text-orange-500">
+                                        Read more
+                                        <svg class="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
+                    <% }); %>
+                <% } else { %>
+                    <div class="col-span-3 py-12 text-center text-gray-500">
+                        No related articles found.
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="bg-orange-600 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold text-white mb-6">Ready to Experience Morocco?</h2>
+            <p class="text-xl text-white opacity-90 mb-8 max-w-3xl mx-auto">
+                Let our travel experts create a customized tour itinerary based on your interests and preferences.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="/tours" class="inline-flex items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-orange-600 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                    Browse Tours
+                </a>
+                <a href="/contact" class="inline-flex items-center px-6 py-3 border border-white rounded-md shadow-sm text-base font-medium text-white hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                    Contact Us
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<%- include('../partials/footer') %>
+
+<!-- Script for Copy to Clipboard -->
+<script>
+    function copyToClipboard() {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            const tooltip = document.getElementById('copyTooltip');
+            tooltip.style.display = 'block';
+            
+            // Position the tooltip near the copy button
+            const copyButton = event.currentTarget;
+            const rect = copyButton.getBoundingClientRect();
+            tooltip.style.top = `${rect.top - 30}px`;
+            tooltip.style.left = `${rect.left - 20}px`;
+            
+            setTimeout(() => {
+                tooltip.style.display = 'none';
+            }, 2000);
+        });
+    }
+
+    // Add some styles to content images
+    document.addEventListener('DOMContentLoaded', function() {
+        const blogContent = document.querySelector('.blog-content');
+        if (blogContent) {
+            const images = blogContent.querySelectorAll('img');
+            images.forEach(img => {
+                img.classList.add('rounded-lg', 'shadow-md', 'my-4');
+                
+                // Create a figure wrapper if not already wrapped
+                if (img.parentNode.nodeName !== 'FIGURE') {
+                    const figure = document.createElement('figure');
+                    figure.classList.add('my-6');
+                    img.parentNode.insertBefore(figure, img);
+                    figure.appendChild(img);
+                    
+                    // Add caption if alt text exists
+                    if (img.alt && img.alt !== '') {
+                        const figcaption = document.createElement('figcaption');
+                        figcaption.textContent = img.alt;
+                        figcaption.classList.add('text-sm', 'text-center', 'text-gray-500', 'mt-2');
+                        figure.appendChild(figcaption);
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+</body>
+</html> 

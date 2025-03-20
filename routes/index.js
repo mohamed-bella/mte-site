@@ -12,442 +12,372 @@ const dotenv = require('dotenv');
 const nodemailer = require('nodemailer');
 const StartingCity = require('../models/StartingCity');
 const { scrapeGoogleReviews } = require('../utils/reviewScraper');
-
+const Blog = require('../models/Blog');
+const homeController = require('../controllers/homeController');
+const { csrfProtection } = require('../middleware/security');
 
 dotenv.config();
 
-// Middleware to load settings
+// Middleware to load global settings
 const loadSettings = async (req, res, next) => {
      try {
           const settings = await Setting.findOne();
-          res.locals.settings = settings;
+        res.locals.settings = settings || {};
           next();
      } catch (error) {
           console.error('Error loading settings:', error);
+        res.locals.settings = {};
           next();
      }
 };
 
+// Apply settings middleware to all routes
 router.use(loadSettings);
 
-// Home page
-router.get('/', async (req, res) => {
-     try {
-          // Get featured tours for homepage
-          const featuredTours = await Tour.find({ featured: true })
-               .limit(6);
+// Main routes
+router.get('/', homeController.getHomePage);
+router.get('/about', homeController.getAboutPage);
+router.get('/contact', homeController.getContactPage);
+router.post('/contact', homeController.submitContactForm);
 
-          // Get starting cities
-          const startingCities = await StartingCity.find()
-               .populate('tours', 'title');
-
-         
-
-          // Get settings with location information
-          const settings = await Setting.findOne();
-          // console.log(startingCities)
-          
-          res.render('pages/home', {
-               title: settings?.siteTitle || 'Welcome to Morocco Tours',
-               tours: featuredTours,
-               startingCities: startingCities,
-               metaTitle: settings?.metaTitle,
-               metaDescription: settings?.metaDescription,
-               metaKeywords: settings?.metaKeywords,
-               location: {
-                    address: settings?.address || '123 Tourism Street, Marrakech Medina',
-                    coordinates: settings?.coordinates || {
-                         lat: 31.631044981330687,
-                         lng: -7.989843684885611
-                    }
-               }
+// Blog routes
+router.get('/blog', async (req, res) => {
+    try {
+        // Get query parameters
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 6;
+        const category = req.query.category;
+        const tag = req.query.tag;
+        const search = req.query.search;
+        
+        // Build query
+        let query = { isPublished: true };
+        
+        if (category) {
+            query.category = category;
+        }
+        
+        if (tag) {
+            query.tags = tag;
+        }
+        
+        if (search) {
+            query.$or = [
+                { title: { $regex: search, $options: 'i' } },
+                { content: { $regex: search, $options: 'i' } },
+                { summary: { $regex: search, $options: 'i' } },
+                { tags: { $regex: search, $options: 'i' } }
+            ];
+        }
+        
+        // Execute query with pagination
+        const skip = (page - 1) * limit;
+        
+        const [blogs, totalCount, categoryStats, tagStats] = await Promise.all([
+            Blog.find(query)
+                .sort({ publishedAt: -1 })
+                .skip(skip)
+                .limit(limit),
+            Blog.countDocuments(query),
+            Blog.aggregate([
+                { $match: { isPublished: true } },
+                { $group: { _id: '$category', count: { $sum: 1 } } },
+                { $sort: { count: -1 } }
+            ]),
+            Blog.aggregate([
+                { $match: { isPublished: true } },
+                { $unwind: '$tags' },
+                { $group: { _id: '$tags', count: { $sum: 1 } } },
+                { $sort: { count: -1 } }
+            ])
+        ]);
+        
+        // Get recent posts for sidebar
+        const recentPosts = await Blog.find({ isPublished: true })
+            .sort({ publishedAt: -1 })
+            .limit(3)
+            .select('title slug featuredImage publishedAt');
+            
+        // Calculate pagination info
+        const totalPages = Math.ceil(totalCount / limit);
+        const hasNextPage = page < totalPages;
+        const hasPrevPage = page > 1;
+        
+        res.render('pages/blog', {
+            title: 'Blog | Morocco Travel Experts',
+            metaDescription: 'Explore our blog for travel tips, destination guides, and insights about Morocco tours and adventures.',
+            currentUrl: '/blog',
+            blogs,
+            pagination: {
+                page,
+                limit,
+                totalCount,
+                totalPages,
+                hasNextPage,
+                hasPrevPage
+            },
+            filter: {
+                category,
+                tag,
+                search
+            },
+            categoryStats,
+            tagStats,
+            recentPosts
           });
      } catch (error) {
-          console.error('Homepage error:', error);
-          res.render('pages/home', {
-               title: 'Welcome to Morocco Tours',
-               tours: [],
-               startingCities: [],
-               startCities: [],
-               metaTitle: '',
-               metaDescription: '',
-               metaKeywords: '',
-               location: {
-                    address: '123 Tourism Street, Marrakech Medina',
-                    coordinates: {
-                         lat: 31.631044981330687,
-                         lng: -7.989843684885611
-                    }
-               }
+        console.error('Error fetching blog posts:', error);
+        res.status(500).render('error', {
+            title: 'Error',
+            message: 'Failed to load blog posts',
+            error: { status: 500, stack: process.env.NODE_ENV === 'development' ? error.stack : '' }
           });
      }
 });
 
-// All tours page
+router.get('/blog/:slug', async (req, res, next) => {
+    try {
+        const blog = await Blog.findOne({ slug: req.params.slug, isPublished: true });
+        
+        if (!blog) {
+            return res.status(404).render('error', {
+                title: 'Not Found',
+                message: 'The blog post you are looking for does not exist or has been removed.',
+                error: { status: 404 }
+            });
+        }
+        
+        // Get related posts based on categories and tags
+        const relatedPosts = await Blog.find({
+            _id: { $ne: blog._id },
+            isPublished: true,
+            $or: [
+                { category: blog.category },
+                { tags: { $in: Array.isArray(blog.tags) ? blog.tags : [] } }
+            ]
+        })
+        .sort({ publishedAt: -1 })
+        .limit(3);
+        
+        // Update view count or other analytics here if needed
+        
+        res.render('pages/blog-single', {
+            title: blog.metaTitle || `${blog.title} | Morocco Travel Blog`,
+            metaDescription: blog.metaDescription || blog.summary,
+            metaKeywords: blog.metaKeywords,
+            currentUrl: `/blog/${blog.slug}`,
+            blog,
+            relatedPosts
+        });
+    } catch (error) {
+        console.error('Error fetching blog post:', error);
+        res.status(500).render('error', {
+            title: 'Error',
+            message: 'Failed to load blog post',
+            error: { status: 500, stack: process.env.NODE_ENV === 'development' ? error.stack : '' }
+        });
+    }
+});
+
+// Tour routes
 router.get('/tours', async (req, res) => {
-     try {
-          let tours = [];
-          let query = {};
-          
-          // Get all starting cities for the filter dropdown
-          const allStartingCities = await StartingCity.find().select('city');
-          
-          // Apply filters
-          if (req.query.city) {
-               const startingCity = await StartingCity.findOne({ city: req.query.city })
-                    .populate({
-                         path: 'tours',
-                         match: {
-                              $and: [
-                                   // Price filter
-                                   req.query.minPrice ? { price: { $gte: parseInt(req.query.minPrice) } } : {},
-                                   req.query.maxPrice ? { price: { $lte: parseInt(req.query.maxPrice) } } : {},
-                                   // Duration filter
-                                   req.query.minDays ? { duration: { $gte: parseInt(req.query.minDays) } } : {},
-                                   req.query.maxDays ? { duration: { $lte: parseInt(req.query.maxDays) } } : {}
-                              ]
-                         }
-                    });
-               
-               if (startingCity) {
-                    tours = startingCity.tours;
-               }
-          } else {
-               // If no city filter, check if any other filters are applied
-               if (req.query.minPrice || req.query.maxPrice || req.query.minDays || req.query.maxDays) {
-                    // If other filters are applied, get all tours from all starting cities with filters
-                    const startingCities = await StartingCity.find()
-                         .populate({
-                              path: 'tours',
-                              match: {
-                                   $and: [
-                                        // Price filter
-                                        req.query.minPrice ? { price: { $gte: parseInt(req.query.minPrice) } } : {},
-                                        req.query.maxPrice ? { price: { $lte: parseInt(req.query.maxPrice) } } : {},
-                                        // Duration filter
-                                        req.query.minDays ? { duration: { $gte: parseInt(req.query.minDays) } } : {},
-                                        req.query.maxDays ? { duration: { $lte: parseInt(req.query.maxDays) } } : {}
-                                   ]
-                              }
-                         });
-                    
-                    // Combine all tours from all cities, removing duplicates
-                    const tourSet = new Set();
-                    startingCities.forEach(city => {
-                         city.tours.forEach(tour => {
-                              tourSet.add(tour);
-                         });
-                    });
-                    tours = Array.from(tourSet);
-               } else {
-                    // No filters at all, get all tours directly
-                    tours = await Tour.find();
-               }
-          }
-
-          // Sort tours if requested
-          if (req.query.sort) {
-               switch(req.query.sort) {
-                    case 'price-asc':
-                         tours.sort((a, b) => a.price - b.price);
-                         break;
-                    case 'price-desc':
-                         tours.sort((a, b) => b.price - a.price);
-                         break;
-                    case 'duration-asc':
-                         tours.sort((a, b) => a.duration - b.duration);
-                         break;
-                    case 'duration-desc':
-                         tours.sort((a, b) => b.duration - a.duration);
-                         break;
-               }
-          }
-
-          // console.log(tours)
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = 9; // Number of tours per page
+        const skip = (page - 1) * limit;
+        
+        // Parse filter parameters
+        const city = req.query.city;
+        const duration = req.query.duration;
+        const minPrice = req.query.minPrice ? parseInt(req.query.minPrice) : 0;
+        const maxPrice = req.query.maxPrice ? parseInt(req.query.maxPrice) : 100000;
+        
+        // Build query object
+        const query = {};
+        
+        if (city) {
+            query.startLocation = city;
+        }
+        
+        if (duration) {
+            query.duration = duration;
+        }
+        
+        query.price = { $gte: minPrice, $lte: maxPrice };
+        
+        // Execute query with pagination
+        const [tours, totalTours, startingCities, settings] = await Promise.all([
+            Tour.find(query).skip(skip).limit(limit).sort({ createdAt: -1 }),
+            Tour.countDocuments(query),
+            StartingCity.find().sort({ name: 1 }),
+            Setting.findOne()
+        ]);
+        
+        // Calculate pagination values
+        const totalPages = Math.ceil(totalTours / limit);
+        const hasNextPage = page < totalPages;
+        const hasPrevPage = page > 1;
 
           res.render('pages/tours', {
-               title: 'Our Tours',
+            title: 'Morocco Tours and Travel Packages',
                tours,
-               metaTitle: res.locals.settings?.metaTitle,
-               metaDescription: res.locals.settings?.metaDescription,
-               metaKeywords: res.locals.settings?.metaKeywords,
-               selectedCity: req.query.city,
+            pagination: {
+                page,
+                limit,
+                totalTours,
+                totalPages,
+                hasNextPage,
+                hasPrevPage
+            },
                filters: {
-                    minPrice: req.query.minPrice,
-                    maxPrice: req.query.maxPrice,
-                    minDays: req.query.minDays,
-                    maxDays: req.query.maxDays,
-                    sort: req.query.sort
-               },
-               startingCities: allStartingCities
+                city,
+                duration,
+                minPrice,
+                maxPrice
+            },
+            startingCities
           });
      } catch (error) {
-          console.error('Tours page error:', error);
-          req.flash('error', 'Error loading tours');
-          res.redirect('/');
-     }
+        console.error('Error fetching tours:', error);
+        res.status(500).render('error', {
+            title: 'Error',
+            message: 'Failed to load tours'
+        });
+    }
 });
 
-// Single tour page
-router.get('/tours/:slug', async (req, res) => {
-     try {
-          const tour = await Tour.findOne({ slug: req.params.slug });
+router.get('/tours/:slug', async (req, res, next) => {
+    try {
+        const tour = await Tour.findOne({ 
+            $or: [
+                { slug: req.params.slug },
+                { _id: mongoose.isValidObjectId(req.params.slug) ? req.params.slug : null }
+            ] 
+        });
 
           if (!tour) {
-               req.flash('error', 'Tour not found');
-               return res.redirect('/tours');
-          }
-          console.log(tour.mapCoordinates)
-
-          res.render('pages/tour-details', {
+            return next(); // Pass to 404 handler
+        }
+        
+        // Get related tours from same starting city
+        const relatedTours = await Tour.find({ 
+            _id: { $ne: tour._id },
+            startLocation: tour.startLocation 
+        }).limit(3);
+        
+        res.render('pages/tour-detail', {
                title: tour.title,
                tour,
-               metaTitle: res.locals.settings?.metaTitle,
-               metaDescription: res.locals.settings?.metaDescription,
-               metaKeywords: res.locals.settings?.metaKeywords
+            relatedTours
           });
      } catch (error) {
-          console.error('Tour detail error:', error);
-          req.flash('error', 'Error loading tour');
-          res.redirect('/tours');
-     }
+        console.error('Error fetching tour:', error);
+        res.status(500).render('error', {
+            title: 'Error',
+            message: 'Failed to load tour details'
+        });
+    }
 });
 
-// Process booking
-router.post('/tours/:slug/book', async (req, res) => {
-     try {
-          const tour = await Tour.findOne({ slug: req.params.slug });
+// Booking routes
+router.get('/tour-booking/:id', csrfProtection, async (req, res) => {
+    try {
+        const tour = await Tour.findById(req.params.id);
+        
+        if (!tour) {
+            return res.status(404).render('error', {
+                title: 'Not Found',
+                message: 'The tour you are looking for does not exist.'
+            });
+        }
+        
+        res.render('bookings/booking-form', {
+            title: `Book ${tour.title}`,
+            tour,
+            csrfToken: req.csrfToken()
+        });
+    } catch (error) {
+        console.error('Error loading booking form:', error);
+        res.status(500).render('error', {
+            title: 'Error',
+            message: 'Failed to load booking form'
+        });
+    }
+});
 
+router.post('/tour-booking', csrfProtection, async (req, res) => {
+    try {
+        const { tourId, fullName, email, phone, travelDate, adults, children, specialRequests } = req.body;
+        
+        // Fetch the tour
+        const tour = await Tour.findById(tourId);
           if (!tour) {
                req.flash('error', 'Tour not found');
                return res.redirect('/tours');
           }
 
+        // Create booking
           const booking = new Booking({
-               tour: tour._id,
-               firstName: req.body.firstName,
-               lastName: req.body.lastName,
-               email: req.body.email,
-               date: new Date(req.body.date),
-               groupSize: req.body.groupSize,
-               specialRequests: req.body.specialRequests,
-               status: 'pending', // Set initial status as pending
-               totalPrice: 0 // Set default price as 0 for flexible pricing
+            tour: tourId,
+            customerInfo: {
+                fullName,
+                email,
+                phone
+            },
+            bookingDetails: {
+                travelDate: new Date(travelDate),
+                adults: parseInt(adults),
+                children: parseInt(children),
+                specialRequests
+            },
+            status: 'pending'
           });
 
           await booking.save();
 
-          // Send confirmation email
-          const emailContent = `
-               Dear ${booking.firstName} ${booking.lastName},
-
-               Thank you for booking your tour with Morocco Travel Experts!
-
-               Booking Details:
-               - Tour: ${tour.title}
-               - Date: ${booking.date.toLocaleDateString()}
-               - Number of People: ${booking.groupSize}
-
-               Our team will contact you shortly with pricing details and next steps.
-
-               You can view your booking confirmation at:
-               https://moroccotravelexperts.com/bookings/${booking._id}/confirmation
-
-               If you have any questions, please don't hesitate to contact us.
-
-               Best regards,
-               Morocco Travel Experts Team
-          `;
-
-          // Create nodemailer transporter
-          const transporter = nodemailer.createTransport({
-               host: process.env.EMAIL_HOST,
-               port: process.env.EMAIL_PORT,
-               secure: true,
-               auth: {
-
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASS
-
-               }
-          });
-
-          await transporter.sendMail({
-               from: process.env.EMAIL_USER,
-               to: booking.email,
-               subject: `Booking Confirmation - ${tour.title}`,
-               text: emailContent
-          });
-
-
-
-
-          req.flash('success', 'Booking submitted successfully. Check your email for confirmation.');
-          res.redirect(`/bookings/${booking._id}/confirmation`);
+        // Generate and send confirmation email
+        // await sendConfirmationEmail(booking, tour);
+        
+        // Redirect to confirmation page
+        res.redirect(`/booking/confirmation/${booking._id}`);
      } catch (error) {
-          console.error('Booking error:', error);
-          req.flash('error', 'Error processing booking');
-          res.redirect('back');
-     }
+        console.error('Error processing booking:', error);
+        req.flash('error', 'Error processing booking. Please try again.');
+        res.redirect(`/tour-booking/${req.body.tourId}`);
+    }
 });
 
-// Booking confirmation page
-router.get('/bookings/:id/confirmation', async (req, res) => {
-     try {
-          const booking = await Booking.findById(req.params.id)
-               .populate('tour');
+router.get('/booking/confirmation/:id', async (req, res) => {
+    try {
+        const booking = await Booking.findById(req.params.id).populate('tour');
 
           if (!booking) {
-               req.flash('error', 'Booking not found');
-               return res.redirect('/');
+            return res.status(404).render('error', {
+                title: 'Not Found',
+                message: 'Booking not found'
+            });
           }
 
           res.render('bookings/confirmation', {
                title: 'Booking Confirmation',
-               booking,
-               metaTitle: res.locals.settings?.metaTitle,
-               metaDescription: res.locals.settings?.metaDescription,
-               metaKeywords: res.locals.settings?.metaKeywords
+            booking
           });
      } catch (error) {
-          console.error('Confirmation error:', error);
-          req.flash('error', 'Error loading confirmation');
-          res.redirect('/');
-     }
-});
-
-router.get('/bookings/:id/download-pdf', async (req, res) => {
-     try {
-          const booking = await Booking.findById(req.params.id).populate('tour');
-
-          if (!booking) {
-               req.flash('error', 'Booking not found');
-               return res.redirect('/bookings');
-          }
-
-          // Read the PDF template
-          const templatePath = path.join(__dirname, '../views/bookings/pdf-template.ejs');
-          const template = await ejs.renderFile(templatePath, { 
-               booking,
-               settings: res.locals.settings 
-          });
-
-          // PDF configuration
-          const options = {
-               format: 'A4',
-               border: {
-                    top: '20px',
-                    right: '20px',
-                    bottom: '20px',
-                    left: '20px'
-               },
-               footer: {
-                    height: '20mm',
-                    contents: {
-                         default: '<div style="text-align: center; font-size: 12px;">Page {{page}} of {{pages}}</div>'
-                    }
-               }
-          };
-
-          // Generate PDF
-          pdf.create(template, options).toBuffer((err, buffer) => {
-               if (err) {
-                    console.log(err)
-                    req.flash('error', 'Error generating PDF');
-                    return res.redirect('/bookings/' + booking._id + '/confirmation');
-               }
-
-               // Send the PDF
-               res.setHeader('Content-Type', 'application/pdf');
-               res.setHeader('Content-Disposition', `attachment; filename="booking-${booking._id}.pdf"`);
-               res.send(buffer);
-          });
-     } catch (error) {
-          req.flash('error', 'Error generating PDF');
-          res.redirect('/bookings/confirmation/' + req.params.id);
-     }
-});
-
-// About page
-router.get('/about', async (req, res) => {
-     try {
-          // Create array of image URLs
-          const galleryImages = [
-               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/1.jpg',
-               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/2.jpg',
-               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/3.jpg',
-               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/4.jpg',
-               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/5.jpg',
-               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/6.jpg',
-               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/7.jpg',
-               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/8.jpg',
-               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/9.jpg',
-               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/10.jpg',
-               'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/11.jpg'
-          ];
-
-          res.render('pages/about', {
-               title: 'About Us',
-               metaTitle: res.locals.settings?.metaTitle,
-               metaDescription: res.locals.settings?.metaDescription,
-               metaKeywords: res.locals.settings?.metaKeywords,
-               galleryImages: galleryImages
-          });
-     } catch (error) {
-          console.error('Error loading gallery images:', error);
-          res.render('pages/about', {
-               title: 'About Us',
-               metaTitle: res.locals.settings?.metaTitle,
-               metaDescription: res.locals.settings?.metaDescription,
-               metaKeywords: res.locals.settings?.metaKeywords,
-               galleryImages: []
+        console.error('Error showing confirmation:', error);
+        res.status(500).render('error', {
+            title: 'Error',
+            message: 'Failed to load booking confirmation'
           });
      }
 });
 
-// Contact page
-router.get('/contact', (req, res) => {
-     res.render('pages/contact', {
-          title: 'Contact Us',
-          metaTitle: res.locals.settings?.metaTitle,
-          metaDescription: res.locals.settings?.metaDescription,
-          metaKeywords: res.locals.settings?.metaKeywords
-     });
-});
-
-// Process contact form
-router.post('/contact', async (req, res) => {
-     try {
-          // Here you would typically handle the contact form
-          // e.g., send an email or save to database
-
-          req.flash('success', 'Message sent successfully');
-          res.redirect('/contact');
-     } catch (error) {
-          console.error('Contact form error:', error);
-          req.flash('error', 'Error sending message');
-          res.redirect('/contact');
-     }
-});
-
-// Privacy policy
+// Legal pages
 router.get('/privacy', (req, res) => {
-     res.render('pages/privacy', {
-          title: 'Privacy Policy',
-          metaTitle: res.locals.settings?.metaTitle,
-          metaDescription: res.locals.settings?.metaDescription,
-          metaKeywords: res.locals.settings?.metaKeywords
-     });
+    res.render('pages/privacy', { title: 'Privacy Policy' });
 });
 
-// Terms and conditions
 router.get('/terms', (req, res) => {
-     res.render('pages/terms', {
-          title: 'Terms and Conditions',
-          metaTitle: res.locals.settings?.metaTitle,
-          metaDescription: res.locals.settings?.metaDescription,
-          metaKeywords: res.locals.settings?.metaKeywords
-     });
+    res.render('pages/terms', { title: 'Terms and Conditions' });
 });
 
 // Reviews route

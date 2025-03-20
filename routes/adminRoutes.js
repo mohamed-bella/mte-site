@@ -10,6 +10,16 @@ const path = require('path');
 const Setting = require('../models/Setting');
 const StartingCity = require('../models/StartingCity');
 const CustomTourRequest = require('../models/CustomTourRequest');
+const AdminController = require('../controllers/adminController');
+const Blog = require('../models/Blog');
+const cloudinary = require('cloudinary').v2;
+
+// Configure Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 const storage = multer.memoryStorage(); // Change to memory storage for GitHub uploads
 
@@ -840,6 +850,58 @@ router.post('/custom-requests/:id/update-status', async (req, res) => {
         console.error('Error updating custom request status:', error);
         req.flash('error', 'Error updating custom request status');
         res.redirect('/admin/custom-requests');
+    }
+});
+
+// Blog Management Routes
+router.get('/blogs', AdminController.getAllBlogs);
+router.get('/blogs/new', AdminController.getNewBlogForm);
+router.post('/blogs/new', upload.fields([
+    { name: 'featuredImage', maxCount: 1 },
+    { name: 'images', maxCount: 10 }
+]), AdminController.createBlog);
+router.get('/blogs/:id/edit', AdminController.getBlogEditForm);
+router.post('/blogs/:id/edit', upload.fields([
+    { name: 'featuredImage', maxCount: 1 },
+    { name: 'images', maxCount: 10 }
+]), AdminController.updateBlog);
+router.delete('/blogs/:id', AdminController.deleteBlog);
+
+// Helper function to upload to Cloudinary
+async function uploadToCloudinary(file) {
+    try {
+        // Convert buffer to base64
+        const base64Image = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+        
+        // Generate a unique filename
+        const fileName = `${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9.]/g, '-')}`;
+        
+        // Upload to Cloudinary
+        const result = await cloudinary.uploader.upload(base64Image, {
+            public_id: `blog_images/${fileName}`,
+            folder: 'morocco-travel-experts',
+            resource_type: 'image'
+        });
+        
+        return result.secure_url;
+    } catch (error) {
+        console.error('Cloudinary Upload Error:', error);
+        throw new Error(`Failed to upload image to Cloudinary: ${error.message}`);
+    }
+}
+
+// Image upload endpoint for blog editor
+router.post('/upload-image', upload.single('image'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No image file provided' });
+        }
+
+        const imageUrl = await uploadToCloudinary(req.file);
+        res.json({ url: imageUrl });
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        res.status(500).json({ error: 'Failed to upload image' });
     }
 });
 

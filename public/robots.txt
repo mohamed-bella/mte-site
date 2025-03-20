@@ -1,0 +1,44 @@
+# robots.txt for https://www.moroccotravelexperts.com/
+# Morocco Travel Experts - Premium Morocco Tours & Desert Adventures
+
+# Google Search Engine 
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Google Image Search
+User-agent: Googlebot-Image
+Allow: /
+Crawl-delay: 1
+
+# Bing Search Engine
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+# Yahoo Search Engine
+User-agent: Slurp
+Allow: /
+Crawl-delay: 2
+
+# All other search engines
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /login/
+Disallow: /logout/
+Disallow: /account/
+Disallow: /*?*
+Disallow: */wp-admin/
+Disallow: */wp-includes/
+Crawl-delay: 3
+
+# Important pages for SEO priority
+User-agent: *
+Allow: /tours
+Allow: /about
+Allow: /contact
+Allow: /tours/*
+
+# Point to sitemap
+Sitemap: https://www.moroccotravelexperts.com/sitemap.xml 

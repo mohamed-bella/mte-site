@@ -33,6 +33,10 @@
                     <i class="fas fa-route mr-2"></i>
                     View Tours
                </a>
+               <a href="/admin/blogs" class="px-4 py-2 hover:bg-gray-700 transition-colors whitespace-nowrap">
+                    <i class="fas fa-blog mr-2"></i>
+                    Blog Posts
+               </a>
                <a href="/admin/bookings" class="px-4 py-2 hover:bg-gray-700 transition-colors whitespace-nowrap">
                     <i class="fas fa-calendar-check mr-2"></i>
                     View Bookings
@@ -71,6 +75,14 @@
                          <span class="relative z-10 flex items-center text-gray-700 hover:text-orange-600 transition-colors">
                               <i class="fas fa-route mr-2"></i>
                               <%= locals.commonTranslations?.tours || 'Tours' %>
+                         </span>
+                         <span class="absolute inset-x-0 bottom-0 h-0.5 bg-orange-500 transform origin-left scale-x-0 transition-transform group-hover:scale-x-100"></span>
+                    </a>
+
+                    <a href="/blog" class="group px-4 py-2 relative">
+                         <span class="relative z-10 flex items-center text-gray-700 hover:text-orange-600 transition-colors">
+                              <i class="fas fa-blog mr-2"></i>
+                              <%= locals.commonTranslations?.blog || 'Blog' %>
                          </span>
                          <span class="absolute inset-x-0 bottom-0 h-0.5 bg-orange-500 transform origin-left scale-x-0 transition-transform group-hover:scale-x-100"></span>
                     </a>
@@ -171,6 +183,11 @@
                     <a href="/tours" class="flex items-center p-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-orange-600 transition-colors">
                          <i class="fas fa-route w-8"></i>
                          <%= locals.commonTranslations?.tours || 'Tours' %>
+                    </a>
+
+                    <a href="/blog" class="flex items-center p-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-orange-600 transition-colors">
+                         <i class="fas fa-blog w-8"></i>
+                         <%= locals.commonTranslations?.blog || 'Blog' %>
                     </a>
 
                     <a href="/about" class="flex items-center p-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-orange-600 transition-colors">

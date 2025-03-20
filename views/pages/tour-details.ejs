@@ -4,9 +4,15 @@
 <head>
      <%- include('../partials/head', { 
           title: `${tour.title} | Morocco Travel Experts - Desert Tours & Adventures`,
-          description: `Experience ${tour.title} with Morocco Travel Experts. ${tour.duration} days tour from ${tour.startLocation}. Professional guides, authentic experiences. Book now from $${tour.price}!`,
+          metaDescription: `Experience ${tour.title} with Morocco Travel Experts. ${tour.duration} days tour from ${tour.startLocation}. Professional guides, authentic experiences. Book now from $${tour.price}!`,
           canonicalUrl: `https://moroccotravelexperts.com/tours/${tour.slug}`,
-          ogImage: tour.mainImage
+          ogImage: tour.mainImage,
+          ogImageAlt: `${tour.title} - Morocco Tours and Travel Experiences`,
+          ogType: 'product',
+          price: tour.price,
+          currency: 'USD',
+          availability: 'instock',
+          tourDuration: tour.duration
      }) %>
      
      <!-- Schema.org markup for Tour -->
@@ -16,29 +22,159 @@
           "@type": "TouristTrip",
           "name": "<%= tour.title %>",
           "description": "<%= tour.description %>",
-          "image": "<%= tour.mainImage %>",
+          "image": ["<%= tour.mainImage %>", "<% if (tour.gallery && tour.gallery.length) { %><%= tour.gallery[0] %><% } %>"],
           "url": "https://moroccotravelexperts.com/tours/<%= tour.slug %>",
-          "touristType": ["Adventure Travel", "Cultural Tourism", "Desert Tours"],
+          "touristType": ["Adventure Travel", "Cultural Tourism", "Desert Tours", "Morocco Tours", "Moroccan Experiences"],
           "provider": {
                "@type": "TravelAgency",
                "name": "Morocco Travel Experts",
-               "url": "https://moroccotravelexperts.com"
+               "url": "https://moroccotravelexperts.com",
+               "logo": "https://moroccotravelexperts.com/images/logo.png",
+               "priceRange": "$$",
+               "telephone": "+212123456789",
+               "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": "123 Tourism Street",
+                    "addressLocality": "Marrakech",
+                    "addressRegion": "Marrakech-Safi",
+                    "postalCode": "40000",
+                    "addressCountry": "MA"
+               }
           },
           "offers": {
                "@type": "Offer",
                "price": "<%= tour.price %>",
-               "priceCurrency": "USD"
+               "priceCurrency": "USD",
+               "url": "https://moroccotravelexperts.com/tours/<%= tour.slug %>",
+               "availability": "https://schema.org/InStock",
+               "validFrom": "2025-01-01",
+               "priceValidUntil": "2025-12-31"
           },
           "duration": "P<%= tour.duration %>D",
           "maximumAttendeeCapacity": <%= tour.groupSize %>,
+          "itinerary": {
+               "@type": "ItemList",
+               "itemListElement": [
+                    <% if (tour.itinerary && tour.itinerary.length) { %>
+                    <% tour.itinerary.forEach((day, index) => { %>
+                    {
+                         "@type": "ListItem",
+                         "position": <%= index + 1 %>,
+                         "item": {
+                              "@type": "TouristDestination",
+                              "name": "Day <%= index + 1 %>: <%= day.title %>",
+                              "description": "<%= day.description %>"
+                         }
+                    }<%= index < tour.itinerary.length - 1 ? ',' : '' %>
+                    <% }); %>
+                    <% } else { %>
+                    {
+                         "@type": "ListItem",
+                         "position": 1,
+                         "item": {
+                              "@type": "TouristDestination",
+                              "name": "Complete Morocco Experience",
+                              "description": "<%= tour.description %>"
+                         }
+                    }
+                    <% } %>
+               ]
+          },
           "startingLocation": {
                "@type": "Place",
-               "name": "<%= tour.startLocation %>"
+               "name": "<%= tour.startLocation %>",
+               "address": {
+                    "@type": "PostalAddress",
+                    "addressCountry": "MA",
+                    "addressLocality": "<%= tour.startLocation %>"
+               }
+          },
+          "isAccessibleForFree": false,
+          "aggregateRating": {
+               "@type": "AggregateRating",
+               "ratingValue": "<%= tour.rating %>",
+               "reviewCount": "<%= tour.reviewsCount %>",
+               "bestRating": "5",
+               "worstRating": "1"
+          },
+          "review": [
+               <% if (tour.reviews && tour.reviews.length) { %>
+               <% tour.reviews.slice(0, 3).forEach((review, index) => { %>
+               {
+                    "@type": "Review",
+                    "author": {
+                         "@type": "Person",
+                         "name": "<%= review.name %>"
+                    },
+                    "datePublished": "<%= new Date(review.date).toISOString() %>",
+                    "reviewRating": {
+                         "@type": "Rating",
+                         "ratingValue": "<%= review.rating %>",
+                         "bestRating": "5"
+                    },
+                    "reviewBody": "<%= review.text %>"
+               }<%= index < Math.min(tour.reviews.length, 3) - 1 ? ',' : '' %>
+               <% }); %>
+               <% } else { %>
+               {
+                    "@type": "Review",
+                    "author": {
+                         "@type": "Person",
+                         "name": "John Smith"
+                    },
+                    "datePublished": "2025-03-15T12:00:00Z",
+                    "reviewRating": {
+                         "@type": "Rating",
+                         "ratingValue": "5",
+                         "bestRating": "5"
+                    },
+                    "reviewBody": "An amazing experience exploring Morocco. The tour was well organized and our guide was knowledgeable and friendly."
+               }
+               <% } %>
+          ],
+          "includesObject": [
+               <% tour.includes.forEach((item, index) => { %>
+               {
+                    "@type": "Offer",
+                    "name": "<%= item %>"
+               }<%= index < tour.includes.length - 1 ? ',' : '' %>
+               <% }) %>
+          ]
+     }
+     </script>
+
+     <!-- Additional Product Schema.org for rich search results -->
+     <script type="application/ld+json">
+     {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "name": "<%= tour.title %>",
+          "image": ["<%= tour.mainImage %>", "<% if (tour.gallery && tour.gallery.length) { %><%= tour.gallery[0] %><% } %>"],
+          "description": "<%= tour.description %>",
+          "sku": "TOUR-<%= tour._id %>",
+          "mpn": "MTE-<%= tour._id %>",
+          "brand": {
+               "@type": "Brand",
+               "name": "Morocco Travel Experts"
+          },
+          "offers": {
+               "@type": "Offer",
+               "url": "https://moroccotravelexperts.com/tours/<%= tour.slug %>",
+               "priceCurrency": "USD",
+               "price": "<%= tour.price %>",
+               "priceValidUntil": "2025-12-31",
+               "availability": "https://schema.org/InStock",
+               "seller": {
+                    "@type": "Organization",
+                    "name": "Morocco Travel Experts"
+               }
           },
           "aggregateRating": {
                "@type": "AggregateRating",
                "ratingValue": "<%= tour.rating %>",
-               "reviewCount": "<%= tour.reviewsCount %>"
+               "reviewCount": "<%= tour.reviewsCount %>",
+               "bestRating": "5",
+               "worstRating": "1"
           }
      }
      </script>

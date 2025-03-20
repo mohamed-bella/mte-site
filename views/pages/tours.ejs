@@ -2,11 +2,45 @@
      title: 'Our Tours - Morocco Tour Experts',
      metaDescription: 'Explore our curated selection of Morocco adventure tours. From desert safaris to cultural experiences, find your perfect Moroccan journey.',
      metaKeywords: 'morocco tours, morocco travel, desert tours, cultural tours, adventure tours', 
-     metaTitle: 'Morocco Tours & Adventures | Expert-Led Experiences'
+     metaTitle: 'Morocco Tours & Adventures | Expert-Led Experiences',
+     ogType: 'website',
+     ogImage: 'https://moroccotravelexperts.com/images/tours/main.jpg',
+     ogImageAlt: 'Morocco Tours and Travel Experiences'
 }) %>
 
 <body class="bg-gray-50">
      <%- include('../partials/header') %>
+
+     <!-- Schema.org markup for Tour Search Page -->
+     <script type="application/ld+json">
+     {
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "itemListElement": [
+               <% if (tours && tours.length) { %>
+               <% tours.slice(0, 10).forEach((tour, index) => { %>
+               {
+                    "@type": "ListItem",
+                    "position": <%= index + 1 %>,
+                    "item": {
+                         "@type": "Product",
+                         "name": "<%= tour.title %>",
+                         "image": "<%= tour.mainImage %>",
+                         "description": "<%= tour.description %>",
+                         "url": "https://moroccotravelexperts.com/tours/<%= tour.slug %>",
+                         "offers": {
+                              "@type": "Offer",
+                              "price": "<%= tour.price %>",
+                              "priceCurrency": "USD",
+                              "availability": "https://schema.org/InStock"
+                         }
+                    }
+               }<%= index < Math.min(tours.length, 10) - 1 ? ',' : '' %>
+               <% }); %>
+               <% } %>
+          ]
+     }
+     </script>
 
      <!-- Main Content -->
      <main class="min-h-screen pt-16" x-data="{ filtersOpen: false }">
@@ -67,7 +101,7 @@
                               <select name="city" class="w-full rounded-lg border-2 border-gray-200 px-4 py-2.5 focus:border-orange-400 focus:ring focus:ring-orange-200 transition-all">
                                    <option value="">All Cities</option>
                                    <% startingCities.forEach(city => { %>
-                                        <option value="<%= city.city %>" <%= selectedCity === city.city ? 'selected' : '' %>>
+                                        <option value="<%= city.city %>" <%= filters.city === city.city ? 'selected' : '' %>>
                                              <%= city.city %>
                                         </option>
                                    <% }) %>
