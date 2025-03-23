@@ -124,11 +124,21 @@ router.post('/custom-request', async (req, res) => {
             });
         }
 
+        // Format customizations
+        let formattedCustomizations = [];
+        if (Array.isArray(customizations) && customizations.length > 0) {
+            formattedCustomizations = customizations;
+        } else if (customizations && typeof customizations === 'string') {
+            formattedCustomizations = [customizations];
+        } else {
+            formattedCustomizations = ['Custom tour request'];
+        }
+
         // Create new custom tour request
         const newRequest = new CustomTourRequest({
             name: customName,
             email: customEmail,
-            customizations: Array.isArray(customizations) ? customizations : [customizations || 'Custom tour request'],
+            customizations: formattedCustomizations,
             message: customMessage,
             travelDate: customDate || null,
             budget: customBudget,
@@ -139,21 +149,31 @@ router.post('/custom-request', async (req, res) => {
         await newRequest.save();
         console.log('Custom tour request saved with ID:', newRequest._id);
 
-        // Send WhatsApp notification
+        // Format the customizations for WhatsApp
+        const customizationsList = formattedCustomizations.map(item => `  • ${item}`).join('\n');
+
+        // Send WhatsApp notification with improved formatting
         const siteUrl = process.env.BASE_URL || 'https://moroccotravelexperts.com';
-        const notificationMessage = `🔔 New Custom Tour Request!\n\n` +
-            `👤 Name: ${customName}\n` +
-            `📧 Email: ${customEmail}\n` +
-            `🏆 Tour: ${tourName || 'Custom Inquiry'}\n` +
-            `💬 Request: ${customMessage}\n` +
-            `📅 Date: ${customDate ? new Date(customDate).toLocaleDateString() : 'Not specified'}\n` +
-            `💰 Budget: ${customBudget || 'Not specified'}\n\n` +
-            `🌐 Website: ${siteUrl}\n` +
-            `⏰ Time: ${new Date().toLocaleString()}`;
+        const notificationMessage = `🔴 *NEW CUSTOM TOUR REQUEST* 🔴\n\n` +
+            `👤 *Customer:* ${customName}\n` +
+            `📧 *Email:* ${customEmail}\n` +
+            `🏆 *Based on Tour:* ${tourName || 'Custom Inquiry'}\n` +
+            `\n🔹 *Customization Requests:*\n${customizationsList}\n` +
+            `\n💬 *Customer Message:*\n${customMessage}\n\n` +
+            `📅 *Preferred Date:* ${customDate ? new Date(customDate).toLocaleDateString() : 'Not specified'}\n` +
+            `💰 *Budget Range:* ${customBudget || 'Not specified'}\n\n` +
+            `🔍 *Request ID:* ${newRequest._id}\n` +
+            `🌐 *Check Admin:* ${siteUrl}/admin/custom-requests\n` +
+            `⏰ *Requested:* ${new Date().toLocaleString()}`;
             
-        sendWhatsAppNotification(notificationMessage)
-            .then(() => console.log('WhatsApp notification sent for custom request'))
-            .catch(err => console.error('Error sending WhatsApp notification:', err));
+        // Send WhatsApp notification with proper error handling
+        try {
+            const result = await sendWhatsAppNotification(notificationMessage);
+            console.log('WhatsApp notification sent for custom request');
+        } catch (whatsappError) {
+            console.error('Error sending WhatsApp notification:', whatsappError);
+            // Continue - don't fail the request if WhatsApp notification fails
+        }
 
         // Return success response
         return res.status(200).json({

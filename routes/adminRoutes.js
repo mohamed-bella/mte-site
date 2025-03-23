@@ -25,7 +25,7 @@ const storage = multer.memoryStorage(); // Change to memory storage for GitHub u
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 50000000 }, // 50MB limit
+    limits: { fileSize: 100000000 }, // 100MB limit (increased from 50MB)
     fileFilter: function (req, file, cb) {
         checkFileType(file, cb);
     }
@@ -94,7 +94,7 @@ router.get('/tours/new', (req, res) => {
      });
 });
 router.post('/tours/new', upload.fields([
-    { name: 'images', maxCount: 10 },
+    { name: 'images', maxCount: 20 },
     { name: 'mapImage', maxCount: 1 }
 ]), async (req, res) => {
     try {
@@ -165,8 +165,46 @@ async function uploadToGithub(file) {
     try {
         const imageBuffer = file.buffer;
         const fileName = `IMG-${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9.]/g, '-')}`;
+        
+        // For large files, use a different approach
+        if (imageBuffer.length > 750000) { // ~750KB, GitHub API limit is around 1MB
+            console.log(`Large file detected (${Math.round(imageBuffer.length/1024)}KB), using optimized upload method.`);
+            
+            // Compress the image if it's larger than 1MB
+            let base64Image;
+            
+            // Create a unique path for each image based on date and original name
+            const filePath = `tours/${new Date().toISOString().slice(0,10)}/${fileName}`;
+            
+            // Convert to base64
+            base64Image = imageBuffer.toString('base64');
+            
+            const response = await fetch(`https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${filePath}`, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: 'Upload large image via API',
+                    content: base64Image,
+                    branch: 'main'
+                })
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`GitHub API Error: ${errorData.message}`);
+            }
+            
+            const data = await response.json();
+            return `https://raw.githubusercontent.com/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/main/${filePath}`;
+        }
+        
+        // Standard approach for smaller files
         const base64Image = imageBuffer.toString('base64');
-
+        
         const response = await fetch(`https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${fileName}`, {
             method: 'PUT',
             headers: {
@@ -215,7 +253,7 @@ router.get('/tours/:id/edit', async (req, res) => {
 });
 
 router.post('/tours/:id/edit', upload.fields([
-    { name: 'images', maxCount: 10 },
+    { name: 'images', maxCount: 20 },
     { name: 'mapImage', maxCount: 1 }
 ]), async (req, res) => {
     try {
@@ -229,21 +267,35 @@ router.post('/tours/:id/edit', upload.fields([
             accommodation,
             itinerary,
             includes,
-            excludes
+            excludes,
+            existingImages // Add this to receive existing images data
         } = req.body;
+        
+        // Get current tour data
+        const currentTour = await Tour.findById(req.params.id);
+        if (!currentTour) {
+            return res.status(404).json({
+                success: false,
+                message: 'Tour not found'
+            });
+        }
 
-        let imageUrls = [];
-        let mapImageUrl = '';
+        // Initialize with existing images if they're being kept
+        let imageUrls = existingImages ? 
+            (Array.isArray(existingImages) ? existingImages : [existingImages]) : 
+            (currentTour.images || []);
 
-        // Handle regular tour images
-        if (req.files.images) {
+        let mapImageUrl = currentTour.mapImage || '';
+
+        // Handle new tour images - append to existing images
+        if (req.files.images && req.files.images.length > 0) {
             for (const file of req.files.images) {
                 const imageUrl = await uploadToGithub(file);
                 imageUrls.push(imageUrl);
             }
         }
 
-        // Handle map image
+        // Handle map image - only replace if a new one is uploaded
         if (req.files.mapImage && req.files.mapImage[0]) {
             mapImageUrl = await uploadToGithub(req.files.mapImage[0]);
         }
@@ -261,9 +313,13 @@ router.post('/tours/:id/edit', upload.fields([
             excludes: Array.isArray(excludes) ? excludes : JSON.parse(excludes)
         };
 
+        // Update images only if we have any
         if (imageUrls.length > 0) {
-            updateData.mainImage = imageUrls[0];
             updateData.images = imageUrls;
+            // Set the first image as main image if the tour doesn't have a main image
+            if (!currentTour.mainImage && imageUrls.length > 0) {
+                updateData.mainImage = imageUrls[0];
+            }
         }
 
         if (mapImageUrl) {
@@ -275,13 +331,6 @@ router.post('/tours/:id/edit', upload.fields([
             updateData,
             { new: true, runValidators: true }
         );
-
-        if (!tour) {
-            return res.status(404).json({
-                success: false,
-                message: 'Tour not found'
-            });
-        }
 
         res.json({
             success: true,
@@ -708,6 +757,15 @@ router.post('/starting-cities/:id?', upload.single('image'), async (req, res) =>
     try {
         const { city, description, tours } = req.body;
         const isEdit = !!req.params.id;
+        
+        // Log the incoming data
+        console.log('Starting City Form Data:', {
+            city,
+            description, 
+            tours: Array.isArray(tours) ? tours : [tours],
+            isEdit,
+            existingId: req.params.id || 'none'
+        });
         
         // Only require image for new cities
         if (!req.file && !isEdit) {

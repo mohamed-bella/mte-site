@@ -197,7 +197,17 @@ router.get('/tours', async (req, res) => {
         const query = {};
         
         if (city) {
-            query.startLocation = { $regex: city, $options: 'i' };
+            // Find tours associated with this city by checking the StartingCity model
+            // Instead of directly filtering by startLocation, we need to check the relations
+            const startingCity = await StartingCity.findOne({ city: { $regex: new RegExp(city, 'i') } });
+            
+            if (startingCity && startingCity.tours && startingCity.tours.length > 0) {
+                // If we found a starting city with this name and it has tours, filter by those tour IDs
+                query._id = { $in: startingCity.tours };
+            } else {
+                // Fallback: Try to match by startLocation field as before
+                query.startLocation = { $regex: city, $options: 'i' };
+            }
         }
         
         if (duration) {

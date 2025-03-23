@@ -90,7 +90,7 @@
                                                        id="tour-<%= tour._id %>" 
                                                        name="tours" 
                                                        value="<%= tour._id %>"
-                                                       <%= city && city.tours.some(t => t.toString() === tour._id.toString()) ? 'checked' : '' %>
+                                                       <%= city && city.tours && city.tours.some(t => t && t.toString && tour._id && t.toString() === tour._id.toString()) ? 'checked' : '' %>
                                                        class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded">
                                                 <label for="tour-<%= tour._id %>" class="ml-3 text-sm text-gray-700">
                                                     <%= tour.title %> (<%= tour.startLocation %>)
