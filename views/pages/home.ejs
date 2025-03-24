@@ -11,7 +11,7 @@
 
 <main class="min-h-screen">
     <!-- Hero Section - Modern & Mobile-Friendly -->
-    <section class="relative min-h-[90vh] md:min-h-screen flex items-center">
+    <section class="relative min-h-[70vh] md:min-h-screen flex items-center">
         <!-- Background Image with Overlay -->
         <div class="absolute inset-0 z-0">
             <img 
@@ -25,11 +25,19 @@
 
         <!-- Hero Content Container -->
         <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex flex-col md:flex-row md:items-center gap-10 lg:gap-16">
-                <!-- Left Content -->
-                <div class="flex-1 space-y-6 text-center md:text-left">
-                    <!-- AI Badge -->
-                    <div class="inline-flex items-center rounded-full bg-orange-100 px-3 py-1 text-sm font-medium text-orange-800">
+            <div class="flex flex-col md:flex-row md:items-center md:gap-10 lg:gap-16">
+                <!-- Left Content - Simplified for Mobile -->
+                <div class="flex-1 space-y-5 text-center md:text-left">
+                    <!-- Mobile-only AI Badge - Simplified -->
+                    <div class="md:hidden inline-flex items-center rounded-full bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-800">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                        </svg>
+                        AI-Tours
+                    </div>
+                    
+                    <!-- Desktop AI Badge - Normal -->
+                    <div class="hidden md:inline-flex items-center rounded-full bg-orange-100 px-3 py-1 text-sm font-medium text-orange-800">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
                         </svg>
@@ -41,13 +49,13 @@
                         Discover The Magic<br class="hidden md:block" /> Of <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">Morocco</span>
                     </h1>
                     
-                    <!-- Subheading -->
-                    <p class="text-lg md:text-xl text-gray-300 max-w-2xl md:max-w-none">
-                        Explore ancient cities, breathtaking landscapes, and rich cultural experiences with our expertly crafted tours.
+                    <!-- Subheading - Simplified for mobile -->
+                    <p class="text-base md:text-xl text-gray-300 max-w-xl md:max-w-none">
+                        Explore authentic Moroccan experiences with our expert local guides.
                     </p>
                     
-                    <!-- Trust Badges -->
-                    <div class="flex flex-wrap justify-center md:justify-start gap-3">
+                    <!-- Trust Badges - Hidden on Mobile -->
+                    <div class="hidden md:flex flex-wrap justify-center md:justify-start gap-3">
                         <div class="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5">
                             <i class="fas fa-check-circle text-orange-400 mr-2"></i>
                             <span class="text-white text-sm">100% Local Guides</span>
@@ -62,13 +70,14 @@
                         </div>
                     </div>
                     
-                    <!-- CTA Buttons -->
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-2">
-                        <a href="/tours" class="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-orange-600 text-white font-medium hover:bg-orange-700 transition-colors shadow-lg shadow-orange-600/20">
+                    <!-- CTA Buttons - Simplified for mobile -->
+                    <div class="flex flex-col sm:flex-row gap-3 justify-center md:justify-start pt-2">
+                        <a href="/tours" class="inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-orange-600 text-white font-medium hover:bg-orange-700 transition-colors shadow-lg shadow-orange-600/20">
                             <i class="fas fa-compass mr-2"></i>
                             <span>Explore Tours</span>
                         </a>
-                        <a href="#destinations" class="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-white/10 backdrop-blur-sm text-white border border-white/30 hover:bg-white/20 transition-colors">
+                        <!-- Second CTA button hidden on mobile -->
+                        <a href="#destinations" class="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-white/10 backdrop-blur-sm text-white border border-white/30 hover:bg-white/20 transition-colors">
                             <i class="fas fa-map-marker-alt mr-2"></i>
                             <span>Popular Destinations</span>
                         </a>
@@ -76,7 +85,7 @@
                 </div>
                 
                 <!-- Right Content - AI Tour Card -->
-                <div class="md:flex-1 md:max-w-md mx-auto md:mx-0 w-full">
+                <div class="hidden md:block md:flex-1 md:max-w-md mx-auto md:mx-0 w-full">
                     <div class="relative bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-xl border border-white/20 overflow-hidden transform transition-all hover:scale-[1.02] hover:shadow-2xl">
                         <!-- Decorative elements -->
                         <div class="absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-br from-orange-500/30 to-transparent rounded-full blur-2xl"></div>
@@ -135,10 +144,20 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Mobile Simplified Design Trip Button - Only visible on mobile -->
+                <div class="mt-6 md:hidden w-full">
+                    <a href="/tour-customizer" class="block w-full py-3 px-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg text-center shadow-lg">
+                        <div class="flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                            </svg>
+                            <span>Design My AI Trip</span>
+                        </div>
+                    </a>
+                </div>
             </div>
-        </div>
-        
-       
+        </div>   
     </section>
     
    
@@ -643,29 +662,30 @@
     
     <!-- Blog Section -->
     <% if (recentBlogs && recentBlogs.length > 0) { %>
-    <section class="py-20 bg-orange-50">
+    <section class="py-16 bg-orange-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
+            <div class="text-center mb-12">
                 <span class="inline-block px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium mb-4">Morocco Travel Guide</span>
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Latest From Our Blog</h2>
-                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-                    Discover travel tips, destination guides, and local insights to help you plan your perfect Moroccan adventure.
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Latest From Our Blog</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Discover travel tips and local insights for your Moroccan adventure.
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Desktop Blog Cards -->
+            <div class="hidden md:grid md:grid-cols-3 gap-6">
                 <% recentBlogs.forEach((blog, index) => { %>
-                    <article class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col" data-aos="fade-up" data-aos-delay="<%= index * 100 %>">
-                        <a href="/blog/<%= blog.slug %>" class="block overflow-hidden">
+                    <article class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col h-full" data-aos="fade-up" data-aos-delay="<%= index * 100 %>">
+                        <a href="/blog/<%= blog.slug %>" class="block overflow-hidden h-48">
                             <img 
                                 src="<%= blog.featuredImage %>" 
                                 alt="<%= blog.title %> - Morocco Travel Guide" 
-                                class="w-full h-52 object-cover transform hover:scale-105 transition-all duration-500"
+                                class="w-full h-full object-cover transform hover:scale-105 transition-all duration-500"
                                 loading="lazy"
                             >
                         </a>
-                        <div class="p-6 flex flex-col flex-grow">
-                            <div class="flex items-center text-sm text-gray-500 mb-3">
+                        <div class="p-5 flex flex-col flex-grow">
+                            <div class="flex items-center text-xs text-gray-500 mb-2">
                                 <time datetime="<%= blog.publishedAt.toISOString() %>" class="flex items-center">
                                     <i class="far fa-calendar-alt mr-1"></i>
                                     <%= new Date(blog.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
@@ -677,11 +697,11 @@
                                 </span>
                             </div>
                             
-                            <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 hover:text-orange-600 transition-colors">
+                            <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 hover:text-orange-600 transition-colors">
                                 <a href="/blog/<%= blog.slug %>"><%= blog.title %></a>
                             </h3>
                             
-                            <p class="text-gray-600 mb-4 line-clamp-3 flex-grow">
+                            <p class="text-gray-600 mb-4 text-sm line-clamp-2 flex-grow">
                                 <%= blog.summary %>
                             </p>
                             
@@ -697,11 +717,42 @@
                     </article>
                 <% }); %>
             </div>
+            
+            <!-- Mobile Blog Cards - More compact layout -->
+            <div class="md:hidden space-y-4">
+                <% recentBlogs.slice(0, 3).forEach(blog => { %>
+                    <article class="bg-white rounded-lg overflow-hidden shadow-md flex h-28">
+                        <a href="/blog/<%= blog.slug %>" class="block w-1/3 relative">
+                            <img 
+                                src="<%= blog.featuredImage %>" 
+                                alt="<%= blog.title %>" 
+                                class="w-full h-full object-cover absolute inset-0"
+                                loading="lazy"
+                            >
+                        </a>
+                        <div class="w-2/3 p-3 flex flex-col justify-between overflow-hidden">
+                            <div>
+                                <h3 class="text-sm font-bold text-gray-900 line-clamp-2">
+                                    <a href="/blog/<%= blog.slug %>"><%= blog.title %></a>
+                                </h3>
+                            </div>
+                            <div class="flex items-center justify-between mt-auto">
+                                <div class="text-xs text-gray-500">
+                                    <%= new Date(blog.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %>
+                                </div>
+                                <a href="/blog/<%= blog.slug %>" class="text-xs font-medium text-orange-600">
+                                    Read more
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                <% }); %>
+            </div>
 
-            <div class="text-center mt-12">
-                <a href="/blog" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors">
+            <div class="text-center mt-8">
+                <a href="/blog" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors">
                     View All Articles
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                     </svg>
                 </a>
