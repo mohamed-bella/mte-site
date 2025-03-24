@@ -1,0 +1,125 @@
+<!-- Sidebar -->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/admin/dashboard">
+        <div class="sidebar-brand-icon">
+            <i class="fas fa-globe-africa"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">Morocco Travel</div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item <%= currentPage === 'dashboard' ? 'active' : '' %>">
+        <a class="nav-link" href="/admin/dashboard">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Tours
+    </div>
+
+    <!-- Nav Item - Tours -->
+    <li class="nav-item <%= currentPage === 'tours' ? 'active' : '' %>">
+        <a href="/admin/tours" class="nav-link">
+            <i class="fas fa-route"></i>
+            <span>Tours</span>
+        </a>
+    </li>
+
+    <!-- Nav Item - Bookings -->
+    <li class="nav-item <%= currentPage === 'bookings' ? 'active' : '' %>">
+        <a class="nav-link" href="/admin/bookings">
+            <i class="fas fa-fw fa-calendar-check"></i>
+            <span>Bookings</span>
+        </a>
+    </li>
+
+    <!-- Nav Item - Starting Cities -->
+    <li class="nav-item <%= currentPage === 'starting-cities' ? 'active' : '' %>">
+        <a class="nav-link" href="/admin/starting-cities">
+            <i class="fas fa-fw fa-city"></i>
+            <span>Starting Cities</span>
+        </a>
+    </li>
+
+    <!-- Excursions Heading -->
+    <div class="sidebar-heading">
+        Excursions
+    </div>
+
+    <!-- Nav Item - Excursions -->
+    <li class="nav-item <%= currentPage === 'excursions' ? 'active' : '' %>">
+        <a href="/admin/excursions" class="nav-link">
+            <i class="fas fa-mountain"></i>
+            <span>Excursions</span>
+        </a>
+    </li>
+
+    <!-- Nav Item - Excursion Reservations -->
+    <li class="nav-item <%= currentPage === 'excursion-reservations' ? 'active' : '' %>">
+        <a href="/admin/excursion-reservations" class="nav-link">
+            <i class="fas fa-calendar-check"></i>
+            <span>Excursion Bookings</span>
+        </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Website
+    </div>
+
+    <!-- Nav Item - Testimonials -->
+    <li class="nav-item <%= currentPage === 'testimonials' ? 'active' : '' %>">
+        <a class="nav-link" href="/admin/testimonials">
+            <i class="fas fa-fw fa-comment"></i>
+            <span>Testimonials</span>
+        </a>
+    </li>
+
+    <!-- Nav Item - Messages -->
+    <li class="nav-item <%= currentPage === 'messages' ? 'active' : '' %>">
+        <a class="nav-link" href="/admin/messages">
+            <i class="fas fa-fw fa-envelope"></i>
+            <span>Messages</span>
+        </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Visit Website -->
+    <li class="nav-item">
+        <a class="nav-link" href="/" target="_blank">
+            <i class="fas fa-fw fa-external-link-alt"></i>
+            <span>Visit Website</span>
+        </a>
+    </li>
+
+    <!-- Logout -->
+    <li class="nav-item">
+        <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
+            <i class="fas fa-fw fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </a>
+    </li>
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+</ul>
+<!-- End of Sidebar --> 

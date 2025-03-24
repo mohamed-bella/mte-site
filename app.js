@@ -6,6 +6,7 @@ const flash = require('connect-flash');
 const mongoose = require('mongoose');
 const path = require('path');
 const compression = require('compression');
+const fileUpload = require('express-fileupload');
 const { inject } = require('@vercel/analytics');
 require('dotenv').config();
 
@@ -24,6 +25,25 @@ app.use(compression({
         // fallback to standard filter function
         return compression.filter(req, res);
     }
+}));
+
+// File Upload middleware
+app.use(fileUpload({
+    createParentPath: true,
+    limits: { 
+        fileSize: 10 * 1024 * 1024 // 10MB max file size
+    },
+    abortOnLimit: true,
+    responseOnLimit: "File size limit has been reached",
+    limitHandler: function (req, res, next) {
+        return res.status(413).json({
+            success: false,
+            message: "File size limit has been reached (max 10MB)"
+        });
+    },
+    useTempFiles: false,
+    tempFileDir: '/tmp/',
+    debug: process.env.NODE_ENV !== 'production'
 }));
 
 // Cache Control Middleware
@@ -126,10 +146,19 @@ const authenticateAdmin = (req, res, next) => {
      next();
 };
 
-// Routes
-const adminRouter = require('./routes/adminRoutes');
-const indexRouter = require('./routes/index');
-const bookingRouter = require('./routes/bookingRoutes');
+// Import routes
+const indexRoutes = require('./routes/index');
+const adminRoutes = require('./routes/adminRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
+const excursionRoutes = require('./routes/excursionRoutes');
+const adminExcursionRoutes = require('./routes/admin/excursionRoutes');
+
+// Use routes
+app.use('/', indexRoutes);
+app.use('/admin', adminRoutes);
+app.use('/admin/excursions', adminExcursionRoutes);
+app.use('/booking', bookingRoutes);
+app.use('/', excursionRoutes);
 
 // Admin login page
 app.get('/admin/login', (req, res) => {
@@ -161,29 +190,34 @@ app.post('/admin/login', (req, res) => {
      }
 });
 
-// Route usage - Move index router after admin routes to prevent conflicts
-app.use('/admin', authenticateAdmin, adminRouter);
-app.use('/bookings', bookingRouter);
 app.get('/admin', (req, res) => {
      res.redirect('/admin/dashboard');
 });
-app.use('/', indexRouter);
 
-// 404 handler
-app.use((req, res, next) => {
-     res.status(404).render('error', {
-          title: '404 Not Found',
-          message: 'Page not found'
-     });
+// After all routes - 404 handler
+app.use((req, res) => {
+  res.status(404).render('error', {
+    title: 'Page Not Found',
+    message: 'The page you are looking for does not exist.',
+    metaDescription: '404 - Page Not Found - Morocco Travel Experts',
+    metaKeywords: 'morocco travel, morocco tours, page not found, 404'
+  });
 });
 
 // Error handler
-app.use((err, req, res, next) => {
-     console.error(err.stack);
-     res.status(err.status || 500).render('error', {
-          title: 'Error',
-          message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
-     });
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error', {
+    title: 'Error',
+    message: err.message || 'An unexpected error occurred',
+    metaDescription: 'Error - Morocco Travel Experts',
+    metaKeywords: 'morocco travel, morocco tours, error page'
+  });
 });
 
 // Start server

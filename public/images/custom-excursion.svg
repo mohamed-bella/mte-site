@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none">
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="90" fill="#ffffff" opacity="0.1"/>
+  
+  <!-- Compass Rose -->
+  <circle cx="100" cy="100" r="70" stroke="#ffffff" stroke-width="3" fill="none"/>
+  <circle cx="100" cy="100" r="10" fill="#ffffff"/>
+  
+  <!-- Compass Needle -->
+  <path d="M100 30L110 100H90L100 30Z" fill="#ff6b35"/>
+  <path d="M100 170L90 100H110L100 170Z" fill="#ffffff"/>
+  <path d="M30 100L100 90V110L30 100Z" fill="#ffffff"/>
+  <path d="M170 100L100 110V90L170 100Z" fill="#ffffff"/>
+  
+  <!-- Compass Points -->
+  <text x="100" y="20" text-anchor="middle" fill="#ffffff" font-family="Arial" font-weight="bold" font-size="14">N</text>
+  <text x="100" y="190" text-anchor="middle" fill="#ffffff" font-family="Arial" font-weight="bold" font-size="14">S</text>
+  <text x="190" y="104" text-anchor="middle" fill="#ffffff" font-family="Arial" font-weight="bold" font-size="14">E</text>
+  <text x="10" y="104" text-anchor="middle" fill="#ffffff" font-family="Arial" font-weight="bold" font-size="14">W</text>
+  
+  <!-- Map Elements -->
+  <path d="M30 130C40 125 45 145 60 140C75 135 70 115 85 120C100 125 110 145 125 140C140 135 150 115 170 120" stroke="#ffffff" stroke-width="2" stroke-dasharray="4" fill="none"/>
+  
+  <!-- Decorative Elements -->
+  <circle cx="60" cy="140" r="5" fill="#ff6b35"/>
+  <circle cx="125" cy="140" r="5" fill="#ff6b35"/>
+  <circle cx="85" cy="120" r="3" fill="#ffffff"/>
+  <circle cx="170" cy="120" r="3" fill="#ffffff"/>
+</svg> 

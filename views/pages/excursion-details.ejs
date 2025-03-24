@@ -1,0 +1,891 @@
+<%- include('../partials/head.ejs', { 
+  metaDescription: metaDescription,
+  metaKeywords: metaKeywords
+}) %>
+<style>
+  /* Custom recommendation level colors */
+  .recommendation-level {
+    --level-color: theme('colors.orange.500');
+  }
+  .recommendation-level-1 { --level-color: theme('colors.blue.500'); }
+  .recommendation-level-2 { --level-color: theme('colors.green.500'); }
+  .recommendation-level-3 { --level-color: theme('colors.orange.500'); }
+  .recommendation-level-4 { --level-color: theme('colors.purple.500'); }
+  .recommendation-level-5 { --level-color: theme('colors.red.500'); }
+  
+  /* Prose customizations for rich content */
+  .prose img {
+    margin: 1.5rem auto;
+    border-radius: 0.375rem;
+  }
+  .prose ul, .prose ol {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Timeline styling for itinerary */
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+  .timeline:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 8px;
+    bottom: 0;
+    width: 2px;
+    background: theme('colors.blue.200');
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+  .timeline-item:last-child {
+    margin-bottom: 0;
+  }
+  .timeline-marker {
+    position: absolute;
+    left: -2rem;
+    top: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: theme('colors.blue.500');
+    border: 3px solid theme('colors.blue.100');
+  }
+  .timeline-content {
+    padding-bottom: 1rem;
+  }
+</style>
+<%- include('../partials/header.ejs') %>
+
+<!-- Mobile Sticky Booking Bar (fixed at bottom on small screens) -->
+<div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-40 p-3">
+  <div class="flex items-center justify-between">
+    <div>
+      <% if (excursion.discountPrice && excursion.discountPrice < excursion.regularPrice) { %>
+        <div class="flex flex-col">
+          <span class="text-lg font-bold text-orange-600"><%= excursion.discountPrice %> MAD</span>
+          <span class="text-xs text-gray-500 line-through"><%= excursion.regularPrice %> MAD</span>
+        </div>
+      <% } else { %>
+        <span class="text-lg font-bold text-orange-600"><%= excursion.regularPrice %> MAD</span>
+      <% } %>
+    </div>
+    <button id="mobileBookBtn" class="bg-orange-600 hover:bg-orange-700 text-white px-5 py-2 rounded-lg font-medium transition-colors">
+      Book Now
+    </button>
+  </div>
+</div>
+
+<!-- Back button -->
+<div class="container mx-auto px-4 py-4">
+  <a href="/excursions" class="inline-flex items-center text-gray-600 hover:text-orange-600 transition-colors">
+    <i class="fas fa-chevron-left mr-2"></i> Back to Excursions
+  </a>
+</div>
+
+<!-- Main Content -->
+<div class="container mx-auto px-4 pb-20 lg:pb-12">
+  <!-- Hero Section with Image Slider -->
+  <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+    <div x-data="{ activeSlide: 0 }" class="relative">
+      <!-- Main Image -->
+      <div class="relative h-[40vh] md:h-[50vh] lg:h-[60vh]">
+        <img 
+          src="<%= excursion.mainImage %>" 
+          alt="<%= excursion.title %>" 
+          class="w-full h-full object-cover"
+        >
+        
+        <% if (excursion.discountPrice && excursion.discountPrice < excursion.regularPrice) { %>
+          <div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-md">
+            <i class="fas fa-tag mr-1"></i> 
+            <%= Math.round((1 - excursion.discountPrice / excursion.regularPrice) * 100) %>% OFF
+          </div>
+        <% } %>
+        
+        <!-- Image overlay with gradient -->
+        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-900 to-transparent pt-16 pb-6 px-4 md:px-8">
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center text-white text-sm">
+              <div class="inline-flex items-center mr-4">
+                <i class="fas fa-map-marker-alt mr-1 text-orange-400"></i>
+                <span><%= excursion.location %></span>
+              </div>
+              <div class="inline-flex items-center">
+                <i class="fas fa-clock mr-1 text-orange-400"></i>
+                <span><%= excursion.duration %></span>
+              </div>
+              <% if (excursion.recommendationLevel) { %>
+                <div class="inline-flex items-center ml-4">
+                  <span class="recommendation-level recommendation-level-<%= excursion.recommendationLevel %> text-white text-xs px-2 py-1 rounded-full flex items-center" style="background-color: var(--level-color)">
+                    <% for(let i=0; i<excursion.recommendationLevel; i++) { %><i class="fas fa-star text-yellow-300 mr-1"></i><% } %>
+                    <span class="ml-1"><%= ['Basic', 'Good', 'Very Good', 'Excellent', 'Must Do'][excursion.recommendationLevel-1] %></span>
+                  </span>
+                </div>
+              <% } %>
+            </div>
+            <h1 class="text-2xl md:text-4xl font-bold text-white"><%= excursion.title %></h1>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick Info Strip -->
+      <div class="flex justify-around py-4 bg-gray-50 border-b border-gray-100 overflow-x-auto">
+        <% if (excursion.regularPrice) { %>
+          <div class="flex flex-col items-center px-4">
+            <div class="text-gray-500 text-xs uppercase font-medium mb-1">Price</div>
+            <div class="font-semibold text-gray-900">
+              <% if (excursion.discountPrice && excursion.discountPrice < excursion.regularPrice) { %>
+                <%= excursion.discountPrice %> MAD
+              <% } else { %>
+                <%= excursion.regularPrice %> MAD
+              <% } %>
+            </div>
+          </div>
+        <% } %>
+        
+        <div class="flex flex-col items-center px-4">
+          <div class="text-gray-500 text-xs uppercase font-medium mb-1">Duration</div>
+          <div class="font-semibold text-gray-900"><%= excursion.duration %></div>
+        </div>
+        
+        <div class="flex flex-col items-center px-4">
+          <div class="text-gray-500 text-xs uppercase font-medium mb-1">Location</div>
+          <div class="font-semibold text-gray-900"><%= excursion.location %></div>
+        </div>
+        
+        <div class="flex flex-col items-center px-4">
+          <div class="text-gray-500 text-xs uppercase font-medium mb-1">Group Size</div>
+          <div class="font-semibold text-gray-900">
+            <% if (excursion.minGroupSize && excursion.maxGroupSize) { %>
+              <%= excursion.minGroupSize %>-<%= excursion.maxGroupSize %> people
+            <% } else if (excursion.minGroupSize) { %>
+              Min. <%= excursion.minGroupSize %>
+            <% } else { %>
+              Not specified
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="flex flex-col lg:flex-row gap-8">
+    <!-- Left Column: Details -->
+    <div class="lg:w-2/3">
+      <!-- Tabbed Navigation for Mobile -->
+      <div x-data="{ tab: 'description' }" class="mb-6 lg:hidden">
+        <div class="flex overflow-x-auto whitespace-nowrap py-2 border-b border-gray-200 mb-4 scrollbar-hide">
+          <button @click="tab = 'description'" :class="tab === 'description' ? 'text-orange-600 border-orange-600' : 'text-gray-600 border-transparent'" class="px-4 py-2 font-medium border-b-2 transition-colors mr-4">
+            Description
+          </button>
+          <button @click="tab = 'activities'" :class="tab === 'activities' ? 'text-orange-600 border-orange-600' : 'text-gray-600 border-transparent'" class="px-4 py-2 font-medium border-b-2 transition-colors mr-4">
+            Activities
+          </button>
+          <button @click="tab = 'inclusions'" :class="tab === 'inclusions' ? 'text-orange-600 border-orange-600' : 'text-gray-600 border-transparent'" class="px-4 py-2 font-medium border-b-2 transition-colors mr-4">
+            Inclusions
+          </button>
+          <button @click="tab = 'itinerary'" :class="tab === 'itinerary' ? 'text-orange-600 border-orange-600' : 'text-gray-600 border-transparent'" class="px-4 py-2 font-medium border-b-2 transition-colors mr-4">
+            Itinerary
+          </button>
+          <% if (excursion.preparationTips && excursion.preparationTips.length > 0) { %>
+            <button @click="tab = 'tips'" :class="tab === 'tips' ? 'text-orange-600 border-orange-600' : 'text-gray-600 border-transparent'" class="px-4 py-2 font-medium border-b-2 transition-colors mr-4">
+              Tips
+            </button>
+          <% } %>
+          <% if (excursion.additionalInfo && excursion.additionalInfo.length > 0) { %>
+            <button @click="tab = 'additionalInfo'" :class="tab === 'additionalInfo' ? 'text-orange-600 border-orange-600' : 'text-gray-600 border-transparent'" class="px-4 py-2 font-medium border-b-2 transition-colors mr-4">
+              More Info
+            </button>
+          <% } %>
+          <% if (excursion.images && excursion.images.length > 0) { %>
+            <button @click="tab = 'gallery'" :class="tab === 'gallery' ? 'text-orange-600 border-orange-600' : 'text-gray-600 border-transparent'" class="px-4 py-2 font-medium border-b-2 transition-colors">
+              Gallery
+            </button>
+          <% } %>
+        </div>
+        
+        <!-- Mobile Tab Content -->
+        <div x-show="tab === 'description'" class="animate-fadeIn">
+          <!-- Description content for mobile -->
+          <h2 class="text-xl font-bold text-gray-800 mb-3">About This Excursion</h2>
+          <div class="prose prose-orange prose-sm max-w-none mb-6">
+            <%- excursion.description %>
+          </div>
+        </div>
+        
+        <div x-show="tab === 'activities'" class="animate-fadeIn">
+          <!-- Activities content for mobile -->
+          <h2 class="text-xl font-bold text-gray-800 mb-3">Activities</h2>
+          <div class="grid gap-3 mb-6">
+            <% excursion.activities.forEach(activity => { %>
+              <div class="bg-white border border-orange-100 rounded-lg p-3 shadow-sm hover:shadow-md transition-all flex items-start">
+                <div class="h-8 w-8 rounded-full bg-orange-100 flex items-center justify-center mr-3 flex-shrink-0">
+                  <% 
+                  // Determine icon based on activity text
+                  let iconClass = 'fa-compass'; // Default
+                  const activityLower = activity.toLowerCase();
+                  
+                  if (activityLower.includes('hike') || activityLower.includes('trek') || activityLower.includes('walk')) {
+                    iconClass = 'fa-hiking';
+                  } else if (activityLower.includes('swim') || activityLower.includes('beach') || activityLower.includes('water')) {
+                    iconClass = 'fa-swimmer';
+                  } else if (activityLower.includes('food') || activityLower.includes('meal') || activityLower.includes('lunch')) {
+                    iconClass = 'fa-utensils';
+                  } else if (activityLower.includes('photo') || activityLower.includes('camera')) {
+                    iconClass = 'fa-camera';
+                  } else if (activityLower.includes('tour') || activityLower.includes('guide') || activityLower.includes('visit')) {
+                    iconClass = 'fa-map-marked-alt';
+                  } else if (activityLower.includes('boat') || activityLower.includes('sail') || activityLower.includes('cruise')) {
+                    iconClass = 'fa-ship';
+                  } else if (activityLower.includes('car') || activityLower.includes('transport')) {
+                    iconClass = 'fa-car';
+                  } else if (activityLower.includes('shop') || activityLower.includes('market')) {
+                    iconClass = 'fa-shopping-bag';
+                  } else if (activityLower.includes('museum') || activityLower.includes('history')) {
+                    iconClass = 'fa-landmark';
+                  }
+                  %>
+                  <i class="fas <%= iconClass %> text-orange-500"></i>
+                </div>
+                <span class="text-gray-700"><%= activity %></span>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+        
+        <div x-show="tab === 'inclusions'" class="animate-fadeIn">
+          <!-- Inclusions/Exclusions for mobile -->
+          <h2 class="text-xl font-bold text-gray-800 mb-3">What's Included</h2>
+          <div class="bg-green-50 rounded-lg p-4 mb-6">
+            <ul class="space-y-3">
+              <% excursion.inclusions.forEach(item => { %>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                  <span class="text-gray-700"><%= item %></span>
+                </li>
+              <% }); %>
+            </ul>
+          </div>
+          
+          <h2 class="text-xl font-bold text-gray-800 mb-3">What's Not Included</h2>
+          <div class="bg-red-50 rounded-lg p-4 mb-6">
+            <ul class="space-y-3">
+              <% excursion.exclusions.forEach(item => { %>
+                <li class="flex items-start">
+                  <i class="fas fa-times-circle text-red-500 mt-1 mr-2"></i>
+                  <span class="text-gray-700"><%= item %></span>
+                </li>
+              <% }); %>
+            </ul>
+          </div>
+        </div>
+        
+        <div x-show="tab === 'itinerary'" class="animate-fadeIn">
+          <!-- Itinerary content for mobile -->
+          <h2 class="text-xl font-bold text-gray-800 mb-3">Itinerary</h2>
+          <% if (excursion.itinerary && excursion.itinerary.length > 0) { %>
+            <div class="prose prose-orange prose-sm max-w-none mb-6 timeline">
+              <%- excursion.itinerary %>
+            </div>
+          <% } else { %>
+            <p class="text-gray-500 italic mb-6">No detailed itinerary available for this excursion.</p>
+          <% } %>
+          
+          <% if (excursion.meetingPoint && excursion.meetingPoint.length > 0) { %>
+            <h3 class="text-lg font-bold text-gray-800 mb-2 flex items-center">
+              <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>
+              Meeting Point
+            </h3>
+            <div class="bg-blue-50 rounded-lg p-3 mb-4">
+              <p class="text-gray-700">
+                <%= excursion.meetingPoint %>
+              </p>
+            </div>
+          <% } %>
+        </div>
+        
+        <% if (excursion.preparationTips && excursion.preparationTips.length > 0) { %>
+          <div x-show="tab === 'tips'" class="animate-fadeIn">
+            <!-- Tips content for mobile -->
+            <h2 class="text-xl font-bold text-gray-800 mb-3">Preparation Tips</h2>
+            <ul class="space-y-2 mb-6">
+              <% excursion.preparationTips.forEach(tip => { %>
+                <li class="flex items-start">
+                  <i class="fas fa-lightbulb text-yellow-500 mt-1 mr-2"></i>
+                  <span class="text-gray-700"><%= tip %></span>
+                </li>
+              <% }); %>
+            </ul>
+          </div>
+        <% } %>
+        
+        <% if (excursion.additionalInfo && excursion.additionalInfo.length > 0) { %>
+          <div x-show="tab === 'additionalInfo'" class="animate-fadeIn">
+            <!-- Additional Info content for mobile -->
+            <h2 class="text-xl font-bold text-gray-800 mb-3">Additional Information</h2>
+            <div class="prose prose-orange max-w-none mb-6">
+              <%- excursion.additionalInfo %>
+            </div>
+          </div>
+        <% } %>
+        
+        <% if (excursion.images && excursion.images.length > 0) { %>
+          <div x-show="tab === 'gallery'" class="animate-fadeIn">
+            <!-- Gallery for mobile -->
+            <h2 class="text-xl font-bold text-gray-800 mb-3">Gallery</h2>
+            <div class="grid grid-cols-2 gap-2 mb-6">
+              <% excursion.images.forEach((image, index) => { %>
+                <div class="aspect-square overflow-hidden rounded-lg">
+                  <img 
+                    src="<%= typeof image === 'string' ? image : image.path %>" 
+                    alt="<%= excursion.title %> - Image <%= index + 1 %>" 
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                  >
+                </div>
+              <% }); %>
+            </div>
+          </div>
+        <% } %>
+      </div>
+      
+      <!-- Desktop Content (always visible on large screens) -->
+      <div class="hidden lg:block">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">About This Excursion</h2>
+        <div class="prose prose-orange max-w-none mb-8">
+          <%- excursion.description %>
+        </div>
+        
+        <% if (excursion.itinerary && excursion.itinerary.length > 0) { %>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">Itinerary</h2>
+          <div class="bg-blue-50 rounded-lg p-5 mb-8">
+            <div class="prose prose-orange max-w-none mb-0 timeline">
+              <%- excursion.itinerary %>
+            </div>
+          </div>
+        <% } %>
+        
+        <% if (excursion.meetingPoint && excursion.meetingPoint.length > 0) { %>
+          <div class="bg-blue-50 rounded-lg p-5 mb-8">
+            <h3 class="text-lg font-bold text-gray-800 mb-2 flex items-center">
+              <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>
+              Meeting Point
+            </h3>
+            <div class="bg-blue-50 rounded-lg p-3 mb-4">
+              <p class="text-gray-700">
+                <%= excursion.meetingPoint %>
+              </p>
+            </div>
+          </div>
+        <% } %>
+        
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Activities</h2>
+        <div class="grid md:grid-cols-2 gap-3 mb-8">
+          <% excursion.activities.forEach(activity => { %>
+            <div class="bg-white border border-orange-100 rounded-lg p-3 shadow-sm hover:shadow-md transition-all flex items-start">
+              <div class="h-8 w-8 rounded-full bg-orange-100 flex items-center justify-center mr-3 flex-shrink-0">
+                <% 
+                // Determine icon based on activity text
+                let iconClass = 'fa-compass'; // Default
+                const activityLower = activity.toLowerCase();
+                
+                if (activityLower.includes('hike') || activityLower.includes('trek') || activityLower.includes('walk')) {
+                  iconClass = 'fa-hiking';
+                } else if (activityLower.includes('swim') || activityLower.includes('beach') || activityLower.includes('water')) {
+                  iconClass = 'fa-swimmer';
+                } else if (activityLower.includes('food') || activityLower.includes('meal') || activityLower.includes('lunch')) {
+                  iconClass = 'fa-utensils';
+                } else if (activityLower.includes('photo') || activityLower.includes('camera')) {
+                  iconClass = 'fa-camera';
+                } else if (activityLower.includes('tour') || activityLower.includes('guide') || activityLower.includes('visit')) {
+                  iconClass = 'fa-map-marked-alt';
+                } else if (activityLower.includes('boat') || activityLower.includes('sail') || activityLower.includes('cruise')) {
+                  iconClass = 'fa-ship';
+                } else if (activityLower.includes('car') || activityLower.includes('transport')) {
+                  iconClass = 'fa-car';
+                } else if (activityLower.includes('shop') || activityLower.includes('market')) {
+                  iconClass = 'fa-shopping-bag';
+                } else if (activityLower.includes('museum') || activityLower.includes('history')) {
+                  iconClass = 'fa-landmark';
+                }
+                %>
+                <i class="fas <%= iconClass %> text-orange-500"></i>
+              </div>
+              <span class="text-gray-700"><%= activity %></span>
+            </div>
+          <% }); %>
+        </div>
+        
+        <% if (excursion.preparationTips && excursion.preparationTips.length > 0) { %>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">Preparation Tips</h2>
+          <div class="bg-orange-50 rounded-lg p-5 mb-8">
+            <ul class="space-y-3">
+              <% excursion.preparationTips.forEach(tip => { %>
+                <li class="flex items-start">
+                  <i class="fas fa-lightbulb text-yellow-500 mt-1 mr-3"></i>
+                  <span class="text-gray-700"><%= tip %></span>
+                </li>
+              <% }); %>
+            </ul>
+          </div>
+        <% } %>
+        
+        <div class="mb-8">
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">What's Included</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-green-50 rounded-lg p-5 h-full">
+              <ul class="space-y-3">
+                <% excursion.inclusions.forEach(item => { %>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                    <span class="text-gray-700"><%= item %></span>
+                  </li>
+                <% }); %>
+              </ul>
+            </div>
+            <div class="bg-red-50 rounded-lg p-5 h-full">
+              <h2 class="text-xl font-bold text-gray-800 mb-4">What's Not Included</h2>
+              <ul class="space-y-3">
+                <% excursion.exclusions.forEach(item => { %>
+                  <li class="flex items-start">
+                    <i class="fas fa-times-circle text-red-500 mt-1 mr-3"></i>
+                    <span class="text-gray-700"><%= item %></span>
+                  </li>
+                <% }); %>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <% if (excursion.images && excursion.images.length > 0) { %>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">Gallery</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+            <% excursion.images.forEach((image, index) => { %>
+              <div class="aspect-square overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                <img 
+                  src="<%= typeof image === 'string' ? image : image.path %>" 
+                  alt="<%= excursion.title %> - Image <%= index + 1 %>" 
+                  class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                  loading="lazy"
+                >
+              </div>
+            <% }); %>
+          </div>
+          
+          <% if (excursion.additionalInfo && excursion.additionalInfo.length > 0) { %>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Additional Information</h2>
+            <div class="prose prose-orange max-w-none mb-8">
+              <%- excursion.additionalInfo %>
+            </div>
+          <% } %>
+        <% } %>
+      </div>
+      
+      <!-- Call to Action Banner -->
+      <div class="bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl p-5 shadow-xl text-white mb-8">
+        <div class="flex flex-col md:flex-row items-center gap-6">
+          <div class="md:w-3/4">
+            <h3 class="text-xl font-bold mb-2">Looking for something different?</h3>
+            <p class="text-gray-300 mb-4">Contact us for customized excursions tailored to your preferences.</p>
+          </div>
+          <div class="md:w-1/4 flex justify-center">
+            <a href="/contact" class="inline-flex items-center bg-orange-600 hover:bg-orange-700 text-white px-5 py-3 rounded-lg transition-colors whitespace-nowrap">
+              <i class="fas fa-envelope mr-2"></i> 
+              Contact Us
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right Column: Booking Form -->
+    <div class="lg:w-1/3">
+      <div id="bookingCard" class="bg-white rounded-xl shadow-md p-6 lg:sticky lg:top-24">
+        <!-- Pricing Section -->
+        <div class="mb-6">
+          <h2 class="text-xl font-bold text-gray-800 mb-3">Pricing</h2>
+          <div class="flex items-baseline mb-2">
+            <% if (excursion.discountPrice && excursion.discountPrice < excursion.regularPrice) { %>
+              <span class="text-2xl font-bold text-orange-600 mr-2"><%= excursion.discountPrice %> MAD</span>
+              <span class="text-sm text-gray-500 line-through"><%= excursion.regularPrice %> MAD</span>
+              <span class="ml-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full">
+                <%= Math.round((1 - excursion.discountPrice / excursion.regularPrice) * 100) %>% OFF
+              </span>
+            <% } else { %>
+              <span class="text-2xl font-bold text-orange-600"><%= excursion.regularPrice %> MAD</span>
+            <% } %>
+          </div>
+          <% if (excursion.additionalFees) { %>
+            <div class="text-sm text-gray-600 mt-1 bg-gray-50 p-3 rounded-lg flex items-start">
+              <i class="fas fa-info-circle text-blue-500 mt-1 mr-2"></i>
+              <div><%= excursion.additionalFees %></div>
+            </div>
+          <% } %>
+        </div>
+        
+        <!-- Booking Form -->
+        <h3 class="text-lg font-bold text-gray-800 mb-3">Book This Excursion</h3>
+        <form id="reservationForm" class="space-y-4">
+          <input type="hidden" name="excursionId" value="<%= excursion._id %>">
+          <input type="hidden" name="excursionTitle" value="<%= excursion.title %>">
+          
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <input type="text" id="name" name="name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors">
+          </div>
+          
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input type="email" id="email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors">
+          </div>
+          
+          <div>
+            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+            <input type="tel" id="phone" name="phone" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors">
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+              <input type="date" id="date" name="date" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors">
+            </div>
+            <div>
+              <label for="participants" class="block text-sm font-medium text-gray-700 mb-1">Participants</label>
+              <input type="number" id="participants" name="participants" min="<%= excursion.minGroupSize || 1 %>" value="<%= excursion.minGroupSize || 1 %>" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors">
+            </div>
+          </div>
+          
+          <div>
+            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Special Requests (Optional)</label>
+            <textarea id="message" name="message" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"></textarea>
+          </div>
+          
+          <% if (excursion.minGroupSize || excursion.maxGroupSize) { %>
+          <div class="mb-4 bg-gray-50 rounded-lg p-4 flex items-center">
+            <div class="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center mr-3">
+              <i class="fas fa-users text-orange-600"></i>
+            </div>
+            <div>
+              <h4 class="font-medium text-gray-900">Group Size</h4>
+              <p class="text-sm text-gray-600">
+                <% if (excursion.minGroupSize && excursion.maxGroupSize) { %>
+                  <%= excursion.minGroupSize %> to <%= excursion.maxGroupSize %> people
+                <% } else if (excursion.minGroupSize) { %>
+                  Minimum <%= excursion.minGroupSize %> people
+                <% } else if (excursion.maxGroupSize) { %>
+                  Maximum <%= excursion.maxGroupSize %> people
+                <% } %>
+              </p>
+            </div>
+          </div>
+          <% } %>
+          
+          <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
+            Reserve Now
+          </button>
+          
+          <p class="text-sm text-gray-600 text-center">
+            <i class="fas fa-shield-alt mr-1"></i> No payment required. We'll contact you to confirm details.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Booking Form Modal -->
+<div 
+  x-data="{ open: false }" 
+  x-show="open" 
+  @click.away="open = false"
+  id="mobileBookingModal" 
+  x-cloak
+  class="fixed inset-0 z-50 overflow-y-auto"
+  style="display: none;"
+>
+  <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+    <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+      <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+    </div>
+    
+    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+    
+    <div class="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-bottom bg-white rounded-t-xl sm:rounded-xl shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg">
+      <div class="absolute top-0 right-0 pt-4 pr-4">
+        <button @click="open = false" type="button" class="text-gray-400 hover:text-gray-500">
+          <span class="sr-only">Close</span>
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+      <h3 class="text-lg font-bold text-gray-900 mb-4">
+        Book <%= excursion.title %>
+      </h3>
+      
+      <!-- Form cloned from desktop for mobile modal -->
+      <form id="mobileReservationForm" class="space-y-4">
+        <input type="hidden" name="excursionId" value="<%= excursion._id %>">
+        <input type="hidden" name="excursionTitle" value="<%= excursion.title %>">
+        
+        <div>
+          <label for="mobile-name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+          <input type="text" id="mobile-name" name="name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors">
+        </div>
+        
+        <div>
+          <label for="mobile-email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <input type="email" id="mobile-email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors">
+        </div>
+        
+        <div>
+          <label for="mobile-phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+          <input type="tel" id="mobile-phone" name="phone" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors">
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="mobile-date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+            <input type="date" id="mobile-date" name="date" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors">
+          </div>
+          <div>
+            <label for="mobile-participants" class="block text-sm font-medium text-gray-700 mb-1">Participants</label>
+            <input type="number" id="mobile-participants" name="participants" min="<%= excursion.minGroupSize || 1 %>" value="<%= excursion.minGroupSize || 1 %>" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors">
+          </div>
+        </div>
+        
+        <div>
+          <label for="mobile-message" class="block text-sm font-medium text-gray-700 mb-1">Special Requests (Optional)</label>
+          <textarea id="mobile-message" name="message" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"></textarea>
+        </div>
+        
+        <% if (excursion.minGroupSize || excursion.maxGroupSize) { %>
+        <div class="mb-4 bg-gray-50 rounded-lg p-4 flex items-center">
+          <div class="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center mr-3">
+            <i class="fas fa-users text-orange-600"></i>
+          </div>
+          <div>
+            <h4 class="font-medium text-gray-900">Group Size</h4>
+            <p class="text-sm text-gray-600">
+              <% if (excursion.minGroupSize && excursion.maxGroupSize) { %>
+                <%= excursion.minGroupSize %> to <%= excursion.maxGroupSize %> people
+              <% } else if (excursion.minGroupSize) { %>
+                Minimum <%= excursion.minGroupSize %> people
+              <% } else if (excursion.maxGroupSize) { %>
+                Maximum <%= excursion.maxGroupSize %> people
+              <% } %>
+            </p>
+          </div>
+        </div>
+        <% } %>
+        
+        <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
+          Reserve Now
+        </button>
+        
+        <p class="text-sm text-gray-600 text-center">
+          <i class="fas fa-shield-alt mr-1"></i> No payment required. We'll contact you to confirm details.
+        </p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Handle desktop form submission
+  const reservationForm = document.getElementById('reservationForm');
+  const mobileReservationForm = document.getElementById('mobileReservationForm');
+  const mobileBookBtn = document.getElementById('mobileBookBtn');
+  const mobileBookingModal = document.getElementById('mobileBookingModal');
+  
+  // Helper function to determine the appropriate icon for an activity
+  window.getActivityIcon = function(activity) {
+    const activity_lower = activity.toLowerCase();
+    
+    if (activity_lower.includes('hike') || activity_lower.includes('trek') || activity_lower.includes('walk')) {
+      return 'fa-hiking';
+    } else if (activity_lower.includes('swim') || activity_lower.includes('beach') || activity_lower.includes('water')) {
+      return 'fa-swimmer';
+    } else if (activity_lower.includes('food') || activity_lower.includes('meal') || activity_lower.includes('lunch') || activity_lower.includes('dinner') || activity_lower.includes('breakfast')) {
+      return 'fa-utensils';
+    } else if (activity_lower.includes('photo') || activity_lower.includes('camera')) {
+      return 'fa-camera';
+    } else if (activity_lower.includes('tour') || activity_lower.includes('guide') || activity_lower.includes('visit')) {
+      return 'fa-map-marked-alt';
+    } else if (activity_lower.includes('boat') || activity_lower.includes('sail') || activity_lower.includes('cruise')) {
+      return 'fa-ship';
+    } else if (activity_lower.includes('drive') || activity_lower.includes('car') || activity_lower.includes('transport')) {
+      return 'fa-car';
+    } else if (activity_lower.includes('shop') || activity_lower.includes('market') || activity_lower.includes('buy')) {
+      return 'fa-shopping-bag';
+    } else if (activity_lower.includes('museum') || activity_lower.includes('history') || activity_lower.includes('culture')) {
+      return 'fa-landmark';
+    } else {
+      return 'fa-compass'; // Default icon
+    }
+  };
+  
+  // Format the itinerary content with timeline markers
+  function formatItinerary() {
+    const timelineContainers = document.querySelectorAll('.timeline');
+    
+    timelineContainers.forEach(container => {
+      // Look for h3, h4 elements or list items to convert to timeline items
+      const headings = container.querySelectorAll('h3, h4, li');
+      
+      headings.forEach(element => {
+        // Create a timeline marker
+        const marker = document.createElement('div');
+        marker.className = 'timeline-marker';
+        
+        // Wrap the element in a timeline item if it's not already
+        if (!element.parentElement.classList.contains('timeline-item')) {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'timeline-item';
+          
+          // Inject the marker
+          wrapper.appendChild(marker);
+          
+          // Create content container
+          const content = document.createElement('div');
+          content.className = 'timeline-content';
+          
+          // Replace the element with the wrapper
+          element.parentNode.insertBefore(wrapper, element);
+          content.appendChild(element);
+          wrapper.appendChild(content);
+        }
+      });
+    });
+  }
+  
+  // Call the formatItinerary function after page load
+  setTimeout(formatItinerary, 500);
+  
+  // Handle mobile booking button click
+  if (mobileBookBtn) {
+    mobileBookBtn.addEventListener('click', function() {
+      if (window.Alpine) {
+        Alpine.store('mobileBookingModal', { open: true });
+        // Find and open the modal using Alpine
+        const modalEl = document.getElementById('mobileBookingModal');
+        if (modalEl && modalEl.__x) {
+          modalEl.__x.updateElements(modalEl);
+        }
+      }
+    });
+  }
+  
+  // Define a common function for form submission
+  const submitForm = async function(form, e) {
+    e.preventDefault();
+    
+    const formData = new FormData(form);
+    const formDataObj = {};
+    formData.forEach((value, key) => {
+      formDataObj[key] = value;
+    });
+    
+    try {
+      // Show loading state
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+      
+      const response = await fetch('/excursions/reserve', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formDataObj)
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        // Show success message
+        const successMessage = document.createElement('div');
+        successMessage.className = 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4';
+        successMessage.innerHTML = `
+          <strong class="font-bold">Success!</strong>
+          <p>${result.message}</p>
+        `;
+        
+        form.parentNode.insertBefore(successMessage, form);
+        form.reset();
+        
+        // If mobile form, close modal after 2 seconds
+        if (form.id === 'mobileReservationForm' && window.Alpine) {
+          setTimeout(() => {
+            const modalEl = document.getElementById('mobileBookingModal');
+            if (modalEl && modalEl.__x) {
+              modalEl.__x.$data.open = false;
+            }
+          }, 2000);
+        }
+        
+        // Scroll to success message
+        successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        // Show error message
+        const errorMessage = document.createElement('div');
+        errorMessage.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4';
+        errorMessage.innerHTML = `
+          <strong class="font-bold">Error!</strong>
+          <p>${result.message || 'Something went wrong. Please try again.'}</p>
+        `;
+        
+        form.parentNode.insertBefore(errorMessage, form);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      
+      // Show error message
+      const errorMessage = document.createElement('div');
+      errorMessage.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4';
+      errorMessage.innerHTML = `
+        <strong class="font-bold">Error!</strong>
+        <p>Failed to submit your reservation. Please try again later.</p>
+      `;
+      
+      form.parentNode.insertBefore(errorMessage, form);
+    } finally {
+      // Restore button state
+      const submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnText;
+    }
+  };
+  
+  // Attach event listeners
+  if (reservationForm) {
+    reservationForm.addEventListener('submit', function(e) {
+      submitForm(reservationForm, e);
+    });
+  }
+  
+  if (mobileReservationForm) {
+    mobileReservationForm.addEventListener('submit', function(e) {
+      submitForm(mobileReservationForm, e);
+    });
+  }
+  
+  // Initialize Alpine.js if available
+  if (window.Alpine) {
+    // Initialize any Alpine components if needed
+    Alpine.data('bookingModal', () => ({
+      open: false,
+      toggle() {
+        this.open = !this.open;
+      }
+    }));
+  }
+});
+</script>
+
+<%- include('../partials/footer.ejs') %>

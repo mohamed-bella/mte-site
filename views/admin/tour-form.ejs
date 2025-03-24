@@ -200,7 +200,7 @@
                                                                       </svg>
                                                                       <div class="flex text-sm text-gray-600">
                                                                            <span>Upload images</span>
-                                                                      </div>
+                                                                                </div>
                                                                       <p class="text-xs text-gray-500">
                                                                            PNG, JPG, GIF up to 10MB each (max 20 images)
                                                                       </p>
@@ -342,9 +342,9 @@
                         // Create and display each image preview
                         for (let i = 0; i < input.files.length; i++) {
                             const file = input.files[i];
-                            const reader = new FileReader();
+                              const reader = new FileReader();
                             
-                            reader.onload = function(e) {
+                              reader.onload = function(e) {
                                 const imgContainer = document.createElement('div');
                                 imgContainer.className = 'relative';
                                 
@@ -362,7 +362,7 @@
                                 preview.appendChild(imgContainer);
                             }
                             
-                            reader.readAsDataURL(file);
+                              reader.readAsDataURL(file);
                         }
                     }
                }

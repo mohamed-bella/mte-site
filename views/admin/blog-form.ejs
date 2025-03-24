@@ -52,9 +52,11 @@
                                         <!-- Toolbar will be inserted by Quill -->
                                     </div>
                                     <div id="quill-editor" class="min-h-[400px] border border-gray-300 rounded-b-md">
-                                        <%= blog ? blog.content : '' %>
+                                        <% if (blog && blog.content) { %>
+                                        <textarea class="hidden"><%- blog.content %></textarea>
+                                        <% } %>
                                     </div>
-                                    <textarea name="content" id="hiddenContent" class="hidden"></textarea>
+                                    <textarea name="content" id="hiddenContent" class="hidden"><%= blog ? blog.content : '' %></textarea>
                                 </div>
                             </div>
                         </div>
@@ -201,9 +203,9 @@
 
                                 <div>
                                     <label for="publishDate" class="block text-sm font-medium text-gray-700">Publish Date</label>
-                                    <input type="datetime-local" name="publishDate" id="publishDate"
+                                    <input type="datetime-local" name="publishedAt" id="publishDate"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
-                                        value="<%= blog ? blog.publishDate.toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16) %>"
+                                        value="<%= blog && blog.publishedAt ? blog.publishedAt.toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16) %>"
                                     >
                                 </div>
 

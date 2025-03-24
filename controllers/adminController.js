@@ -378,6 +378,11 @@ exports.getNewBlogForm = (req, res) => {
 
 exports.createBlog = async (req, res) => {
     try {
+        // Log request info for debugging
+        console.log('Create blog request received');
+        console.log('Request body keys:', Object.keys(req.body));
+        console.log('Files present:', req.files ? Object.keys(req.files) : 'No files');
+        
         const {
             title,
             content,
@@ -392,29 +397,61 @@ exports.createBlog = async (req, res) => {
             featuredImageUrl,  // Hidden field for the featured image URL if already uploaded via AJAX
         } = req.body;
 
-        console.log('Received blog data:', { title, summary, category, status });
+        if (!title || !content || !summary) {
+            return res.status(400).json({
+                success: false,
+                message: 'Required fields are missing'
+            });
+        }
 
         // Process featured image
         let finalFeaturedImageUrl = featuredImageUrl;
-        if (req.files && req.files.featuredImage && req.files.featuredImage[0]) {
-            finalFeaturedImageUrl = await uploadToCloudinary(req.files.featuredImage[0]);
+        if (req.files && req.files.featuredImage) {
+            const featuredImageFile = req.files.featuredImage;
+            if (featuredImageFile.size > 0) {
+                try {
+                    finalFeaturedImageUrl = await uploadToCloudinaryExpress(featuredImageFile);
+                } catch (uploadError) {
+                    console.error('Featured image upload error:', uploadError);
+                }
+            }
         }
 
         // Process additional images
         let imageUrls = [];
-        if (req.body.additionalImages && Array.isArray(req.body.additionalImages)) {
-            // If images were already uploaded via AJAX and URLs are passed in the form
-            imageUrls = req.body.additionalImages;
+        if (req.body.additionalImages) {
+            // Ensure additionalImages is always treated as an array
+            if (typeof req.body.additionalImages === 'string') {
+                imageUrls = [req.body.additionalImages];
+            } else if (Array.isArray(req.body.additionalImages)) {
+                imageUrls = req.body.additionalImages;
+            }
         } else if (req.files && req.files.images) {
-            // If images are uploaded directly with the form
-            for (const file of req.files.images) {
-                const imageUrl = await uploadToCloudinary(file);
-                imageUrls.push(imageUrl);
+            const imagesToProcess = Array.isArray(req.files.images) 
+                ? req.files.images 
+                : [req.files.images];
+            
+            for (const file of imagesToProcess) {
+                if (file && file.size > 0) {
+                    try {
+                        const imageUrl = await uploadToCloudinaryExpress(file);
+                        imageUrls.push(imageUrl);
+                    } catch (uploadError) {
+                        console.error('Additional image upload error:', uploadError);
+                    }
+                }
             }
         }
 
-        // Process tags (convert comma-separated string to array)
-        const tagArray = tags ? tags.split(',').map(tag => tag.trim()) : [];
+        // Process tags - handle both string and array cases
+        let tagArray = [];
+        if (tags) {
+            if (typeof tags === 'string') {
+                tagArray = tags.split(',').map(tag => tag.trim());
+            } else if (Array.isArray(tags)) {
+                tagArray = tags.map(tag => tag.trim());
+            }
+        }
 
         // Create new blog post
         const newBlog = new Blog({
@@ -425,7 +462,7 @@ exports.createBlog = async (req, res) => {
             images: imageUrls,
             metaTitle: metaTitle || title,
             metaDescription: metaDescription || summary,
-            metaKeywords,
+            metaKeywords: metaKeywords || '',
             category,
             tags: tagArray,
             author: author || 'Morocco Travel Experts',
@@ -435,17 +472,20 @@ exports.createBlog = async (req, res) => {
         });
 
         await newBlog.save();
+        console.log('Blog created successfully:', newBlog._id);
 
-        res.json({
+        return res.json({
             success: true,
             message: 'Blog post created successfully',
             blog: newBlog
         });
     } catch (error) {
         console.error('Error creating blog post:', error);
-        res.status(500).json({
+        // Ensure we always return JSON, even when there's a server error
+        return res.status(500).json({
             success: false,
-            message: error.message || 'Error creating blog post'
+            message: error.message || 'Error creating blog post',
+            error: process.env.NODE_ENV === 'development' ? error.stack : null
         });
     }
 };
@@ -473,6 +513,11 @@ exports.getBlogEditForm = async (req, res) => {
 
 exports.updateBlog = async (req, res) => {
     try {
+        // Log request info for debugging
+        console.log('Update blog request received for ID:', req.params.id);
+        console.log('Request body keys:', Object.keys(req.body));
+        console.log('Files present:', req.files ? Object.keys(req.files) : 'No files');
+        
         const {
             title,
             content,
@@ -487,7 +532,12 @@ exports.updateBlog = async (req, res) => {
             featuredImageUrl // Hidden field for the featured image URL if already uploaded via AJAX
         } = req.body;
 
-        console.log('Updating blog data:', { title, summary, category, status });
+        if (!title || !content || !summary) {
+            return res.status(400).json({
+                success: false,
+                message: 'Required fields are missing'
+            });
+        }
 
         // Find existing blog
         const blog = await Blog.findById(req.params.id);
@@ -501,37 +551,68 @@ exports.updateBlog = async (req, res) => {
 
         // Process featured image if new one provided
         let finalFeaturedImageUrl = featuredImageUrl || blog.featuredImage;
-        if (req.files && req.files.featuredImage && req.files.featuredImage[0]) {
-            finalFeaturedImageUrl = await uploadToCloudinary(req.files.featuredImage[0]);
+        if (req.files && req.files.featuredImage) {
+            const featuredImageFile = req.files.featuredImage;
+            if (featuredImageFile.size > 0) {
+                try {
+                    // Express-fileupload file format is different from multer
+                    finalFeaturedImageUrl = await uploadToCloudinaryExpress(featuredImageFile);
+                } catch (uploadError) {
+                    console.error('Featured image upload error:', uploadError);
+                    // Continue with the existing image URL if upload fails
+                }
+            }
         }
 
         // Process additional images
         let imageUrls = blog.images || [];
-        if (req.body.additionalImages && Array.isArray(req.body.additionalImages)) {
-            // If images were already uploaded via AJAX and URLs are passed in the form
-            imageUrls = req.body.additionalImages;
+        if (req.body.additionalImages) {
+            // Ensure additionalImages is always treated as an array
+            if (typeof req.body.additionalImages === 'string') {
+                imageUrls = [req.body.additionalImages];
+            } else if (Array.isArray(req.body.additionalImages)) {
+                imageUrls = req.body.additionalImages;
+            }
         } else if (req.files && req.files.images) {
-            // If images are uploaded directly with the form
-            imageUrls = []; // Clear existing images if new ones are provided
-            for (const file of req.files.images) {
-                const imageUrl = await uploadToCloudinary(file);
-                imageUrls.push(imageUrl);
+            // Reset images if new ones are provided
+            imageUrls = [];
+            const imagesToProcess = Array.isArray(req.files.images) 
+                ? req.files.images 
+                : [req.files.images];
+                
+            for (const file of imagesToProcess) {
+                if (file && file.size > 0) {
+                    try {
+                        const imageUrl = await uploadToCloudinaryExpress(file);
+                        imageUrls.push(imageUrl);
+                    } catch (uploadError) {
+                        console.error('Additional image upload error:', uploadError);
+                        // Continue with other images if one fails
+                    }
+                }
             }
         }
 
-        // Process tags
-        const tagArray = tags ? tags.split(',').map(tag => tag.trim()) : [];
+        // Process tags - handle both string and array cases
+        let tagArray = [];
+        if (tags) {
+            if (typeof tags === 'string') {
+                tagArray = tags.split(',').map(tag => tag.trim());
+            } else if (Array.isArray(tags)) {
+                tagArray = tags.map(tag => tag.trim());
+            }
+        }
 
         // Update blog properties
         blog.title = title;
-        blog.content = content; // This will now contain the HTML from Quill editor
+        blog.content = content;
         blog.summary = summary;
         blog.featuredImage = finalFeaturedImageUrl;
         blog.images = imageUrls;
         blog.metaTitle = metaTitle || title;
         blog.metaDescription = metaDescription || summary;
-        blog.metaKeywords = metaKeywords;
-        blog.category = category;
+        blog.metaKeywords = metaKeywords || '';
+        blog.category = category || blog.category;
         blog.tags = tagArray;
         blog.author = author || 'Morocco Travel Experts';
         blog.status = status || 'draft';
@@ -549,17 +630,20 @@ exports.updateBlog = async (req, res) => {
         blog.lastModified = Date.now();
 
         await blog.save();
+        console.log('Blog updated successfully:', blog._id);
 
-        res.json({
+        return res.json({
             success: true,
             message: 'Blog post updated successfully',
             blog
         });
     } catch (error) {
         console.error('Error updating blog post:', error);
-        res.status(500).json({
+        // Ensure we always return JSON, even when there's a server error
+        return res.status(500).json({
             success: false,
-            message: error.message || 'Error updating blog post'
+            message: error.message || 'Error updating blog post',
+            error: process.env.NODE_ENV === 'development' ? error.stack : null
         });
     }
 };
@@ -591,6 +675,16 @@ exports.deleteBlog = async (req, res) => {
 // Helper function to upload to Cloudinary (duplicated from adminRoutes.js for use within controller)
 async function uploadToCloudinary(file) {
     try {
+        if (!file || !file.buffer) {
+            throw new Error('Invalid file object provided to upload function');
+        }
+
+        console.log('Uploading file to Cloudinary:', {
+            filename: file.originalname,
+            size: file.size,
+            mimetype: file.mimetype
+        });
+        
         // Convert buffer to base64
         const base64Image = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
         
@@ -603,7 +697,42 @@ async function uploadToCloudinary(file) {
             folder: 'morocco-travel-experts',
             resource_type: 'image'
         });
+
+        console.log('Cloudinary upload successful, URL:', result.secure_url);
+        return result.secure_url;
+    } catch (error) {
+        console.error('Cloudinary Upload Error:', error);
+        throw new Error(`Failed to upload image to Cloudinary: ${error.message}`);
+    }
+}
+
+// Helper function for express-fileupload middleware
+async function uploadToCloudinaryExpress(file) {
+    try {
+        if (!file || !file.data) {
+            throw new Error('Invalid file object provided to upload function');
+        }
+
+        console.log('Uploading file to Cloudinary via express-fileupload:', {
+            filename: file.name,
+            size: file.size,
+            mimetype: file.mimetype
+        });
         
+        // Convert buffer to base64
+        const base64Image = `data:${file.mimetype};base64,${file.data.toString('base64')}`;
+        
+        // Generate a unique filename
+        const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '-')}`;
+        
+        // Upload to Cloudinary
+        const result = await cloudinary.uploader.upload(base64Image, {
+            public_id: `blog_images/${fileName}`,
+            folder: 'morocco-travel-experts',
+            resource_type: 'image'
+        });
+
+        console.log('Cloudinary upload successful, URL:', result.secure_url);
         return result.secure_url;
     } catch (error) {
         console.error('Cloudinary Upload Error:', error);

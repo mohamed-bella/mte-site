@@ -1,0 +1,269 @@
+<%- include('../../partials/admin/header') %>
+
+<div class="min-h-screen bg-gray-100">
+    <!-- Sidebar Navigation -->
+    <%- include('../../partials/admin/sidebar') %>
+
+    <!-- Main Content -->
+    <div class="md:pl-64 flex flex-col flex-1">
+        <!-- Top Navigation -->
+        <div class="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-gray-100">
+            <button type="button" class="h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500" id="mobileSidebarToggle">
+                <span class="sr-only">Open sidebar</span>
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+
+        <main class="flex-1">
+            <div class="py-6">
+                <!-- Page Header -->
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                    <div class="flex items-center justify-between">
+                        <h1 class="text-2xl font-semibold text-gray-900">Excursion Details</h1>
+                        <div class="flex space-x-2">
+                            <a href="/admin/excursions/<%= excursion._id %>/edit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700">
+                                <svg class="mr-2 -ml-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                                Edit
+                            </a>
+                            <a href="/admin/excursions" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                <svg class="mr-2 -ml-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                </svg>
+                                Back to List
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mt-4">
+                    <!-- Flash Messages -->
+                    <% if (locals.success_msg) { %>
+                        <div class="mb-4 bg-green-50 border-l-4 border-green-400 p-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-green-700"><%= success_msg %></p>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <% if (locals.error_msg) { %>
+                        <div class="mb-4 bg-red-50 border-l-4 border-red-400 p-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-red-700"><%= error_msg %></p>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <!-- Excursion Details -->
+                    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                            <!-- Left Column: Main Details -->
+                            <div class="lg:col-span-2 p-6">
+                                <div class="flex items-center justify-between mb-6">
+                                    <div>
+                                        <h2 class="text-2xl font-bold text-gray-900"><%= excursion.title %></h2>
+                                        <div class="mt-2 flex items-center text-gray-600">
+                                            <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                            <span><%= excursion.location %></span>
+                                            <span class="mx-2">|</span>
+                                            <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span><%= excursion.duration %></span>
+                                        </div>
+                                    </div>
+                                    <% if (excursion.featured) { %>
+                                        <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-green-100 text-green-800">Featured</span>
+                                    <% } %>
+                                </div>
+
+                                <!-- Pricing -->
+                                <div class="mb-6">
+                                    <h3 class="text-lg font-semibold text-gray-900">Pricing</h3>
+                                    <div class="mt-2">
+                                        <% if (excursion.discountPrice && excursion.regularPrice && excursion.discountPrice < excursion.regularPrice) { %>
+                                            <div class="flex items-baseline">
+                                                <span class="text-2xl font-bold text-orange-600"><%= excursion.discountPrice ? excursion.discountPrice.toLocaleString() : '0' %> MAD</span>
+                                                <span class="ml-2 text-gray-500 line-through"><%= excursion.regularPrice ? excursion.regularPrice.toLocaleString() : '0' %> MAD</span>
+                                                <span class="ml-2 px-2 py-0.5 bg-red-100 text-red-800 text-xs font-semibold rounded">
+                                                    <%= Math.round(100 - (excursion.discountPrice / excursion.regularPrice * 100)) %>% OFF
+                                                </span>
+                                            </div>
+                                        <% } else { %>
+                                            <span class="text-2xl font-bold text-orange-600"><%= excursion.regularPrice ? excursion.regularPrice.toLocaleString() : '0' %> MAD</span>
+                                        <% } %>
+                                    </div>
+                                </div>
+
+                                <!-- Description -->
+                                <div class="mb-6">
+                                    <h3 class="text-lg font-semibold text-gray-900">Description</h3>
+                                    <div class="mt-2 prose max-w-none text-gray-700">
+                                        <p><%= excursion.description %></p>
+                                    </div>
+                                </div>
+
+                                <!-- Gallery -->
+                                <% if (excursion.images && excursion.images.length > 0) { %>
+                                    <div class="mb-6">
+                                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Gallery</h3>
+                                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                                            <% excursion.images.forEach(image => { %>
+                                                <a href="<%= image.path %>" target="_blank" class="block">
+                                                    <img src="<%= image.path %>" alt="Gallery image" class="w-full h-24 object-cover rounded-md">
+                                                </a>
+                                            <% }) %>
+                                        </div>
+                                    </div>
+                                <% } %>
+
+                                <!-- Metadata -->
+                                <div class="mt-6 border-t border-gray-200 pt-4 text-sm text-gray-500">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <p><strong>Created:</strong> <%= new Date(excursion.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+                                        </div>
+                                        <div>
+                                            <p><strong>Last Updated:</strong> <%= new Date(excursion.updatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Column: Sidebar Details -->
+                            <div class="lg:col-span-1 bg-gray-50 p-6 border-l border-gray-200">
+                                <!-- Main Image -->
+                                <div class="mb-6">
+                                    <img src="<%= excursion.mainImage %>" alt="<%= excursion.title %>" class="w-full h-48 object-cover rounded-md">
+                                </div>
+                                
+                                <!-- Activities -->
+                                <% if (excursion.activities && excursion.activities.length > 0) { %>
+                                    <div class="mb-6">
+                                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Activities</h3>
+                                        <ul class="space-y-2">
+                                            <% excursion.activities.forEach(activity => { %>
+                                                <li class="flex">
+                                                    <svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    <span class="ml-2 text-gray-700"><%= activity %></span>
+                                                </li>
+                                            <% }) %>
+                                        </ul>
+                                    </div>
+                                <% } %>
+
+                                <!-- Preparation Tips -->
+                                <% if (excursion.preparationTips && excursion.preparationTips.length > 0) { %>
+                                    <div class="mb-6">
+                                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Preparation Tips</h3>
+                                        <ul class="space-y-2">
+                                            <% excursion.preparationTips.forEach(tip => { %>
+                                                <li class="flex">
+                                                    <svg class="flex-shrink-0 h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    <span class="ml-2 text-gray-700"><%= tip %></span>
+                                                </li>
+                                            <% }) %>
+                                        </ul>
+                                    </div>
+                                <% } %>
+
+                                <!-- Inclusions -->
+                                <% if (excursion.inclusions && excursion.inclusions.length > 0) { %>
+                                    <div class="mb-6">
+                                        <h3 class="text-lg font-semibold text-gray-900 mb-2">What's Included</h3>
+                                        <ul class="space-y-2">
+                                            <% excursion.inclusions.forEach(inclusion => { %>
+                                                <li class="flex">
+                                                    <svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    <span class="ml-2 text-gray-700"><%= inclusion %></span>
+                                                </li>
+                                            <% }) %>
+                                        </ul>
+                                    </div>
+                                <% } %>
+
+                                <!-- Exclusions -->
+                                <% if (excursion.exclusions && excursion.exclusions.length > 0) { %>
+                                    <div class="mb-6">
+                                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Not Included</h3>
+                                        <ul class="space-y-2">
+                                            <% excursion.exclusions.forEach(exclusion => { %>
+                                                <li class="flex">
+                                                    <svg class="flex-shrink-0 h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    <span class="ml-2 text-gray-700"><%= exclusion %></span>
+                                                </li>
+                                            <% }) %>
+                                        </ul>
+                                    </div>
+                                <% } %>
+
+                                <!-- SEO Info -->
+                                <div class="border-t border-gray-200 pt-4 mt-6">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">SEO Information</h3>
+                                    
+                                    <div class="mb-3">
+                                        <h4 class="text-sm font-medium text-gray-700">Meta Description</h4>
+                                        <p class="mt-1 text-sm text-gray-500"><%= excursion.metaDescription || 'Not provided' %></p>
+                                    </div>
+                                    
+                                    <div>
+                                        <h4 class="text-sm font-medium text-gray-700">Meta Keywords</h4>
+                                        <% if (excursion.metaKeywords) { %>
+                                            <div class="mt-1 flex flex-wrap gap-1">
+                                                <% excursion.metaKeywords.split(',').forEach(keyword => { %>
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-200 text-gray-800">
+                                                        <%= keyword.trim() %>
+                                                    </span>
+                                                <% }); %>
+                                            </div>
+                                        <% } else { %>
+                                            <p class="mt-1 text-sm text-gray-500">Not provided</p>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Mobile Sidebar Toggle Script -->
+<script>
+    document.getElementById('mobileSidebarToggle').addEventListener('click', function () {
+        document.querySelector('.md\\:pl-64').classList.toggle('sidebar-open');
+    });
+</script>
+
+<%- include('../../partials/admin/footer') %> 

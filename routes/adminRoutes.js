@@ -13,6 +13,8 @@ const CustomTourRequest = require('../models/CustomTourRequest');
 const AdminController = require('../controllers/adminController');
 const Blog = require('../models/Blog');
 const cloudinary = require('cloudinary').v2;
+const Excursion = require('../models/Excursion');
+const ExcursionReservation = require('../models/ExcursionReservation');
 
 // Configure Cloudinary
 cloudinary.config({
@@ -914,25 +916,41 @@ router.post('/custom-requests/:id/update-status', async (req, res) => {
 // Blog Management Routes
 router.get('/blogs', AdminController.getAllBlogs);
 router.get('/blogs/new', AdminController.getNewBlogForm);
-router.post('/blogs/new', upload.fields([
-    { name: 'featuredImage', maxCount: 1 },
-    { name: 'images', maxCount: 10 }
-]), AdminController.createBlog);
+router.post('/blogs/new', AdminController.createBlog);
 router.get('/blogs/:id/edit', AdminController.getBlogEditForm);
-router.post('/blogs/:id/edit', upload.fields([
-    { name: 'featuredImage', maxCount: 1 },
-    { name: 'images', maxCount: 10 }
-]), AdminController.updateBlog);
+router.post('/blogs/:id/edit', AdminController.updateBlog);
 router.delete('/blogs/:id', AdminController.deleteBlog);
 
-// Helper function to upload to Cloudinary
-async function uploadToCloudinary(file) {
+// Image upload endpoint for blog editor
+router.post('/upload-image', async (req, res) => {
     try {
+        if (!req.files || !req.files.image) {
+            return res.status(400).json({ error: 'No image file provided' });
+        }
+
+        const file = req.files.image;
+        
+        // Use the function from controller to maintain consistency
+        const imageUrl = await uploadToCloudinaryExpress(file);
+        res.json({ url: imageUrl });
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        res.status(500).json({ error: 'Failed to upload image' });
+    }
+});
+
+// Helper function for express-fileupload middleware
+async function uploadToCloudinaryExpress(file) {
+    try {
+        if (!file || !file.data) {
+            throw new Error('Invalid file object provided to upload function');
+        }
+        
         // Convert buffer to base64
-        const base64Image = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+        const base64Image = `data:${file.mimetype};base64,${file.data.toString('base64')}`;
         
         // Generate a unique filename
-        const fileName = `${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9.]/g, '-')}`;
+        const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '-')}`;
         
         // Upload to Cloudinary
         const result = await cloudinary.uploader.upload(base64Image, {
@@ -948,18 +966,410 @@ async function uploadToCloudinary(file) {
     }
 }
 
-// Image upload endpoint for blog editor
-router.post('/upload-image', upload.single('image'), async (req, res) => {
+// Excursion Management Routes - New Implementation
+router.get('/excursions', async (req, res) => {
     try {
-        if (!req.file) {
-            return res.status(400).json({ error: 'No image file provided' });
+        const excursions = await Excursion.find().sort({ createdAt: -1 });
+        
+        res.render('admin/excursion/index', {
+            title: 'Manage Excursions',
+            excursions,
+            path: '/admin/excursions'
+        });
+    } catch (error) {
+        console.error('Error loading excursions:', error);
+        req.flash('error', 'Failed to load excursions');
+        res.redirect('/admin/dashboard');
+    }
+});
+
+router.get('/excursions/new', (req, res) => {
+    res.render('admin/excursion/form', {
+        title: 'Create New Excursion',
+        excursion: null,
+        path: '/admin/excursions'
+    });
+});
+
+router.post('/excursions/new', async (req, res) => {
+    try {
+        // Log request info for debugging
+        console.log('Create excursion request received');
+        console.log('Request body keys:', Object.keys(req.body));
+        console.log('Files present:', req.files ? Object.keys(req.files) : 'No files');
+        
+        const {
+            title,
+            description,
+            metaDescription,
+            metaKeywords,
+            location,
+            duration,
+            regularPrice,
+            discountPrice,
+            activities,
+            inclusions,
+            exclusions,
+            preparationTips,
+            featured
+        } = req.body;
+
+        // Process main image
+        let mainImageUrl = '/images/default-excursion.jpg';
+        if (req.files && req.files.mainImage) {
+            const mainImageFile = req.files.mainImage;
+            if (mainImageFile.size > 0) {
+                try {
+                    mainImageUrl = await uploadToCloudinaryExpress(mainImageFile);
+                } catch (uploadError) {
+                    console.error('Main image upload error:', uploadError);
+                }
+            }
         }
 
-        const imageUrl = await uploadToCloudinary(req.file);
-        res.json({ url: imageUrl });
+        // Process additional images
+        let imagesArray = [];
+        if (req.files && req.files.images) {
+            const imagesToProcess = Array.isArray(req.files.images) 
+                ? req.files.images 
+                : [req.files.images];
+            
+            for (const file of imagesToProcess) {
+                if (file && file.size > 0) {
+                    try {
+                        const imageUrl = await uploadToCloudinaryExpress(file);
+                        imagesArray.push({
+                            path: imageUrl,
+                            description: ''
+                        });
+                    } catch (uploadError) {
+                        console.error('Additional image upload error:', uploadError);
+                    }
+                }
+            }
+        }
+
+        // Format arrays from form data
+        const activitiesArray = activities ? (typeof activities === 'string' ? [activities] : activities) : [];
+        const inclusionsArray = inclusions ? (typeof inclusions === 'string' ? [inclusions] : inclusions) : [];
+        const exclusionsArray = exclusions ? (typeof exclusions === 'string' ? [exclusions] : exclusions) : [];
+        const tipsArray = preparationTips ? (typeof preparationTips === 'string' ? [preparationTips] : preparationTips) : [];
+
+        // Create new excursion
+        const newExcursion = new Excursion({
+            title,
+            description,
+            metaDescription: metaDescription || '',
+            metaKeywords: metaKeywords || '',
+            location,
+            duration,
+            regularPrice: parseFloat(regularPrice),
+            discountPrice: discountPrice ? parseFloat(discountPrice) : undefined,
+            activities: activitiesArray,
+            inclusions: inclusionsArray,
+            exclusions: exclusionsArray,
+            preparationTips: tipsArray,
+            mainImage: mainImageUrl,
+            images: imagesArray,
+            featured: featured === 'on' || featured === true
+        });
+
+        await newExcursion.save();
+        console.log('Excursion created successfully:', newExcursion._id);
+
+        req.flash('success', 'Excursion created successfully');
+        res.redirect('/admin/excursions');
     } catch (error) {
-        console.error('Error uploading image:', error);
-        res.status(500).json({ error: 'Failed to upload image' });
+        console.error('Error creating excursion:', error);
+        req.flash('error', error.message || 'Error creating excursion');
+        res.redirect('/admin/excursions/new');
+    }
+});
+
+router.get('/excursions/:id/edit', async (req, res) => {
+    try {
+        const excursion = await Excursion.findById(req.params.id);
+        
+        if (!excursion) {
+            req.flash('error', 'Excursion not found');
+            return res.redirect('/admin/excursions');
+        }
+        
+        res.render('admin/excursion/form', {
+            title: 'Edit Excursion',
+            excursion,
+            path: '/admin/excursions'
+        });
+    } catch (error) {
+        console.error('Error fetching excursion for edit:', error);
+        req.flash('error', 'Failed to fetch excursion');
+        res.redirect('/admin/excursions');
+    }
+});
+
+router.post('/excursions/:id/edit', async (req, res) => {
+    try {
+        // Log request info for debugging
+        console.log('Update excursion request received for ID:', req.params.id);
+        console.log('Request body keys:', Object.keys(req.body));
+        console.log('Files present:', req.files ? Object.keys(req.files) : 'No files');
+        
+        const {
+            title,
+            description,
+            metaDescription,
+            metaKeywords,
+            location,
+            duration,
+            regularPrice,
+            discountPrice,
+            activities,
+            inclusions,
+            exclusions,
+            preparationTips,
+            featured,
+            existingImages
+        } = req.body;
+
+        // Find existing excursion
+        const excursion = await Excursion.findById(req.params.id);
+        
+        if (!excursion) {
+            req.flash('error', 'Excursion not found');
+            return res.redirect('/admin/excursions');
+        }
+
+        // Process main image if new one provided
+        let mainImageUrl = excursion.mainImage;
+        if (req.files && req.files.mainImage) {
+            const mainImageFile = req.files.mainImage;
+            if (mainImageFile.size > 0) {
+                try {
+                    mainImageUrl = await uploadToCloudinaryExpress(mainImageFile);
+                } catch (uploadError) {
+                    console.error('Main image upload error:', uploadError);
+                }
+            }
+        }
+
+        // Process additional images
+        let imagesArray = existingImages ? JSON.parse(existingImages) : excursion.images || [];
+        if (req.files && req.files.images) {
+            const imagesToProcess = Array.isArray(req.files.images) 
+                ? req.files.images 
+                : [req.files.images];
+            
+            for (const file of imagesToProcess) {
+                if (file && file.size > 0) {
+                    try {
+                        const imageUrl = await uploadToCloudinaryExpress(file);
+                        imagesArray.push({
+                            path: imageUrl,
+                            description: ''
+                        });
+                    } catch (uploadError) {
+                        console.error('Additional image upload error:', uploadError);
+                    }
+                }
+            }
+        }
+
+        // Format arrays from form data
+        const activitiesArray = activities ? (typeof activities === 'string' ? [activities] : activities) : [];
+        const inclusionsArray = inclusions ? (typeof inclusions === 'string' ? [inclusions] : inclusions) : [];
+        const exclusionsArray = exclusions ? (typeof exclusions === 'string' ? [exclusions] : exclusions) : [];
+        const tipsArray = preparationTips ? (typeof preparationTips === 'string' ? [preparationTips] : preparationTips) : [];
+
+        // Update excursion properties
+        excursion.title = title;
+        excursion.description = description;
+        excursion.metaDescription = metaDescription || '';
+        excursion.metaKeywords = metaKeywords || '';
+        excursion.location = location;
+        excursion.duration = duration;
+        excursion.regularPrice = parseFloat(regularPrice);
+        excursion.discountPrice = discountPrice ? parseFloat(discountPrice) : undefined;
+        excursion.activities = activitiesArray;
+        excursion.inclusions = inclusionsArray;
+        excursion.exclusions = exclusionsArray;
+        excursion.preparationTips = tipsArray;
+        excursion.mainImage = mainImageUrl;
+        excursion.images = imagesArray;
+        excursion.featured = featured === 'on' || featured === true;
+
+        await excursion.save();
+        console.log('Excursion updated successfully:', excursion._id);
+
+        req.flash('success', 'Excursion updated successfully');
+        res.redirect('/admin/excursions');
+    } catch (error) {
+        console.error('Error updating excursion:', error);
+        req.flash('error', error.message || 'Error updating excursion');
+        res.redirect(`/admin/excursions/${req.params.id}/edit`);
+    }
+});
+
+router.get('/excursions/:id/delete', async (req, res) => {
+    try {
+        const result = await Excursion.findByIdAndDelete(req.params.id);
+        
+        if (!result) {
+            req.flash('error', 'Excursion not found');
+            return res.redirect('/admin/excursions');
+        }
+        
+        req.flash('success', 'Excursion deleted successfully');
+        res.redirect('/admin/excursions');
+    } catch (error) {
+        console.error('Error deleting excursion:', error);
+        req.flash('error', 'Error deleting excursion');
+        res.redirect('/admin/excursions');
+    }
+});
+
+router.get('/excursions/:id/toggle-featured', async (req, res) => {
+    try {
+        const excursion = await Excursion.findById(req.params.id);
+        
+        if (!excursion) {
+            req.flash('error', 'Excursion not found');
+            return res.redirect('/admin/excursions');
+        }
+        
+        excursion.featured = !excursion.featured;
+        await excursion.save();
+        
+        req.flash('success', `Excursion ${excursion.featured ? 'featured' : 'unfeatured'} successfully`);
+        res.redirect('/admin/excursions');
+    } catch (error) {
+        console.error('Error toggling excursion featured status:', error);
+        req.flash('error', 'Error updating excursion');
+        res.redirect('/admin/excursions');
+    }
+});
+
+// Excursion Reservation Management
+router.get('/excursion-reservations', async (req, res) => {
+    try {
+        const reservations = await ExcursionReservation.find()
+            .populate('excursion', 'title')
+            .sort({ createdAt: -1 });
+        
+        // Mark all unread reservations as read
+        await ExcursionReservation.updateMany(
+            { read: false },
+            { read: true }
+        );
+        
+        res.render('admin/excursion-reservations', {
+            title: 'Excursion Reservations',
+            reservations,
+            path: '/admin/excursion-reservations'
+        });
+    } catch (error) {
+        console.error('Error loading excursion reservations:', error);
+        req.flash('error', 'Failed to load reservations');
+        res.redirect('/admin/dashboard');
+    }
+});
+
+// Get count of unread reservations for notification
+router.get('/excursion-reservations/unread-count', async (req, res) => {
+    try {
+        const count = await ExcursionReservation.countDocuments({ read: false });
+        res.json({ count });
+    } catch (error) {
+        console.error('Error getting unread count:', error);
+        res.status(500).json({ error: 'Failed to get unread count' });
+    }
+});
+
+router.get('/excursion-reservations/:id', async (req, res) => {
+    try {
+        const reservation = await ExcursionReservation.findByIdAndUpdate(
+            req.params.id,
+            { read: true }, // Mark as read when viewed
+            { new: true }
+        ).populate('excursion');
+        
+        if (!reservation) {
+            req.flash('error', 'Reservation not found');
+            return res.redirect('/admin/excursion-reservations');
+        }
+        
+        res.render('admin/excursion-reservation-details', {
+            title: 'Reservation Details',
+            reservation,
+            path: '/admin/excursion-reservations'
+        });
+    } catch (error) {
+        console.error('Error loading reservation details:', error);
+        req.flash('error', 'Failed to load reservation details');
+        res.redirect('/admin/excursion-reservations');
+    }
+});
+
+router.post('/excursion-reservations/:id/update-status', async (req, res) => {
+    try {
+        const { status } = req.body;
+        const updatedReservation = await ExcursionReservation.findByIdAndUpdate(
+            req.params.id,
+            { status },
+            { new: true }
+        );
+        
+        if (!updatedReservation) {
+            req.flash('error', 'Reservation not found');
+        } else {
+            req.flash('success', 'Reservation status updated successfully');
+        }
+        
+        res.redirect(`/admin/excursion-reservations/${req.params.id}`);
+    } catch (error) {
+        console.error('Error updating reservation status:', error);
+        req.flash('error', 'Failed to update reservation status');
+        res.redirect(`/admin/excursion-reservations/${req.params.id}`);
+    }
+});
+
+router.post('/excursion-reservations/:id/update-notes', async (req, res) => {
+    try {
+        const { adminNotes } = req.body;
+        const updatedReservation = await ExcursionReservation.findByIdAndUpdate(
+            req.params.id,
+            { adminNotes },
+            { new: true }
+        );
+        
+        if (!updatedReservation) {
+            req.flash('error', 'Reservation not found');
+        } else {
+            req.flash('success', 'Admin notes updated successfully');
+        }
+        
+        res.redirect(`/admin/excursion-reservations/${req.params.id}`);
+    } catch (error) {
+        console.error('Error updating admin notes:', error);
+        req.flash('error', 'Failed to update admin notes');
+        res.redirect(`/admin/excursion-reservations/${req.params.id}`);
+    }
+});
+
+router.post('/excursion-reservations/:id/delete', async (req, res) => {
+    try {
+        const result = await ExcursionReservation.findByIdAndDelete(req.params.id);
+        
+        if (!result) {
+            req.flash('error', 'Reservation not found');
+        } else {
+            req.flash('success', 'Reservation deleted successfully');
+        }
+        
+        res.redirect('/admin/excursion-reservations');
+    } catch (error) {
+        console.error('Error deleting reservation:', error);
+        req.flash('error', 'Failed to delete reservation');
+        res.redirect(`/admin/excursion-reservations/${req.params.id}`);
     }
 });
 

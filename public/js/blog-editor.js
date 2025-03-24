@@ -20,10 +20,42 @@ document.addEventListener('DOMContentLoaded', function() {
         theme: 'snow'
     });
 
+    // Add HTML/Preview toggle button
+    const editorContainer = document.querySelector('#quill-editor').parentElement;
+    const toggleButton = document.createElement('button');
+    toggleButton.type = 'button';
+    toggleButton.className = 'px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded border mt-2';
+    toggleButton.textContent = 'Toggle HTML/Preview';
+    toggleButton.addEventListener('click', function() {
+        const editorContent = quill.root.innerHTML;
+        const isInHTMLMode = quill.root.getAttribute('data-mode') === 'html';
+        
+        if (isInHTMLMode) {
+            // Switch to preview mode
+            quill.root.innerHTML = quill.root.textContent;
+            quill.root.setAttribute('data-mode', 'preview');
+            toggleButton.textContent = 'Show HTML';
+        } else {
+            // Switch to HTML mode
+            quill.root.textContent = editorContent;
+            quill.root.setAttribute('data-mode', 'html');
+            toggleButton.textContent = 'Show Preview';
+        }
+    });
+    editorContainer.insertBefore(toggleButton, document.getElementById('hiddenContent'));
+
     // Set existing content from hidden textarea if it exists
     const contentInput = document.getElementById('hiddenContent');
     if (contentInput && contentInput.value) {
-        quill.root.innerHTML = contentInput.value;
+        // Use setContents to properly parse and render HTML
+        quill.clipboard.dangerouslyPasteHTML(contentInput.value);
+    } else {
+        // Check if there's a hidden textarea inside the editor (from server-side template)
+        const hiddenArea = quill.root.querySelector('textarea.hidden');
+        if (hiddenArea) {
+            quill.clipboard.dangerouslyPasteHTML(hiddenArea.value);
+            hiddenArea.remove();
+        }
     }
 
     // Image upload handler for Quill
@@ -345,7 +377,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: formData
                 });
                 
-                const data = await response.json();
+                let data;
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    data = await response.json();
+                } else {
+                    // If the response is not JSON, show a more useful error
+                    throw new Error('Server returned a non-JSON response. The server might be experiencing issues.');
+                }
                 
                 if (data.success) {
                     // Show success message
@@ -360,7 +399,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             } catch (error) {
                 console.error('Error submitting form:', error);
-                alert('An error occurred while saving the blog post. Please try again.');
+                
+                // Show a more user-friendly error message
+                alert('There was a problem saving the blog post. Please try again or contact support if the issue persists.');
+                
+                // Re-enable the submit button
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
             }
@@ -397,7 +440,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         body: formData
                     });
                     
-                    const data = await response.json();
+                    let data;
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        data = await response.json();
+                    } else {
+                        throw new Error('Server returned a non-JSON response');
+                    }
                     
                     if (data.success) {
                         autoSaveStatus.querySelector('#autosaveMessage').textContent = 'Draft saved';
@@ -409,7 +458,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // If this is a new blog, update the form action to edit URL
                         if (blogForm.action.includes('/blogs/new') && data.blog && data.blog._id) {
-                            blogForm.action = `/admin/blogs/edit/${data.blog._id}`;
+                            blogForm.action = `/admin/blogs/${data.blog._id}/edit`;
                         }
                     } else {
                         autoSaveStatus.querySelector('#autosaveMessage').textContent = 'Error saving draft';

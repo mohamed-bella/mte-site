@@ -204,7 +204,7 @@ router.get('/tours', async (req, res) => {
             if (startingCity && startingCity.tours && startingCity.tours.length > 0) {
                 // If we found a starting city with this name and it has tours, filter by those tour IDs
                 query._id = { $in: startingCity.tours };
-            } else {
+               } else {
                 // Fallback: Try to match by startLocation field as before
                 query.startLocation = { $regex: city, $options: 'i' };
             }
@@ -275,8 +275,8 @@ router.get('/tours/:slug', async (req, res, next) => {
             _id: { $ne: tour._id },
             startLocation: tour.startLocation 
         }).limit(3);
-        
-        res.render('pages/tour-details', {
+
+          res.render('pages/tour-details', {
                title: tour.title,
                tour,
                relatedTours,
@@ -459,7 +459,7 @@ router.post('/visitor-notification', async (req, res) => {
     } catch (error) {
         console.error('Error sending visitor notification:', error);
         return res.status(500).json({ success: false });
-    }
+  }
 });
 
 module.exports = router;

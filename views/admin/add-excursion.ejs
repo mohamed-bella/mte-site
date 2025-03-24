@@ -1,0 +1,586 @@
+<%- include('../partials/admin-header') %>
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Add New Excursion</h1>
+        <a href="/admin/excursions" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50 mr-1"></i> Back to Excursions
+        </a>
+    </div>
+
+    <!-- Alert Container -->
+    <div id="alertContainer"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="d-none">
+        <div class="spinner-border text-primary mb-3" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <h5>Creating excursion...</h5>
+    </div>
+
+    <!-- Excursion Form -->
+    <form id="excursionForm" enctype="multipart/form-data" class="needs-validation" novalidate>        
+        <div class="row">
+            <!-- Basic Information Section -->
+            <div class="col-lg-8">
+                <div class="form-section mb-4">
+                    <h5 class="section-title"><i class="fas fa-info-circle mr-2"></i>Basic Information</h5>
+                    
+                    <div class="form-group">
+                        <label for="title">Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                        <div class="invalid-feedback">
+                            Title is required
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="metaDescription">Meta Description <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="metaDescription" name="metaDescription" rows="2" required></textarea>
+                        <div class="invalid-feedback">
+                            Meta description is required
+                        </div>
+                        <small class="text-muted">Short description for search engines (150-160 characters)</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="metaKeywords">Meta Keywords</label>
+                        <input type="text" class="form-control" id="metaKeywords" name="metaKeywords">
+                        <small class="text-muted">Comma-separated keywords for search engines</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Description <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
+                        <div class="invalid-feedback">
+                            Description is required
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="location">Location <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="location" name="location" required>
+                            <div class="invalid-feedback">
+                                Location is required
+                            </div>
+                        </div>
+                        
+                        <div class="form-group col-md-6">
+                            <label for="duration">Duration <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="duration" name="duration" required>
+                            <div class="invalid-feedback">
+                                Duration is required
+                            </div>
+                            <small class="text-muted">e.g., "2 hours", "Full day", "3 days"</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pricing Section -->
+                <div class="form-section mb-4">
+                    <h5 class="section-title"><i class="fas fa-tag mr-2"></i>Pricing</h5>
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="regularPrice">Regular Price <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">€</span>
+                                </div>
+                                <input type="number" class="form-control" id="regularPrice" name="regularPrice" min="0" step="0.01" required>
+                                <div class="invalid-feedback">
+                                    Regular price is required
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group col-md-6">
+                            <label for="discountPrice">Discount Price</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">€</span>
+                                </div>
+                                <input type="number" class="form-control" id="discountPrice" name="discountPrice" min="0" step="0.01">
+                            </div>
+                            <small class="text-muted">Leave empty if no discount</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Activities Section -->
+                <div class="form-section mb-4">
+                    <h5 class="section-title"><i class="fas fa-hiking mr-2"></i>Activities</h5>
+                    
+                    <div id="activitiesContainer">
+                        <div class="input-group mb-2">
+                            <input type="text" class="form-control" name="activities[]" required>
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-danger remove-item">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="addActivity" class="btn btn-sm btn-primary">
+                        <i class="fas fa-plus mr-1"></i> Add Activity
+                    </button>
+                </div>
+                
+                <!-- Inclusions Section -->
+                <div class="form-section mb-4">
+                    <h5 class="section-title"><i class="fas fa-check-circle mr-2"></i>Inclusions</h5>
+                    
+                    <div id="inclusionsContainer">
+                        <div class="input-group mb-2">
+                            <input type="text" class="form-control" name="inclusions[]" required>
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-danger remove-item">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="addInclusion" class="btn btn-sm btn-primary">
+                        <i class="fas fa-plus mr-1"></i> Add Inclusion
+                    </button>
+                </div>
+                
+                <!-- Exclusions Section -->
+                <div class="form-section mb-4">
+                    <h5 class="section-title"><i class="fas fa-times-circle mr-2"></i>Exclusions</h5>
+                    
+                    <div id="exclusionsContainer">
+                        <div class="input-group mb-2">
+                            <input type="text" class="form-control" name="exclusions[]" required>
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-danger remove-item">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="addExclusion" class="btn btn-sm btn-primary">
+                        <i class="fas fa-plus mr-1"></i> Add Exclusion
+                    </button>
+                </div>
+                
+                <!-- Preparation Tips Section -->
+                <div class="form-section mb-4">
+                    <h5 class="section-title"><i class="fas fa-lightbulb mr-2"></i>Preparation Tips</h5>
+                    
+                    <div id="preparationTipsContainer">
+                        <div class="input-group mb-2">
+                            <input type="text" class="form-control" name="preparationTips[]">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-danger remove-item">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="addPreparationTip" class="btn btn-sm btn-primary">
+                        <i class="fas fa-plus mr-1"></i> Add Preparation Tip
+                    </button>
+                    <small class="text-muted d-block mt-1">(Optional) Tips for guests to prepare for the excursion</small>
+                </div>
+            </div>
+            
+            <!-- Images Section -->
+            <div class="col-lg-4">
+                <!-- Main Image Section -->
+                <div class="form-section mb-4">
+                    <h5 class="section-title"><i class="fas fa-image mr-2"></i>Main Image</h5>
+                    
+                    <div class="text-center">
+                        <div class="main-image-container border">
+                            <img id="mainImagePreview" src="/images/placeholder.jpg" alt="Main excursion image" class="main-img">
+                        </div>
+                        
+                        <div class="custom-file mt-3">
+                            <input type="file" class="custom-file-input" id="mainImage" name="mainImage" accept="image/*" required>
+                            <label class="custom-file-label" for="mainImage">Choose main image...</label>
+                            <div class="invalid-feedback">
+                                Main image is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Additional Images Section -->
+                <div class="form-section mb-4">
+                    <h5 class="section-title"><i class="fas fa-images mr-2"></i>Additional Images</h5>
+                    
+                    <div class="custom-file mb-3">
+                        <input type="file" class="custom-file-input" id="images" name="images" accept="image/*" multiple>
+                        <label class="custom-file-label" for="images">Choose additional images...</label>
+                    </div>
+                    <small class="text-muted d-block mb-3">You can select multiple files (up to 10)</small>
+                    
+                    <div class="row" id="additionalImagesPreview"></div>
+                </div>
+                
+                <!-- Featured Status -->
+                <div class="form-section mb-4">
+                    <h5 class="section-title"><i class="fas fa-star mr-2"></i>Featured Status</h5>
+                    
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="featured" name="featured">
+                        <label class="custom-control-label" for="featured">Display as featured on homepage</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="form-actions text-center">
+            <button type="submit" id="submitButton" class="btn btn-primary btn-lg px-5">
+                <i class="fas fa-save mr-2"></i> Create Excursion
+            </button>
+            <a href="/admin/excursions" class="btn btn-secondary btn-lg ml-3">
+                <i class="fas fa-times mr-2"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+<!-- jqurey -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+        // i want to send ajax request to the server to check if the title is already taken
+    $(document).ready(function() {
+        console.log('Document ready, initializing excursion form handlers');
+        
+    // Initialize Bootstrap Custom File Input
+    bsCustomFileInput.init();
+    
+    // ====== Dynamic List Management ======
+    
+    // Add Activity
+    $("#addActivity").click(function() {
+        console.log('Adding new activity field');
+        addListItem("#activitiesContainer", "activities[]");
+    });
+    
+    // Add Inclusion
+    $("#addInclusion").click(function() {
+        console.log('Adding new inclusion field');
+        addListItem("#inclusionsContainer", "inclusions[]");
+    });
+    
+    // Add Exclusion
+    $("#addExclusion").click(function() {
+        console.log('Adding new exclusion field');
+        addListItem("#exclusionsContainer", "exclusions[]");
+    });
+    
+    // Add Preparation Tip
+    $("#addPreparationTip").click(function() {
+        console.log('Adding new preparation tip field');
+        addListItem("#preparationTipsContainer", "preparationTips[]");
+    });
+    
+    // Remove list item (generic handler for all remove buttons)
+    $(document).on("click", ".remove-item", function() {
+        const container = $(this).closest(".input-group").parent();
+        if ($(container).find(".input-group").length > 1) {
+            $(this).closest(".input-group").remove();
+        } else {
+            showAlert("warning", "At least one item is required");
+        }
+    });
+    
+    // Helper function to add a new list item
+    function addListItem(container, inputName) {
+        const template = `
+            <div class="input-group mb-2">
+                <input type="text" class="form-control" name="${inputName}" ${inputName !== "preparationTips[]" ? "required" : ""}>
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-outline-danger remove-item">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        $(container).append(template);
+    }
+    
+    // ====== Image Handling ======
+    
+    // Handle main image preview
+    $("#mainImage").change(function() {
+        console.log('Main image changed, updating preview');
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                $("#mainImagePreview").attr("src", e.target.result);
+            };
+            
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+    
+    // Handle additional images preview
+    $("#images").change(function() {
+        console.log('Additional images changed, updating previews');
+        const files = this.files;
+        const previewContainer = $("#additionalImagesPreview");
+        previewContainer.empty();
+        
+        if (files && files.length > 0) {
+            console.log(`Processing ${files.length} additional images`);
+            for (let i = 0; i < Math.min(files.length, 10); i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const template = `
+                        <div class="col-lg-6 col-md-4 col-sm-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header py-2 text-center">
+                                    <span class="badge badge-info">Image ${i + 1}</span>
+                                </div>
+                                <div class="card-body p-2">
+                                    <img src="${e.target.result}" alt="Additional image" class="img-fluid rounded mb-2 additional-img">
+                                    <input type="text" class="form-control form-control-sm" name="imageDescription[]" placeholder="Image description (optional)">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    previewContainer.append(template);
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        }
+    });
+    
+    // ====== Form Submission with AJAX ======
+    
+    // Form validation and submission
+    $("#excursionForm").on("submit", function(e) {
+        console.log('Form submitted, handling AJAX submission');
+        e.preventDefault();
+        
+        // Check if form is valid
+        if (!validateForm()) {
+            console.error('Form validation failed');
+            return false;
+        }
+        
+        // Show loading overlay
+        $("#loadingOverlay").removeClass("d-none");
+        $("#submitButton").prop("disabled", true);
+        
+        // Create FormData object
+        const formData = new FormData(this);
+        
+        // Log form data (for debugging)
+        console.log('Form data being submitted:');
+        for (let pair of formData.entries()) {
+            if (pair[0] !== 'mainImage' && pair[0] !== 'images') {
+                console.log(pair[0] + ': ' + pair[1]);
+            } else {
+                console.log(pair[0] + ': [File data]');
+            }
+        }
+        
+        // Send AJAX request
+        $.ajax({
+            url: "/admin/excursions/add",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('AJAX request successful:', response);
+                if (response.success) {
+                    showAlert("success", response.message || "Excursion created successfully");
+                    
+                    // Redirect after 2 seconds
+                    setTimeout(function() {
+                        window.location.href = "/admin/excursions";
+                    }, 2000);
+                } else {
+                    showAlert("danger", response.message || "Failed to create excursion");
+                    $("#loadingOverlay").addClass("d-none");
+                    $("#submitButton").prop("disabled", false);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX request failed:', {status, error, response: xhr.responseText});
+                
+                let errorMessage = "An error occurred while creating the excursion";
+                
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                
+                showAlert("danger", errorMessage);
+                $("#loadingOverlay").addClass("d-none");
+                $("#submitButton").prop("disabled", false);
+            }
+        });
+        
+        return false;
+    });
+    
+    // Validate form
+    function validateForm() {
+        let isValid = true;
+        
+        // Reset validation
+        $(".is-invalid").removeClass("is-invalid");
+        
+        // Check required fields
+        $("#excursionForm input[required], #excursionForm textarea[required], #excursionForm select[required]").each(function() {
+            if (!$(this).val().trim()) {
+                $(this).addClass("is-invalid");
+                isValid = false;
+                console.log('Required field empty:', $(this).attr('name'));
+            }
+        });
+        
+        // Check arrays (activities, inclusions, exclusions)
+        const requiredArrays = ["activities", "inclusions", "exclusions"];
+        
+        requiredArrays.forEach(function(arrayName) {
+            const inputs = $(`input[name="${arrayName}[]"]`);
+            let hasValue = false;
+            
+            inputs.each(function() {
+                if ($(this).val().trim()) {
+                    hasValue = true;
+                    return false; // break loop
+                }
+            });
+            
+            if (!hasValue) {
+                $(`input[name="${arrayName}[]"]`).first().addClass("is-invalid");
+                isValid = false;
+                console.log(`${arrayName} array validation failed - no items`);
+                showAlert("warning", `At least one ${arrayName} item is required`);
+            }
+        });
+        
+        if (!isValid) {
+            showAlert("danger", "Please fix the validation errors");
+        }
+        
+        return isValid;
+    }
+    
+    // Show alert message
+    function showAlert(type, message) {
+        console.log(`Showing ${type} alert: ${message}`);
+        const alertHtml = `
+            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        `;
+        
+        $("#alertContainer").html(alertHtml);
+        
+        // Auto-dismiss after 5 seconds
+        setTimeout(function() {
+            $(".alert").alert("close");
+        }, 5000);
+    }
+});
+</script>
+
+<style>
+/* Form Section Styling */
+.form-section {
+    background-color: #f8f9fc;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #e3e6f0;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.form-section:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+    border-bottom: 1px solid #e3e6f0;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    color: #4e73df;
+    font-weight: 600;
+}
+
+/* Image Styling */
+.main-image-container {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #f8f9fc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.main-img {
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.additional-img {
+    height: 120px;
+    width: 100%;
+    object-fit: cover;
+}
+
+/* Loading Overlay */
+#loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Form Actions */
+.form-actions {
+    padding: 20px;
+    margin-top: 30px;
+    border-top: 1px solid #e3e6f0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .form-section {
+        padding: 15px;
+    }
+    
+    .main-image-container {
+        height: 150px;
+    }
+    
+    .additional-img {
+        height: 100px;
+    }
+}
+</style>
+
+<%- include('../partials/admin-footer') %> 

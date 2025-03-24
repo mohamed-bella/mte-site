@@ -1,0 +1,376 @@
+<%- include('../../partials/admin/header') %>
+<!-- Quill Editor CSS -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+<div class="min-h-screen bg-gray-100">
+    <!-- Sidebar Navigation -->
+    <%- include('../../partials/admin/sidebar') %>
+
+    <!-- Main Content -->
+    <div class="md:pl-64 flex flex-col flex-1">
+        <!-- Top Navigation -->
+        <div class="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-gray-100">
+            <button type="button" class="h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500" id="mobileSidebarToggle">
+                <span class="sr-only">Open sidebar</span>
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+
+        <main class="flex-1">
+            <div class="py-6">
+                <!-- Page Header -->
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                    <div class="flex items-center justify-between">
+                        <h1 class="text-2xl font-semibold text-gray-900"><%= excursion ? 'Edit' : 'Add New' %> Excursion</h1>
+                        <div>
+                            <a href="/admin/excursions" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                <svg class="mr-2 -ml-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                </svg>
+                                Back to Excursions
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Content -->
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mt-4">
+                    <!-- Flash Messages -->
+                    <% if (locals.success_msg) { %>
+                        <div class="mb-4 bg-green-50 border-l-4 border-green-400 p-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-green-700"><%= success_msg %></p>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <% if (locals.error_msg) { %>
+                        <div class="mb-4 bg-red-50 border-l-4 border-red-400 p-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-red-700"><%= error_msg %></p>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <!-- Simple Clean Form Card -->
+                    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                        <form method="POST" action="<%= excursion ? `/admin/excursions/${excursion._id}/edit` : '/admin/excursions/new' %>" enctype="multipart/form-data">
+                            
+                            <!-- Basic Information Section -->
+                            <div class="p-6 border-b border-gray-200">
+                                <h2 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h2>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <!-- Title -->
+                                    <div>
+                                        <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Title <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="title" name="title" 
+                                            value="<%= excursion ? excursion.title : '' %>" required
+                                            class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                                    </div>
+                                    
+                                    <!-- Location -->
+                                    <div>
+                                        <label for="location" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Location <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="location" name="location" 
+                                            value="<%= excursion ? excursion.location : '' %>" required
+                                            class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                                    </div>
+                                    
+                                    <!-- Duration -->
+                                    <div>
+                                        <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Duration <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="duration" name="duration" 
+                                            value="<%= excursion ? excursion.duration : '' %>" required
+                                            class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                                        <p class="mt-1 text-sm text-gray-500">E.g. "Half Day", "Full Day", "2 Hours"</p>
+                                    </div>
+                                    
+                                    <!-- Featured Checkbox -->
+                                    <div class="flex items-start pt-5">
+                                        <div class="flex items-center h-5">
+                                            <input type="checkbox" id="featured" name="featured" 
+                                                <%= excursion && excursion.featured ? 'checked' : '' %>
+                                                class="h-4 w-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
+                                        </div>
+                                        <div class="ml-3 text-sm">
+                                            <label for="featured" class="font-medium text-gray-700">Featured Excursion</label>
+                                            <p class="text-gray-500">Show this excursion in featured sections</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Additional Fields -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                        <!-- Meeting Point -->
+                                        <div>
+                                            <label for="meetingPoint" class="block text-sm font-medium text-gray-700 mb-1">
+                                                Meeting Point
+                                            </label>
+                                            <input type="text" id="meetingPoint" name="meetingPoint" 
+                                                value="<%= excursion && excursion.meetingPoint ? excursion.meetingPoint : '' %>"
+                                                class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                                        </div>
+                                        
+                                        <!-- Recommendation Level -->
+                                        <div>
+                                            <label for="recommendationLevel" class="block text-sm font-medium text-gray-700 mb-1">
+                                                Recommendation Level
+                                            </label>
+                                            <select id="recommendationLevel" name="recommendationLevel"
+                                                class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                                                <option value="1" <%= excursion && excursion.recommendationLevel === 1 ? 'selected' : '' %>>1 - Basic</option>
+                                                <option value="2" <%= excursion && excursion.recommendationLevel === 2 ? 'selected' : '' %>>2 - Good</option>
+                                                <option value="3" <%= excursion && excursion.recommendationLevel === 3 ? 'selected' : '' %>>3 - Very Good</option>
+                                                <option value="4" <%= excursion && excursion.recommendationLevel === 4 ? 'selected' : '' %>>4 - Excellent</option>
+                                                <option value="5" <%= excursion && excursion.recommendationLevel === 5 ? 'selected' : '' %>>5 - Must Do</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <!-- Group Size Min -->
+                                        <div>
+                                            <label for="minGroupSize" class="block text-sm font-medium text-gray-700 mb-1">
+                                                Min Group Size
+                                            </label>
+                                            <input type="number" id="minGroupSize" name="minGroupSize" 
+                                                value="<%= excursion && excursion.minGroupSize ? excursion.minGroupSize : '1' %>" min="1"
+                                                class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                                        </div>
+                                        
+                                        <!-- Group Size Max -->
+                                        <div>
+                                            <label for="maxGroupSize" class="block text-sm font-medium text-gray-700 mb-1">
+                                                Max Group Size
+                                            </label>
+                                            <input type="number" id="maxGroupSize" name="maxGroupSize" 
+                                                value="<%= excursion && excursion.maxGroupSize ? excursion.maxGroupSize : '' %>" min="1"
+                                                class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Pricing -->
+                                <div class="mt-6">
+                                    <h3 class="text-sm font-medium text-gray-700 mb-3">Pricing</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label for="regularPrice" class="block text-sm font-medium text-gray-700 mb-1">
+                                                Regular Price <span class="text-red-500">*</span>
+                                            </label>
+                                            <div class="mt-1 relative rounded-md shadow-sm">
+                                                <input type="number" id="regularPrice" name="regularPrice" 
+                                                    value="<%= excursion ? excursion.regularPrice : '' %>" min="0" step="0.01" required
+                                                    class="block w-full border border-gray-300 rounded-md pl-3 pr-12 py-2 focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                    <span class="text-gray-500 sm:text-sm">MAD</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <label for="discountPrice" class="block text-sm font-medium text-gray-700 mb-1">
+                                                Discount Price
+                                            </label>
+                                            <div class="mt-1 relative rounded-md shadow-sm">
+                                                <input type="number" id="discountPrice" name="discountPrice" 
+                                                    value="<%= excursion && excursion.discountPrice ? excursion.discountPrice : '' %>" min="0" step="0.01"
+                                                    class="block w-full border border-gray-300 rounded-md pl-3 pr-12 py-2 focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                    <span class="text-gray-500 sm:text-sm">MAD</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Additional Fees -->
+                                    <div class="col-span-1 md:col-span-2 mt-4">
+                                        <label for="additionalFees" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Additional Fees Information
+                                        </label>
+                                        <input type="text" id="additionalFees" name="additionalFees" 
+                                            value="<%= excursion && excursion.additionalFees ? excursion.additionalFees : '' %>"
+                                            class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500" 
+                                            placeholder="E.g., Entrance fees not included, children under 5 free">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Description Section -->
+                            <div class="p-6 border-b border-gray-200">
+                                <h2 class="text-lg font-medium text-gray-900 mb-4">Description</h2>
+                                <div>
+                                    <div id="description-editor" class="h-48 border border-gray-300 rounded-md mb-2"><%- excursion ? excursion.description : '' %></div>
+                                    <input type="hidden" id="description" name="description" value="<%= excursion ? excursion.description : '' %>">
+                                </div>
+                            </div>
+                            
+                            <!-- Itinerary Section -->
+                            <div class="p-6 border-b border-gray-200">
+                                <h2 class="text-lg font-medium text-gray-900 mb-4">Itinerary</h2>
+                                <div>
+                                    <div id="itinerary-editor" class="h-48 border border-gray-300 rounded-md mb-2"><%- excursion ? excursion.itinerary : '' %></div>
+                                    <input type="hidden" id="itinerary" name="itinerary" value="<%= excursion ? excursion.itinerary : '' %>">
+                                </div>
+                            </div>
+                            
+                            <!-- Additional Information Section -->
+                            <div class="p-6 border-b border-gray-200">
+                                <h2 class="text-lg font-medium text-gray-900 mb-4">Additional Information</h2>
+                                <div>
+                                    <div id="additionalInfo-editor" class="h-48 border border-gray-300 rounded-md mb-2"><%- excursion ? excursion.additionalInfo : '' %></div>
+                                    <input type="hidden" id="additionalInfo" name="additionalInfo" value="<%= excursion ? excursion.additionalInfo : '' %>">
+                                </div>
+                            </div>
+                            
+                            <!-- Images Section -->
+                            <div class="p-6 border-b border-gray-200">
+                                <h2 class="text-lg font-medium text-gray-900 mb-4">Images</h2>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <!-- Main Image -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Main Image</label>
+                                        <% if (excursion && excursion.mainImage && excursion.mainImage !== '/images/default-excursion.jpg') { %>
+                                            <div class="mb-3">
+                                                <img src="<%= excursion.mainImage %>" class="w-full h-48 object-cover rounded-md" alt="Main Image">
+                                            </div>
+                                        <% } %>
+                                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                            <div class="space-y-1 text-center">
+                                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                                <div class="flex text-sm text-gray-600">
+                                                    <label for="mainImage" class="relative cursor-pointer bg-white rounded-md font-medium text-orange-600 hover:text-orange-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-orange-500">
+                                                        <span>Upload a file</span>
+                                                        <input id="mainImage" name="mainImage" type="file" class="sr-only" accept="image/*">
+                                                    </label>
+                                                    <p class="pl-1">or drag and drop</p>
+                                                </div>
+                                                <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Additional Images -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Additional Images</label>
+                                        <% if (excursion && excursion.images && excursion.images.length > 0) { %>
+                                            <div class="grid grid-cols-3 gap-2 mb-3">
+                                                <% excursion.images.forEach((image, index) => { %>
+                                                    <div class="relative">
+                                                        <img src="<%= image.path %>" class="w-full h-20 object-cover rounded-md" alt="Gallery Image">
+                                                        <button type="button" class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-100 text-red-600 rounded-full p-1 hover:bg-red-200 focus:outline-none" title="Remove image">
+                                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                <% }) %>
+                                            </div>
+                                        <% } %>
+                                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                            <div class="space-y-1 text-center">
+                                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                                <div class="flex text-sm text-gray-600">
+                                                    <label for="images" class="relative cursor-pointer bg-white rounded-md font-medium text-orange-600 hover:text-orange-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-orange-500">
+                                                        <span>Upload files</span>
+                                                        <input id="images" name="images" type="file" class="sr-only" multiple accept="image/*">
+                                                    </label>
+                                                    <p class="pl-1">or drag and drop</p>
+                                                </div>
+                                                <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Footer with Submit Button -->
+                            <div class="px-6 py-4 bg-gray-50 text-right sm:px-6">
+                                <button type="submit" class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                                    <%= excursion ? 'Update' : 'Create' %> Excursion
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Mobile Sidebar Toggle Script -->
+<script>
+    document.getElementById('mobileSidebarToggle').addEventListener('click', function () {
+        document.querySelector('.md\\:pl-64').classList.toggle('sidebar-open');
+    });
+</script>
+
+<!-- QuillJS Editor Script -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Quill editors
+        const editorOptions = {
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    ['link'],
+                    ['clean']
+                ]
+            },
+            placeholder: 'Write content here...',
+            theme: 'snow'
+        };
+        
+        // Description Editor
+        const descriptionEditor = new Quill('#description-editor', editorOptions);
+        const descriptionInput = document.getElementById('description');
+        
+        // Itinerary Editor
+        const itineraryEditor = new Quill('#itinerary-editor', editorOptions);
+        const itineraryInput = document.getElementById('itinerary');
+        
+        // Additional Info Editor
+        const additionalInfoEditor = new Quill('#additionalInfo-editor', editorOptions);
+        const additionalInfoInput = document.getElementById('additionalInfo');
+        
+        // Get form and add submit event listener
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function() {
+            // Update hidden inputs with editor contents
+            descriptionInput.value = descriptionEditor.root.innerHTML;
+            itineraryInput.value = itineraryEditor.root.innerHTML;
+            additionalInfoInput.value = additionalInfoEditor.root.innerHTML;
+        });
+    });
+</script>
+
+<%- include('../../partials/admin/footer') %> 

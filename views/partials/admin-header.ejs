@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Morocco Travel Experts</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom admin styles -->
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+    <!-- Admin Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/admin/dashboard">Morocco Travel Experts - Admin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar" aria-controls="adminNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="adminNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/tours"><i class="fas fa-route"></i> Tours</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/excursions"><i class="fas fa-hiking"></i> Excursions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/cities"><i class="fas fa-city"></i> Cities</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/bookings"><i class="fas fa-clipboard-list"></i> Bookings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/excursion-reservations"><i class="fas fa-calendar-check"></i> Excursion Reservations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/settings"><i class="fas fa-cog"></i> Settings</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/" target="_blank"><i class="fas fa-eye"></i> View Site</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar and main content wrapper -->
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="bg-light border-right" id="sidebar-wrapper">
+            <div class="list-group list-group-flush">
+                <a href="/admin/dashboard" class="list-group-item list-group-item-action bg-light"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="/admin/tours" class="list-group-item list-group-item-action bg-light"><i class="fas fa-route"></i> Tours</a>
+                <a href="/admin/excursions" class="list-group-item list-group-item-action bg-light"><i class="fas fa-hiking"></i> Excursions</a>
+                <a href="/admin/cities" class="list-group-item list-group-item-action bg-light"><i class="fas fa-city"></i> Cities</a>
+                <a href="/admin/bookings" class="list-group-item list-group-item-action bg-light"><i class="fas fa-clipboard-list"></i> Bookings</a>
+                <a href="/admin/excursion-reservations" class="list-group-item list-group-item-action bg-light"><i class="fas fa-calendar-check"></i> Excursion Reservations</a>
+                <a href="/admin/settings" class="list-group-item list-group-item-action bg-light"><i class="fas fa-cog"></i> Settings</a>
+            </div>
+        </div>
+        
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid mt-4"> 
