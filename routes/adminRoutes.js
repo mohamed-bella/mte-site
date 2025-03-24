@@ -388,7 +388,6 @@ router.post('/tours/:id/toggle-featured', async (req, res) => {
 router.get('/bookings', async (req, res) => {
      try {
           const bookings = await Booking.find()
-               .populate('tour', 'title')
                .sort({ createdAt: -1 });
 
           res.render('admin/bookings', {
@@ -403,8 +402,7 @@ router.get('/bookings', async (req, res) => {
 
 router.get('/bookings/:id', async (req, res) => {
      try {
-          const booking = await Booking.findById(req.params.id)
-               .populate('tour');
+          const booking = await Booking.findById(req.params.id);
 
           if (!booking) {
                req.flash('error', 'Booking not found');
@@ -416,6 +414,7 @@ router.get('/bookings/:id', async (req, res) => {
                booking
           });
      } catch (error) {
+          console.error('Error loading booking details:', error);
           req.flash('error', 'Error loading booking details');
           res.redirect('/admin/bookings');
      }
@@ -438,7 +437,7 @@ router.post('/bookings/:id/status', async (req, res) => {
                // Send email notification based on status change
                if (status === 'confirmed') {
                     // TODO: Send confirmation email to customer
-               } else if (status === 'cancelled') {
+               } else if (status === 'canceled') {
                     // TODO: Send cancellation email to customer
                }
           }

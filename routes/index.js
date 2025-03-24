@@ -41,6 +41,50 @@ router.get('/about', homeController.getAboutPage);
 router.get('/contact', homeController.getContactPage);
 router.post('/contact', homeController.submitContactForm);
 
+// Destination routes
+router.get('/destinations/marrakech', async (req, res) => {
+    try {
+        // Fetch data needed for the page: tours that start in Marrakech and city info
+        const [marrakechCity, toursFromMarrakech, settings] = await Promise.all([
+            StartingCity.findOne({ city: 'Marrakech' }),
+            Tour.find({ startLocation: { $regex: 'Marrakech', $options: 'i' } }).limit(6).sort({ createdAt: -1 }),
+            Setting.findOne()
+        ]);
+
+        if (!marrakechCity) {
+            // If Marrakech isn't found in the database, provide default info
+            return res.render('pages/destination-city', {
+                title: 'Marrakech - Morocco Travel Experts',
+                metaDescription: 'Explore Marrakech, the vibrant Red City of Morocco. Book guided tours, discover local experiences, and plan your perfect Moroccan adventure.',
+                currentUrl: '/destinations/marrakech',
+                city: {
+                    city: 'Marrakech',
+                    description: 'Marrakech, known as the "Red City," is a major city in Morocco famous for its vibrant souks, gardens, and historic medina. Experience the bustling Jemaa el-Fnaa square, visit the serene Majorelle Garden, and explore the historic Bahia Palace.',
+                    image: 'https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/marrakech-main.webp'
+                },
+                tours: toursFromMarrakech,
+                settings
+            });
+        }
+
+        // Render page with found city data
+        res.render('pages/destination-city', {
+            title: `${marrakechCity.city} - Morocco Travel Experts`,
+            metaDescription: `Explore ${marrakechCity.city}, ${marrakechCity.description.substring(0, 100)}... Book your perfect Moroccan adventure today.`,
+            currentUrl: '/destinations/marrakech',
+            city: marrakechCity,
+            tours: toursFromMarrakech,
+            settings
+        });
+    } catch (error) {
+        console.error('Error loading Marrakech destination page:', error);
+        res.status(500).render('error', {
+            title: 'Error',
+            message: 'Error loading destination information. Please try again later.'
+        });
+    }
+});
+
 // Blog routes
 router.get('/blog', async (req, res) => {
     try {

@@ -74,6 +74,12 @@ const bookingSchema = new mongoose.Schema({
         }
     },
     
+    // AI-generated itinerary (stored as JSON string)
+    aiItinerary: {
+        type: String,
+        trim: true
+    },
+    
     // For tracking and analysis
     createdAt: {
         type: Date,

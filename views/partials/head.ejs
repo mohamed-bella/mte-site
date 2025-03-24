@@ -120,6 +120,9 @@
      <!-- Swiper.js for carousels -->
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/10.0.4/swiper-bundle.min.css">
 
+     <!-- Flag Icons for language selector -->
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css">
+
      <!-- AOS for scroll animations -->
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
 
@@ -127,280 +130,286 @@
      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap">
      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 
-     <!-- Google Translate Element -->
-     <script type="text/javascript">
-          function googleTranslateElementInit() {
-               new google.translate.TranslateElement({
-                    pageLanguage: 'en',
-                    includedLanguages: 'en,fr,es,it,ar,ja,zh,pl',
-                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                    autoDisplay: false,
-                    multilanguagePage: true,
-                    gaTrack: false,
-                    gaId: ''
-               }, 'google_translate_element');
-
-               // Add toggle button for Google Translate navbar
-               const header = document.querySelector('header');
-               const toggleButton = document.createElement('button');
-               toggleButton.id = 'translate-toggle';
-               toggleButton.className = 'fixed top-4 right-4 z-50 bg-orange-500 hover:bg-orange-600 text-white rounded-full p-2 shadow-lg transition-all duration-300 transform hover:scale-105';
-               toggleButton.innerHTML = '<i class="fas fa-language text-lg"></i>';
-               toggleButton.style.display = 'none'; // Initially hidden
-               document.body.appendChild(toggleButton);
-
-               // Handle toggle button click
-               toggleButton.addEventListener('click', () => {
-                    const frame = document.querySelector('.goog-te-banner-frame');
-                    if (frame) {
-                         if (frame.style.display === 'none') {
-                              frame.style.display = 'block';
-                              toggleButton.classList.add('active');
-                         } else {
-                              frame.style.display = 'none';
-                              toggleButton.classList.remove('active');
-                         }
-                    }
-               });
-
-               // Function to close the language modal
-               function closeLanguageModal() {
-                    // Find all elements with x-data that might contain languageModal
-                    document.querySelectorAll('[x-data]').forEach(el => {
-                         if (el.__x) {
-                              // Try to set languageModal to false
-                              try {
-                                   el.__x.$data.languageModal = false;
-                              } catch (e) {
-                                   // Ignore if the element doesn't have languageModal
-                              }
-                         }
-                    });
-
-                    // Also try to find and click any close button in the modal
-                    const closeButton = document.querySelector('[x-show="languageModal"] button[type="button"]');
-                    if (closeButton) {
-                         closeButton.click();
-                    }
-               }
-
-               // Show toggle button when translation is active
-               const observer = new MutationObserver((mutations) => {
-                    mutations.forEach(mutation => {
-                         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                              // Check for Google Translate elements
-                              const frame = document.querySelector('.goog-te-banner-frame');
-                              if (frame) {
-                                   frame.style.display = 'none';
-                                   toggleButton.style.display = 'block';
-                              }
-
-                              // Add globe icon and enhance dropdown
-                              const menuValue = document.querySelector('.goog-te-menu-value');
-                              if (menuValue && !menuValue.querySelector('.fa-globe')) {
-                                   const globeIcon = document.createElement('i');
-                                   globeIcon.className = 'fas fa-globe text-[#3e3065] mr-2';
-                                   menuValue.insertBefore(globeIcon, menuValue.firstChild);
-
-                                   // Add custom dropdown arrow
-                                   const arrowIcon = document.createElement('i');
-                                   arrowIcon.className = 'fas fa-chevron-down text-[#3e3065] ml-2 transition-transform duration-300';
-                                   menuValue.appendChild(arrowIcon);
-                              }
-
-                              // Clean up any extra elements
-                              const gadget = document.querySelector('.goog-te-gadget');
-                              if (gadget) {
-                                   Array.from(gadget.childNodes).forEach(node => {
-                                        if (node.nodeType === 3) {
-                                             node.textContent = '';
-                                        }
-                                   });
-                              }
-
-                              // Handle language selection
-                              const languageSelect = document.querySelector('.goog-te-combo');
-                              if (languageSelect && !languageSelect.dataset.eventAttached) {
-                                   languageSelect.dataset.eventAttached = 'true';
-                                   languageSelect.addEventListener('change', () => {
-                                        setTimeout(closeLanguageModal, 50);
-                                   });
-                              }
-
-                              // Handle menu item clicks
-                              const menuItems = document.querySelectorAll('.goog-te-menu2-item');
-                              menuItems.forEach(item => {
-                                   if (!item.dataset.eventAttached) {
-                                        item.dataset.eventAttached = 'true';
-                                        item.addEventListener('click', () => {
-                                             setTimeout(closeLanguageModal, 50);
-                                        });
-                                   }
-                              });
-                         }
-                    });
-               });
-
-               observer.observe(document.body, {
-                    childList: true,
-                    subtree: true,
-                    attributes: true,
-                    characterData: true
-               });
-
-               // Add event listener for the Google Translate callback
-               if (window.google && window.google.translate) {
-                    window.google.translate.TranslateService.getInstance().addEventListener('translate', function() {
-                         closeLanguageModal();
-                    });
-               }
-          }
-     </script>
-     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async defer></script>
+     <!-- GTranslate Widget Script -->
+     <script>window.gtranslateSettings = {
+          "default_language":"en",
+          "native_language_names":true,
+          "detect_browser_language":true,
+          "languages":["en","fr","it","es","zh-CN","de","ja","nl","pl"],
+          "wrapper_selector":".gtranslate_wrapper",
+          "flag_style":"3d",
+          "flag_size":24,
+          "dropdown_style":"flags",
+          "alt_flags":{"en":"usa"},
+          "switcher_horizontal_position":"inline",
+          "switcher_text_color":"#4B5563",
+          "switcher_arrow_color":"#EA580C",
+          "switcher_border_color":"rgba(234, 88, 12, 0.2)",
+          "switcher_background_color":"#fff",
+          "switcher_background_shadow_color":"rgba(0, 0, 0, 0.1)",
+          "switcher_background_hover_color":"rgba(234, 88, 12, 0.1)",
+          "dropdown_text_color":"#4B5563",
+          "dropdown_hover_color":"rgba(234, 88, 12, 0.1)",
+          "dropdown_background_color":"#fff",
+          "url_structure":"none",
+          "widget_look":"dropdown_with_flags",
+          "show_language_codes":true
+     }</script>
+     <script src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
 
      <!-- Critical CSS -->
      <style>
           :root {
                --primary-color: #2563eb;
                --secondary-color: #0f172a;
-               --accent-color: #22c55e;
+               --accent-color: #ff6b00;
+               --bg-blur: 10px;
+               --transition-normal: 0.3s ease;
+               --transition-slow: 0.5s ease;
+               --shadow-sm: 0 1px 2px rgba(0,0,0,0.1);
+               --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+               --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+               --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+               --border-radius-sm: 0.25rem;
+               --border-radius-md: 0.5rem;
+               --border-radius-lg: 0.75rem;
+               --border-radius-xl: 1rem;
+               --border-radius-full: 9999px;
           }
 
           /* Apply heading font to all headings */
           h1, h2, h3, h4, h5, h6 {
-               font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+               font-family: 'Montserrat', sans-serif;
+               letter-spacing: -0.025em;
           }
 
-          /* Enhanced Google Translate Styles */
-          .goog-te-gadget-icon {
-               display: none !important;
-          }
-
-          .goog-te-gadget-simple {
-               background-color: #ecebf0 !important;
-               border: 0 !important;
-               font-size: 10pt !important;
-               font-weight: 800 !important;
-               font-family: 'Poppins', sans-serif !important;
-               display: inline-flex !important;
-               align-items: center !important;
-               padding: 8px 16px !important;
-               cursor: pointer !important;
-               border-radius: 9999px !important;
-               transition: all 0.2s ease-in-out !important;
-               min-width: 160px !important;
-          }
-
-          .goog-te-gadget-simple:hover {
-               background-color: #e2e1e6 !important;
-               box-shadow: 0 2px 8px rgba(62, 48, 101, 0.1) !important;
-               transform: translateY(-1px) !important;
-          }
-
-          .goog-te-gadget-simple span {
-               color: #3e3065 !important;
-               font-family: 'Poppins', sans-serif !important;
-               font-size: 0.875rem !important;
-          }
-
-          .goog-te-menu-value {
-               display: flex !important;
-               align-items: center !important;
-               justify-content: space-between !important;
-               width: 100% !important;
-               padding: 0 4px !important;
-          }
-
-          .goog-te-menu-value span {
-               border: none !important;
-               color: #3e3065 !important;
-               font-weight: 600 !important;
-          }
-
-          .goog-te-menu-value span:last-child {
-               display: none !important;
-          }
-
-          .goog-te-menu-frame {
-               box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
-               border-radius: 12px !important;
-               border: 1px solid #e5e7eb !important;
-               padding: 8px !important;
-          }
-
-          .goog-te-menu2 {
-               border: none !important;
-               padding: 8px !important;
-               border-radius: 12px !important;
-          }
-
-          .goog-te-menu2-item div {
-               padding: 8px 12px !important;
-               font-family: 'Poppins', sans-serif !important;
-               color: #3e3065 !important;
-               border-radius: 8px !important;
-               transition: all 0.2s !important;
-          }
-
-          .goog-te-menu2-item:hover div {
-               background-color: #ecebf0 !important;
-          }
-
-          .goog-te-menu2-item-selected div {
-               background-color: #3e3065 !important;
-               color: white !important;
-          }
-
-          /* Toggle Button Styles */
-          #translate-toggle {
-               opacity: 0.9;
-          }
-
-          #translate-toggle:hover {
-               opacity: 1;
-          }
-
-          #translate-toggle.active {
-               background-color: #3e3065 !important;
-               transform: rotate(180deg);
-          }
-
-          /* Hide Google Translate attribution */
-          .goog-logo-link {
-               display: none !important;
-          }
-
-          .goog-te-gadget {
-               color: transparent !important;
-               margin: 0 !important;
-          }
-
-          .goog-te-banner-frame {
-               display: none !important;
-               box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
-          }
-
-          #goog-gt-tt, .goog-te-balloon-frame {
-               display: none !important;
-          }
-
-          .goog-text-highlight {
-               background: none !important;
-               box-shadow: none !important;
-          }
-
-          /* Rest of your critical CSS */
+          /* Apply body font to all text content */
           body {
-               font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-               text-rendering: optimizeLegibility;
-               -webkit-font-smoothing: antialiased;
-               -moz-osx-font-smoothing: grayscale;
+               font-family: 'Poppins', sans-serif;
+               overflow-x: hidden;
+               scroll-behavior: smooth;
           }
-          .critical-hidden {
-               display: none !important;
+
+          /* Glass effects */
+          .glass {
+               background: rgba(255, 255, 255, 0.8);
+               backdrop-filter: blur(var(--bg-blur));
+               -webkit-backdrop-filter: blur(var(--bg-blur));
+               border: 1px solid rgba(255, 255, 255, 0.18);
+               box-shadow: var(--shadow-md);
           }
-          .critical-visible {
-               display: block;
+          
+          .glass-dark {
+               background: rgba(15, 23, 42, 0.8);
+               backdrop-filter: blur(var(--bg-blur));
+               -webkit-backdrop-filter: blur(var(--bg-blur));
+               border: 1px solid rgba(255, 255, 255, 0.08);
+               box-shadow: var(--shadow-md);
+          }
+
+          /* Enhanced buttons */
+          .btn-primary {
+               background-image: linear-gradient(135deg, #ff6b00, #ea580c);
+               color: white;
+               padding: 0.75rem 1.5rem;
+               border-radius: var(--border-radius-full);
+               font-weight: 600;
+               transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+               box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);
+          }
+          
+          .btn-primary:hover {
+               transform: translateY(-2px);
+               box-shadow: 0 6px 20px rgba(234, 88, 12, 0.5);
+          }
+          
+          .btn-primary:active {
+               transform: translateY(1px);
+          }
+
+          /* Card styling */
+          .card {
+               background: white;
+               border-radius: var(--border-radius-lg);
+               overflow: hidden;
+               transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+               box-shadow: var(--shadow-md);
+          }
+          
+          .card:hover {
+               transform: translateY(-5px);
+               box-shadow: var(--shadow-xl);
+          }
+
+          /* Custom scrollbar for browsers that support it */
+          ::-webkit-scrollbar {
+               width: 8px;
+               height: 8px;
+          }
+
+          ::-webkit-scrollbar-track {
+               background: #f1f1f1;
+               border-radius: 4px;
+          }
+
+          ::-webkit-scrollbar-thumb {
+               background: #ea580c;
+               border-radius: 4px;
+          }
+
+          ::-webkit-scrollbar-thumb:hover {
+               background: #c2410c;
+          }
+
+          /* Animate headings */
+          .animate-gradient-text {
+               background-image: linear-gradient(90deg, #ea580c, #ff6b00, #ea580c);
+               background-size: 200% auto;
+               color: transparent;
+               -webkit-background-clip: text;
+               background-clip: text;
+               animation: gradient-animation 6s linear infinite;
+          }
+          
+          @keyframes gradient-animation {
+               0% { background-position: 0% center; }
+               100% { background-position: 200% center; }
+          }
+          
+          /* Loading dots animation */
+          .loading-dots::after {
+               content: '';
+               animation: loading-dots 1.5s infinite;
+          }
+          
+          @keyframes loading-dots {
+               0% { content: '.'; }
+               33% { content: '..'; }
+               66% { content: '...'; }
+          }
+          
+          /* Enhanced focus styles */
+          *:focus-visible {
+               outline: 2px solid #ea580c;
+               outline-offset: 2px;
+          }
+          
+          /* Mobile menu animations */
+          @keyframes fadeIn {
+               from { opacity: 0; transform: translateY(-10px); }
+               to { opacity: 1; transform: translateY(0); }
+          }
+          
+          .fade-in {
+               animation: fadeIn 0.3s ease forwards;
+          }
+          
+          /* GTranslate Widget Custom Styling */
+          .gtranslate_wrapper {
+               position: relative;
+               margin-right: 0.5rem;
+               z-index: 1000;
+          }
+          
+          /* Dropdown with Flags styling */
+          .gt_float_switcher {
+               font-family: 'Poppins', sans-serif !important;
+          }
+          
+          div.gt_float_switcher {
+               box-shadow: var(--shadow-md) !important;
+               border-radius: var(--border-radius-md) !important;
+               border: 1px solid rgba(234, 88, 12, 0.1) !important;
+          }
+          
+          div.gt_float_switcher .gt_selected {
+               color: #4B5563 !important;
+               font-weight: 500 !important;
+               background: white !important;
+               border-radius: var(--border-radius-md) !important; 
+          }
+          
+          div.gt_float_switcher .gt_selected a {
+               color: #4B5563 !important;
+               padding: 5px 8px !important;
+          }
+          
+          div.gt_float_switcher .gt_selected a:hover {
+               color: #EA580C !important;
+          }
+          
+          div.gt_float_switcher .gt_selected:after {
+               border-top-color: #EA580C !important;
+               opacity: 0.8 !important;
+          }
+          
+          /* Dropdown menu styling */
+          div.gt_float_switcher .gt_options {
+               border-radius: var(--border-radius-md) !important;
+               border: 1px solid rgba(234, 88, 12, 0.2) !important;
+               box-shadow: var(--shadow-lg) !important;
+               top: 100% !important;
+               margin-top: 5px !important;
+               max-height: 400px !important;
+               overflow-y: auto !important;
+          }
+          
+          div.gt_float_switcher .gt_options a {
+               color: #4B5563 !important;
+               padding: 5px 8px !important;
+          }
+          
+          div.gt_float_switcher .gt_options a:hover,
+          div.gt_float_switcher .gt_options a.gt_current {
+               background-color: rgba(234, 88, 12, 0.1) !important;
+               color: #EA580C !important;
+          }
+          
+          /* Language codes styling */
+          .gt_float_switcher span span {
+               opacity: 0.6;
+               font-size: 0.85em;
+               margin-left: 3px;
+          }
+          
+          /* Ensure the dropdown appears below language selector */
+          .gt_float_switcher {
+               position: relative !important;
+               z-index: 100;
+          }
+          
+          /* Fix dropdown positioning */
+          .gt_float_switcher .gt_options {
+               position: absolute !important;
+               top: 100% !important;
+               left: 0 !important;
+               margin-top: 5px;
+               max-height: 300px;
+               overflow-y: auto;
+               border-radius: 0.5rem;
+               box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+               z-index: 1000;
+          }
+
+          /* Ensure proper styling for the dropdown */
+          .gt_float_switcher .gt_options .gt_option {
+               padding: 8px 12px;
+          }
+
+          /* Ensure mobile view is properly displayed */
+          @media (max-width: 768px) {
+               .gtranslate_wrapper .gt_float_switcher {
+                    width: 100%;
+               }
+               
+               .sidebar .gtranslate_wrapper {
+                    width: 100%;
+               }
+          }
+
+          /* Fix width issues */
+          .gtranslate_wrapper {
+               min-width: 120px;
           }
      </style>
 
@@ -410,13 +419,29 @@
                theme: {
                     extend: {
                          colors: {
-                              primary: '#2563eb',
+                              primary: '#ff6b00',
                               secondary: '#0f172a',
                               accent: '#22c55e'
                          },
                          fontFamily: {
                               'sans': ['Poppins', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
                               'heading': ['Montserrat', 'Helvetica', 'Arial', 'sans-serif']
+                         },
+                         animation: {
+                              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                              'float': 'float 3s ease-in-out infinite',
+                         },
+                         keyframes: {
+                              float: {
+                                   '0%, 100%': { transform: 'translateY(0)' },
+                                   '50%': { transform: 'translateY(-10px)' },
+                              }
+                         },
+                         boxShadow: {
+                              'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+                         },
+                         backdropBlur: {
+                              'glass': '8px',
                          }
                     }
                }
@@ -637,9 +662,6 @@
           ]
      }
      </script>
-     <style>
-         
-     </style>
 
      <!-- Initialize AOS -->
      <script>

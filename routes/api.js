@@ -3,6 +3,10 @@ const router = express.Router();
 const nodemailer = require('nodemailer');
 const sgMail = require('@sendgrid/mail');
 const Booking = require('../models/Booking');
+const mongoose = require('mongoose');
+const axios = require('axios');
+const emailUtils = require('../utils/email');
+require('dotenv').config();
 // const { isAuthenticated } = require('../middlewares/auth');
 
 // Configure SendGrid if API key is available
@@ -46,14 +50,14 @@ const sendEmails = async (adminMailOptions, customerMailOptions) => {
     }
     
     // Fall back to SMTP/Nodemailer if SendGrid is not configured
-    if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
         console.log('Sending emails via SMTP (Nodemailer)');
         // Create nodemailer transporter with SSL/TLS options
         const transporter = nodemailer.createTransport({
             service: process.env.EMAIL_SERVICE || 'gmail',
             auth: {
                 user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASSWORD
+                pass: process.env.EMAIL_PASS
             },
             tls: {
                 // Do not fail on invalid certs
@@ -74,104 +78,90 @@ const sendEmails = async (adminMailOptions, customerMailOptions) => {
 // Booking inquiry endpoint for the hero form
 router.post('/booking-inquiry', async (req, res) => {
     try {
-        const { name, email, tour_type, travel_date, source } = req.body;
-
+        const { name, email, startingCity, travelDate, source } = req.body;
+        
         // Validate required fields
         if (!name || !email) {
             return res.status(400).json({
                 success: false,
-                message: 'Name and email are required fields'
+                message: 'Name and email are required'
             });
         }
-
-        // Create new booking inquiry in database
-        const newBooking = new Booking({
+        
+        // Create new booking in database
+        const booking = new Booking({
             name,
             email,
-            tourType: tour_type,
-            travelDate: travel_date ? new Date(travel_date) : null,
+            tourType: 'custom_tour', // Default to custom tour
+            travelDate: travelDate ? new Date(travelDate) : null,
             source: source || 'website',
-            status: 'new'
-        });
-
-        await newBooking.save();
-
-        // Check if any email method is configured
-        const hasEmailConfig = (process.env.EMAIL_API === 'sendgrid' && process.env.EMAIL_API_KEY) || 
-                              (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD);
-        
-        // Only attempt to send emails if credentials are available
-        if (hasEmailConfig) {
-            try {
-                console.log('Attempting to send booking inquiry emails');
-                
-                // Email content for admin
-                const adminMailOptions = {
-                    from: process.env.EMAIL_USER || process.env.SENDER_EMAIL,
-                    to: process.env.ADMIN_EMAIL || 'admin@moroccotravelexperts.com',
-                    subject: 'New Booking Inquiry',
-                    html: `
-                        <h2>New Booking Inquiry from Website</h2>
-                        <p><strong>Name:</strong> ${name}</p>
-                        <p><strong>Email:</strong> ${email}</p>
-                        <p><strong>Tour Type:</strong> ${tour_type}</p>
-                        <p><strong>Travel Date:</strong> ${travel_date || 'Not specified'}</p>
-                        <p><strong>Source:</strong> ${source || 'Website'}</p>
-                        <p>Please respond to this customer within 24 hours.</p>
-                    `
-                };
-
-                // Email content for customer
-                const customerMailOptions = {
-                    from: process.env.EMAIL_USER || process.env.SENDER_EMAIL,
-                    to: email,
-                    subject: 'Thank You for Your Morocco Travel Inquiry',
-                    html: `
-                        <h2>Thank You for Contacting Morocco Travel Experts</h2>
-                        <p>Dear ${name},</p>
-                        <p>Thank you for your interest in traveling with us. We have received your inquiry about ${tour_type.replace('_', ' ')} tours.</p>
-                        <p>One of our travel specialists will review your request and get back to you within 24 hours with personalized information and options.</p>
-                        <p>In the meantime, you can explore more tour options on our website: <a href="https://www.moroccotravelexperts.com/tours">Explore Tours</a></p>
-                        <p>Best regards,<br>The Morocco Travel Experts Team</p>
-                    `
-                };
-
-                // Send emails using the helper function
-                await sendEmails(adminMailOptions, customerMailOptions);
-                console.log('Booking inquiry emails sent successfully');
-            } catch (emailError) {
-                // Log email error but don't fail the booking process
-                console.error('Error sending booking inquiry emails:', emailError);
-                // Update booking to indicate emails failed
-                await Booking.findByIdAndUpdate(newBooking._id, {
-                    $set: { 
-                        notes: 'Inquiry created successfully but confirmation emails failed to send: ' + emailError.message 
-                    }
-                });
+            status: 'new',
+            customTour: {
+                destinations: [],
+                activities: [],
+                travelerCount: 1,
+                duration: '7-10 days',
+                budget: 'medium',
+                accommodationPreference: 'mid-range'
             }
-        } else {
-            console.warn('Email not configured: Skipping email notifications for booking inquiry');
-            await Booking.findByIdAndUpdate(newBooking._id, {
-                $set: { 
-                    notes: 'Booking inquiry created but email notifications skipped due to missing email configuration' 
+        });
+        
+        // If starting city is provided, add it to destinations
+        if (startingCity) {
+            try {
+                const city = await mongoose.model('StartingCity').findById(startingCity);
+                if (city) {
+                    booking.customTour.destinations = [city.city];
+                }
+            } catch (cityError) {
+                console.error('Error finding starting city:', cityError);
+                // Continue with booking creation even if city lookup fails
+            }
+        }
+        
+        await booking.save();
+        
+        // Attempt to send notification email to admin
+        try {
+            const transporter = nodemailer.createTransport({
+                service: process.env.EMAIL_SERVICE,
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS
+                },
+                tls: {
+                    rejectUnauthorized: false
                 }
             });
+            
+            await transporter.sendMail({
+                from: process.env.EMAIL_USER,
+                to: process.env.ADMIN_EMAIL || process.env.EMAIL_USER,
+                subject: 'New Booking Inquiry',
+                html: `
+                    <h2>New Booking Inquiry</h2>
+                    <p><strong>Name:</strong> ${name}</p>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>Travel Date:</strong> ${travelDate || 'Not specified'}</p>
+                    <p><strong>Source:</strong> ${source || 'Website'}</p>
+                    <p><a href="${process.env.SITE_URL}/admin/bookings/${booking._id}">View in Admin Panel</a></p>
+                `
+            });
+        } catch (emailError) {
+            console.error('Error sending email notification:', emailError);
+            // Don't fail the API response if email fails
         }
-
-        // Return success response even if email sending failed
+        
         return res.json({
             success: true,
-            message: 'Booking inquiry received successfully',
-            data: {
-                booking_id: newBooking._id
-            }
+            message: 'Booking inquiry received',
+            bookingId: booking._id
         });
     } catch (error) {
-        console.error('Booking inquiry error:', error);
+        console.error('Error creating booking inquiry:', error);
         return res.status(500).json({
             success: false,
-            message: 'An error occurred while processing your request',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+            message: 'Error processing your request'
         });
     }
 });
@@ -219,7 +209,7 @@ router.post('/custom-booking', async (req, res) => {
 
         // Check if any email method is configured
         const hasEmailConfig = (process.env.EMAIL_API === 'sendgrid' && process.env.EMAIL_API_KEY) || 
-                              (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD);
+                              (process.env.EMAIL_USER && process.env.EMAIL_PASS);
         
         // Only attempt to send emails if credentials are available
         if (hasEmailConfig) {
@@ -315,6 +305,325 @@ router.post('/custom-booking', async (req, res) => {
         return res.status(500).json({
             success: false,
             message: 'An error occurred while processing your request',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+// DeepSeek API integration for generating travel itineraries
+router.post('/generate-itinerary', async (req, res) => {
+    try {
+        const { 
+            destinations, 
+            activities, 
+            travelers, 
+            travelDate, 
+            additionalInfo,
+            tourDuration,
+            startingCity,
+            arrivalCity,
+            email,
+            name
+        } = req.body;
+
+        if (!destinations || destinations.length === 0) {
+            return res.status(400).json({ success: false, message: 'At least one destination is required' });
+        }
+
+        // Log request parameters for debugging
+        console.log('Generate Itinerary Request:', { 
+            destinations, 
+            activities, 
+            travelers, 
+            email, 
+            name 
+        });
+
+        // Construct the prompt for DeepSeek API
+        const prompt = `
+        Create a detailed multi-day travel itinerary for Morocco with the following parameters:
+        
+        DESTINATIONS: ${destinations.join(', ')}
+        ACTIVITIES: ${activities ? activities.join(', ') : 'No specific activities selected'}
+        NUMBER OF TRAVELERS: ${travelers || '2'}
+        TRAVEL DATE: ${travelDate || 'Not specified'}
+        TOUR DURATION: ${tourDuration || '7'} days
+        STARTING CITY: ${startingCity || 'Casablanca'}
+        ARRIVAL CITY: ${arrivalCity || 'Marrakech'}
+        ADDITIONAL INFORMATION: ${additionalInfo || 'None provided'}
+        
+        Please create a comprehensive day-by-day itinerary with the following:
+        1. A logical route between destinations starting in ${startingCity || 'Casablanca'} and ending in ${arrivalCity || 'Marrakech'}
+        2. The itinerary must be exactly ${tourDuration || '7'} days long
+        3. Each day should include:
+           - Morning, afternoon, and evening activities
+           - Recommended local dining experiences
+           - Cultural highlights
+           - Approximate travel times between locations
+        4. Factor in travel time realistically between destinations
+        5. Include at least 3 unique activities from the selected list for each destination
+        6. Format the response as a JSON object with this structure:
+        {
+          "title": "Personalized title for the trip",
+          "summary": "Brief overview of the trip",
+          "days": [
+            {
+              "day": 1,
+              "location": "City name",
+              "description": "Overview of the day",
+              "activities": ["Activity 1", "Activity 2", "Activity 3"],
+              "meals": {"breakfast": "...", "lunch": "...", "dinner": "..."},
+              "accommodation": "Recommended stay"
+            },
+            // Additional days...
+          ]
+        }
+        
+        Make the itinerary feel authentic and personalized to Morocco.
+        `;
+
+        // Call the DeepSeek API
+        const response = await axios.post(
+            'https://api.deepseek.com/v1/chat/completions',
+            {
+                model: 'deepseek-chat',
+                messages: [
+                    { role: 'user', content: prompt }
+                ],
+                temperature: 0.7,
+                max_tokens: 4000
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
+                }
+            }
+        );
+
+        // Parse the response to get the generated itinerary
+        let itinerary;
+        try {
+            // Extract JSON object from the text response
+            const content = response.data.choices[0].message.content;
+            // Find JSON content (might be wrapped in markdown code blocks)
+            const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) || 
+                             content.match(/```\n([\s\S]*?)\n```/) ||
+                             content.match(/{[\s\S]*?}/);
+                             
+            const jsonString = jsonMatch ? jsonMatch[1] || jsonMatch[0] : content;
+            itinerary = JSON.parse(jsonString);
+        } catch (error) {
+            console.error('Error parsing DeepSeek response:', error);
+            // If parsing fails, return the raw text
+            itinerary = { 
+                error: 'Failed to parse JSON response',
+                rawContent: response.data.choices[0].message.content
+            };
+        }
+
+        // Create a booking record if email is provided
+        let bookingId = null;
+        if (email) {
+            try {
+                // Extract key information from the itinerary
+                const destinationsList = [];
+                if (itinerary.days && Array.isArray(itinerary.days)) {
+                    // Get unique locations
+                    itinerary.days.forEach(day => {
+                        if (day.location && !destinationsList.includes(day.location)) {
+                            destinationsList.push(day.location);
+                        }
+                    });
+                }
+                
+                // Create booking in database
+                const booking = new Booking({
+                    name: name || 'Anonymous User',
+                    email,
+                    tourType: 'ai_customized',
+                    travelDate: travelDate ? new Date(travelDate) : null,
+                    source: 'ai_itinerary_generator',
+                    status: 'new',
+                    customTour: {
+                        destinations: destinationsList.length > 0 ? destinationsList : destinations,
+                        activities: activities || [],
+                        travelerCount: parseInt(travelers) || 2,
+                        duration: itinerary.days ? itinerary.days.length.toString() : tourDuration || '7',
+                        budget: 'medium',
+                        accommodationPreference: 'mid-range',
+                        additionalNotes: additionalInfo || ''
+                    },
+                    aiItinerary: JSON.stringify(itinerary)
+                });
+                
+                await booking.save();
+                bookingId = booking._id;
+                console.log('Created booking record:', bookingId);
+                
+                // Send email notification if email is provided
+                if (email) {
+                    try {
+                        const emailResult = await emailUtils.sendTourGeneratedEmail({
+                            email,
+                            name: name || 'Traveler',
+                            itinerary,
+                            bookingId
+                        });
+                        
+                        console.log('Tour generation email result:', emailResult.success ? 'Sent successfully' : 'Failed to send');
+                    } catch (emailError) {
+                        console.error('Error sending tour generation email:', emailError);
+                        // Don't fail the API response if email fails
+                    }
+                }
+            } catch (bookingError) {
+                console.error('Error creating booking record:', bookingError);
+                // Don't fail the API response if booking creation fails
+            }
+        }
+
+        res.json({ 
+            success: true, 
+            itinerary,
+            bookingId 
+        });
+    } catch (error) {
+        console.error('Error calling DeepSeek API:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Failed to generate itinerary',
+            error: error.message
+        });
+    }
+});
+
+// Save customized itinerary
+router.post('/save-itinerary', async (req, res) => {
+    try {
+        const { 
+            name, 
+            email, 
+            travelers, 
+            travelDate, 
+            itinerary 
+        } = req.body;
+
+        // Validate required fields
+        if (!name || !email || !itinerary) {
+            return res.status(400).json({
+                success: false,
+                message: 'Name, email, and itinerary are required'
+            });
+        }
+        
+        // Extract key information from the itinerary
+        const destinations = [];
+        if (itinerary.days && Array.isArray(itinerary.days)) {
+            // Get unique locations
+            itinerary.days.forEach(day => {
+                if (day.location && !destinations.includes(day.location)) {
+                    destinations.push(day.location);
+                }
+            });
+        }
+        
+        // Extract activities
+        const activities = [];
+        if (itinerary.days && Array.isArray(itinerary.days)) {
+            itinerary.days.forEach(day => {
+                if (day.activities && Array.isArray(day.activities)) {
+                    day.activities.forEach(activity => {
+                        if (!activities.includes(activity)) {
+                            activities.push(activity);
+                        }
+                    });
+                }
+            });
+        }
+
+        // Create new booking in database with AI itinerary
+        const booking = new Booking({
+            name,
+            email,
+            tourType: 'ai_customized',
+            travelDate: travelDate ? new Date(travelDate) : null,
+            source: 'custom_tour_builder',
+            status: 'new',
+            customTour: {
+                destinations,
+                activities,
+                travelerCount: parseInt(travelers) || 2,
+                duration: itinerary.days ? itinerary.days.length.toString() : '7-10 days',
+                budget: 'medium',
+                accommodationPreference: 'mid-range',
+                additionalNotes: itinerary.summary || ''
+            },
+            aiItinerary: JSON.stringify(itinerary)
+        });
+        
+        await booking.save();
+        
+        // Attempt to send notification email to admin
+        try {
+            const transporter = nodemailer.createTransport({
+                service: process.env.EMAIL_SERVICE,
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS
+                },
+                tls: {
+                    rejectUnauthorized: false
+                }
+            });
+            
+            await transporter.sendMail({
+                from: process.env.EMAIL_USER,
+                to: process.env.ADMIN_EMAIL || process.env.EMAIL_USER,
+                subject: 'New AI-Customized Itinerary Booking',
+                html: `
+                    <h2>New AI-Customized Itinerary Booking</h2>
+                    <p><strong>Name:</strong> ${name}</p>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>Travel Date:</strong> ${travelDate || 'Not specified'}</p>
+                    <p><strong>Number of Travelers:</strong> ${travelers || '2'}</p>
+                    <p><strong>Destinations:</strong> ${destinations.join(', ')}</p>
+                    <p><strong>Itinerary Summary:</strong> ${itinerary.summary || 'No summary provided'}</p>
+                    <p><a href="${process.env.SITE_URL}/admin/bookings/${booking._id}">View in Admin Panel</a></p>
+                `
+            });
+            
+            // Send confirmation to customer
+            await transporter.sendMail({
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: 'Your Customized Morocco Itinerary',
+                html: `
+                    <h2>Thank You for Your Booking!</h2>
+                    <p>Dear ${name},</p>
+                    <p>We're excited to confirm that we've received your customized itinerary request for Morocco. Our team will review your AI-generated plan and reach out within 24 hours to finalize the details.</p>
+                    <p><strong>Itinerary Summary:</strong> ${itinerary.summary || 'Your personalized Moroccan journey'}</p>
+                    <p><strong>Travel Date:</strong> ${travelDate || 'To be confirmed'}</p>
+                    <p><strong>Destinations:</strong> ${destinations.join(', ')}</p>
+                    <p>If you have any questions in the meantime, please don't hesitate to contact us.</p>
+                    <p>Best regards,<br>The Morocco Travel Experts Team</p>
+                `
+            });
+        } catch (emailError) {
+            console.error('Error sending email notification:', emailError);
+            // Don't fail the API response if email fails
+        }
+        
+        return res.json({
+            success: true,
+            message: 'Your customized itinerary has been saved! We will contact you shortly.',
+            bookingId: booking._id
+        });
+    } catch (error) {
+        console.error('Error saving itinerary:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error processing your request',
             error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }

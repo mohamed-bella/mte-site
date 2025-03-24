@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<%- include('../partials/head', { 
+    title: title || 'Morocco Destination - Morocco Travel Experts', 
+    metaDescription: metaDescription || 'Explore this beautiful Moroccan destination with expert guides and personalized tours.',
+    metaKeywords: `morocco travel, ${city.city}, morocco destination, morocco tours, morocco travel experts`
+}) %>
+
+<%- include('../partials/header') %>
+
+<main class="min-h-screen">
+    <!-- Hero Section -->
+    <section class="relative min-h-[70vh] flex flex-col justify-end">
+        <!-- Image Background with Overlay -->
+        <div class="absolute inset-0">
+            <img 
+                src="<%= city.image %>" 
+                alt="<%= city.city %> - Morocco Destination" 
+                class="w-full h-full object-cover"
+                loading="eager">
+            <!-- Clean gradient overlay -->
+            <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70"></div>
+            
+            <!-- Diagonal divider -->
+            <div class="absolute bottom-0 left-0 right-0 h-20 w-full overflow-hidden">
+                <svg viewBox="0 0 500 150" preserveAspectRatio="none" class="h-full w-full">
+                    <path d="M0,150 L500,0 L500,150 L0,150 Z" fill="white"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Hero Content -->
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
+            <!-- Destination Badge -->
+            <div class="max-w-4xl mx-auto mb-8 flex items-center justify-center">
+                <span class="inline-flex items-center rounded-full bg-orange-100 px-4 py-2 text-sm font-medium text-orange-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Morocco Destination
+                </span>
+            </div>
+            
+            <!-- Centered headline -->
+            <div class="text-center mb-8 max-w-4xl mx-auto">
+                <h1 class="text-4xl md:text-6xl font-bold text-white">
+                    Discover The Magic Of 
+                    <span class="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600"><%= city.city %></span>
+                </h1>
+                <p class="mt-6 text-xl text-gray-300 max-w-3xl mx-auto">
+                    <%= city.description %>
+                </p>
+            </div>
+            
+            <!-- CTA buttons at bottom -->
+            <div class="flex justify-center mt-8 gap-4">
+                <a href="#tours" class="inline-flex items-center px-6 py-3 rounded-full bg-orange-600 text-white font-medium hover:bg-orange-700 transition-colors">
+                    <i class="fas fa-compass mr-2"></i>
+                    Explore Tours
+                </a>
+                <a href="/tour-customizer" class="inline-flex items-center px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm text-white border border-white/30 hover:bg-white/20 transition-colors">
+                    <i class="fas fa-magic mr-2"></i>
+                    Customize Trip
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- About Destination Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                <div class="lg:w-1/2" data-aos="fade-right">
+                    <span class="inline-block px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium mb-4">About <%= city.city %></span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Experience the Heart of Morocco</h2>
+                    <div class="prose prose-lg max-w-none text-gray-600">
+                        <p class="mb-4">
+                            <%= city.city %> is one of Morocco's most enchanting destinations, offering a perfect blend of rich history, vibrant culture, and breathtaking landscapes.
+                        </p>
+                        <p class="mb-4">
+                            As a visitor to <%= city.city %>, you'll discover the authentic spirit of Morocco through its magnificent architecture, colorful markets, and warm hospitality.
+                        </p>
+                        <p>
+                            Our expert local guides will take you beyond the tourist hotspots to experience the true essence of this remarkable city, from hidden gems to cultural experiences that will leave you with unforgettable memories.
+                        </p>
+                    </div>
+                    
+                    <div class="mt-8 flex flex-wrap gap-3">
+                        <div class="flex items-center bg-gray-100 rounded-full px-4 py-2">
+                            <i class="fas fa-landmark text-orange-500 mr-2"></i>
+                            <span class="text-gray-800 text-sm">Historic Sites</span>
+                        </div>
+                        <div class="flex items-center bg-gray-100 rounded-full px-4 py-2">
+                            <i class="fas fa-utensils text-orange-500 mr-2"></i>
+                            <span class="text-gray-800 text-sm">Local Cuisine</span>
+                        </div>
+                        <div class="flex items-center bg-gray-100 rounded-full px-4 py-2">
+                            <i class="fas fa-shopping-bag text-orange-500 mr-2"></i>
+                            <span class="text-gray-800 text-sm">Traditional Markets</span>
+                        </div>
+                        <div class="flex items-center bg-gray-100 rounded-full px-4 py-2">
+                            <i class="fas fa-users text-orange-500 mr-2"></i>
+                            <span class="text-gray-800 text-sm">Cultural Experiences</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lg:w-1/2 grid grid-cols-2 gap-4" data-aos="fade-left">
+                    <div class="overflow-hidden rounded-lg">
+                        <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/marrakech-1.webp" alt="<%= city.city %> Scenery" class="w-full h-48 object-cover hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="overflow-hidden rounded-lg">
+                        <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/marrakech-2.webp" alt="<%= city.city %> Culture" class="w-full h-48 object-cover hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="overflow-hidden rounded-lg">
+                        <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/marrakech-3.webp" alt="<%= city.city %> Architecture" class="w-full h-48 object-cover hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="overflow-hidden rounded-lg">
+                        <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/marrakech-4.webp" alt="<%= city.city %> Local Life" class="w-full h-48 object-cover hover:scale-110 transition-transform duration-500">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Tours Section -->
+    <section id="tours" class="py-20 bg-orange-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="inline-block px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium mb-4">Tours From <%= city.city %></span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Explore <%= city.city %> And Beyond</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Discover our handcrafted tours starting from <%= city.city %>, each designed to showcase the best of Morocco's landscapes, culture, and traditions.
+                </p>
+            </div>
+            
+            <!-- Tours Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <% if (tours && tours.length > 0) { %>
+                    <% tours.forEach((tour, index) => { %>
+                        <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col h-full" data-aos="fade-up" data-aos-delay="<%= index * 100 %>">
+                            <div class="relative h-64">
+                                <img 
+                                    src="<%= tour.mainImage %>" 
+                                    alt="<%= tour.title %> - <%= city.city %> Tour" 
+                                    class="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                                    loading="lazy"
+                                >
+                                <div class="absolute top-4 right-4 flex gap-2">
+                                    <span class="px-3 py-1 bg-white rounded-full text-sm font-semibold text-gray-900 shadow-md flex items-center">
+                                        <i class="far fa-clock text-orange-500 mr-1"></i>
+                                        <%= tour.duration %> Days
+                                    </span>
+                                </div>
+                                <% if (tour.featured) { %>
+                                    <div class="absolute top-4 left-4">
+                                        <span class="px-3 py-1 bg-orange-500 text-white rounded-full text-sm font-semibold shadow-md">
+                                            Featured
+                                        </span>
+                                    </div>
+                                <% } %>
+                            </div>
+                            
+                            <div class="p-6 flex flex-col flex-grow">
+                                <div class="flex items-center mb-3 text-gray-500">
+                                    <i class="fas fa-map-marker-alt text-orange-500 mr-2"></i>
+                                    <span class="text-sm"><%= tour.startLocation %></span>
+                                </div>
+                                
+                                <h3 class="text-xl font-bold text-gray-900 mb-3 hover:text-orange-600 transition-colors">
+                                    <%= tour.title %>
+                                </h3>
+                                
+                                <p class="text-gray-600 mb-5 line-clamp-3 text-sm leading-relaxed flex-grow">
+                                    <%= tour.description.substring(0, 150) %>...
+                                </p>
+                                
+                                <div class="flex flex-wrap gap-2 mb-6">
+                                    <span class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">
+                                        From <%= city.city %>
+                                    </span>
+                                    <span class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">
+                                        Guided Tour
+                                    </span>
+                                </div>
+                                
+                                <div class="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-500">Starting from</span>
+                                        <span class="text-lg font-bold text-orange-600">
+                                            <% if (tour.pricing && tour.pricing.adult) { %>
+                                                $<%= tour.pricing.adult %>
+                                            <% } else { %>
+                                                Contact for price
+                                            <% } %>
+                                        </span>
+                                    </div>
+                                    <a href="/tours/<%= tour.slug %>" class="inline-flex items-center px-4 py-2 bg-orange-600 text-white rounded-full text-sm font-medium transition-colors hover:bg-orange-700">
+                                        View Details
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="col-span-3 text-center py-10">
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-100 mb-4">
+                            <i class="fas fa-search text-orange-500 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">No Tours Found</h3>
+                        <p class="text-gray-600 mb-6">We couldn't find any tours starting from <%= city.city %> at the moment.</p>
+                        <a href="/tours" class="inline-flex items-center px-4 py-2 bg-orange-600 text-white rounded-full text-sm font-medium transition-colors hover:bg-orange-700">
+                            Browse All Tours
+                        </a>
+                    </div>
+                <% } %>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="/tours?city=<%= encodeURIComponent(city.city) %>" class="inline-flex items-center justify-center px-8 py-4 text-base font-medium text-white bg-orange-600 rounded-full shadow-lg hover:bg-orange-700 transform hover:-translate-y-1 transition-all duration-300">
+                    View All <%= city.city %> Tours
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Attractions Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="inline-block px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium mb-4">Must-See Attractions</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Top Attractions in <%= city.city %></h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Discover the most captivating sights and experiences that <%= city.city %> has to offer, from historic landmarks to hidden gems.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Attraction 1 -->
+                <div class="bg-orange-50 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300" data-aos="fade-up">
+                    <div class="aspect-w-16 aspect-h-10">
+                        <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/marrakech-attr1.webp" alt="Jemaa el-Fnaa Square" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Jemaa el-Fnaa Square</h3>
+                        <p class="text-gray-600 mb-4">
+                            Experience the vibrant heart of Marrakech at this famous square filled with street performers, food stalls, and traditional entertainment.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-map-marker-alt text-orange-500 mr-2"></i>
+                            <span>Medina Quarter</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Attraction 2 -->
+                <div class="bg-orange-50 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <div class="aspect-w-16 aspect-h-10">
+                        <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/marrakech-attr2.webp" alt="Majorelle Garden" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Majorelle Garden</h3>
+                        <p class="text-gray-600 mb-4">
+                            Explore this enchanting botanical garden with vibrant blue buildings, exotic plants, and the Yves Saint Laurent Museum.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-map-marker-alt text-orange-500 mr-2"></i>
+                            <span>Rue Yves Saint Laurent</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Attraction 3 -->
+                <div class="bg-orange-50 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <div class="aspect-w-16 aspect-h-10">
+                        <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/marrakech-attr3.webp" alt="Bahia Palace" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Bahia Palace</h3>
+                        <p class="text-gray-600 mb-4">
+                            Admire the stunning architecture and intricate details of this 19th-century palace, showcasing the best of Moroccan craftsmanship.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-map-marker-alt text-orange-500 mr-2"></i>
+                            <span>Medina Quarter</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Booking Form Section -->
+    <section class="py-20 bg-gradient-to-r from-orange-500 to-orange-600 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <defs>
+                    <pattern id="pattern" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                        <line x1="0" y="0" x2="0" y2="5" stroke="currentColor" stroke-width="1" />
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#pattern)" />
+            </svg>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="p-8">
+                    <div class="text-center mb-8">
+                        <span class="inline-block px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium mb-3">Plan Your Trip</span>
+                        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Start Your <%= city.city %> Adventure</h2>
+                        <p class="text-gray-600">
+                            Fill out this form to get personalized recommendations and plan your perfect <%= city.city %> experience.
+                        </p>
+                    </div>
+                    
+                    <form id="destinationBookingForm" class="space-y-6">
+                        <input type="hidden" name="destination" value="<%= city.city %>">
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label for="booking-name" class="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                                <input type="text" id="booking-name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" placeholder="John Doe" required>
+                            </div>
+                            
+                            <div>
+                                <label for="booking-email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                <input type="email" id="booking-email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" placeholder="you@example.com" required>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label for="booking-travel-date" class="block text-sm font-medium text-gray-700 mb-1">Travel Date</label>
+                                <input type="date" id="booking-travel-date" name="travelDate" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" required>
+                            </div>
+                            
+                            <div>
+                                <label for="booking-duration" class="block text-sm font-medium text-gray-700 mb-1">Trip Duration</label>
+                                <select id="booking-duration" name="duration" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500 appearance-none bg-white">
+                                    <option value="3-5 days">3-5 days</option>
+                                    <option value="6-8 days" selected>6-8 days</option>
+                                    <option value="9-12 days">9-12 days</option>
+                                    <option value="13+ days">13+ days</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="booking-interests" class="block text-sm font-medium text-gray-700 mb-1">Your Interests</label>
+                            <select id="booking-interests" name="interests" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500 appearance-none bg-white">
+                                <option value="cultural_experiences">Cultural Experiences</option>
+                                <option value="historical_sites">Historical Sites</option>
+                                <option value="food_culinary">Food & Culinary</option>
+                                <option value="adventure_activities">Adventure Activities</option>
+                                <option value="shopping_crafts">Shopping & Crafts</option>
+                                <option value="relaxation_wellness">Relaxation & Wellness</option>
+                            </select>
+                        </div>
+                        
+                        <div class="pt-2">
+                            <button type="submit" id="booking-submit-btn" class="w-full py-4 px-6 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-lg transition duration-300 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                                </svg>
+                                <span>Plan My <%= city.city %> Adventure</span>
+                                <svg id="booking-spinner" class="hidden animate-spin ml-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Travel Tips Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="inline-block px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium mb-4">Insider Tips</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6"><%= city.city %> Travel Tips</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Make the most of your visit to <%= city.city %> with these practical tips from our local experts.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Tip 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300" data-aos="fade-up">
+                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-clock text-xl text-orange-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Best Time to Visit</h3>
+                    <p class="text-gray-600">
+                        The ideal time to visit <%= city.city %> is during spring (March to May) or fall (September to November) when temperatures are pleasant. Avoid summer months if you're sensitive to heat, as temperatures can exceed 100°F (38°C).
+                    </p>
+                </div>
+                
+                <!-- Tip 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-tshirt text-xl text-orange-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">What to Wear</h3>
+                    <p class="text-gray-600">
+                        Dress modestly, especially when visiting religious sites. Lightweight, breathable clothing is recommended, but bring a light jacket for evenings, even in summer. Comfortable walking shoes are essential for exploring the medina.
+                    </p>
+                </div>
+                
+                <!-- Tip 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-shopping-bag text-xl text-orange-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Shopping Tips</h3>
+                    <p class="text-gray-600">
+                        Bargaining is expected in souks – start at about 40% of the initial price. Shop later in your trip when you have a better feel for prices. Be prepared to walk away, and remember cash is king for the best deals.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="py-20 bg-gradient-to-br from-orange-600 to-orange-700 relative">
+        <div class="absolute inset-0 opacity-10">
+            <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <defs>
+                    <pattern id="pattern-bottom" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                        <line x1="0" y="0" x2="0" y2="5" stroke="currentColor" stroke-width="1" />
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#pattern-bottom)" />
+            </svg>
+        </div>
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Explore <%= city.city %>?</h2>
+                <p class="text-xl text-white/90 mb-10 max-w-3xl mx-auto">
+                    Let our team of local experts help you create the perfect <%= city.city %> adventure tailored to your interests and preferences.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 text-base font-bold bg-white text-orange-600 rounded-full shadow-lg hover:bg-gray-100 transform hover:-translate-y-1 transition-all duration-300">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Contact Us Now
+                    </a>
+                    <a href="/tour-customizer" class="inline-flex items-center justify-center px-8 py-4 text-base font-medium border-2 border-white text-white rounded-full hover:bg-white/10 transform hover:-translate-y-1 transition-all duration-300">
+                        <i class="fas fa-magic mr-2"></i>
+                        Customize Your Trip
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<%- include('../partials/footer') %>
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize AOS animations
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+        
+        // Destination Booking Form Handling
+        const destinationForm = document.getElementById('destinationBookingForm');
+        
+        if (destinationForm) {
+            destinationForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const name = document.getElementById('booking-name').value.trim();
+                const email = document.getElementById('booking-email').value.trim();
+                const travelDate = document.getElementById('booking-travel-date').value.trim();
+                const duration = document.getElementById('booking-duration').value;
+                const interests = document.getElementById('booking-interests').value;
+                const destination = "<%= city.city %>";
+                
+                // Validate form inputs
+                if (!name || !email || !travelDate) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+                
+                // Show loading spinner
+                const submitBtn = document.getElementById('booking-submit-btn');
+                const spinner = document.getElementById('booking-spinner');
+                submitBtn.disabled = true;
+                spinner.classList.remove('hidden');
+                
+                // Submit form data via AJAX
+                fetch('/api/booking-inquiry', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        travelDate,
+                        startingCity: destination,
+                        customTour: {
+                            destinations: [destination],
+                            duration: duration,
+                            interests: interests
+                        },
+                        source: 'website'
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide loading spinner
+                    submitBtn.disabled = false;
+                    spinner.classList.add('hidden');
+                    
+                    if (data.success) {
+                        // Redirect to custom tour page
+                        window.location.href = '/tour-customizer?booking_id=' + data.bookingId;
+                    } else {
+                        // Show error message
+                        alert('Something went wrong. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    // Hide loading spinner
+                    submitBtn.disabled = false;
+                    spinner.classList.add('hidden');
+                    
+                    // Show error message
+                    alert('Error submitting form. Please try again later.');
+                    console.error('Error:', error);
+                });
+                
+                // Track form submission event
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'form_submission', {
+                        'event_category': 'booking_inquiry',
+                        'event_label': 'destination_page_form'
+                    });
+                }
+            });
+        }
+    });
+</script>
+
+<!-- Add this to the head section for line-clamp support -->
+<style>
+    @layer utilities {
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    }
+    
+    /* Add aspect ratio utilities */
+    .aspect-w-16 {
+        position: relative;
+        padding-bottom: calc(var(--tw-aspect-h) / var(--tw-aspect-w) * 100%);
+        --tw-aspect-w: 16;
+    }
+    
+    .aspect-h-10 {
+        --tw-aspect-h: 10;
+    }
+    
+    .aspect-w-16 > * {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+</style>
+
+<!-- Structured Data for SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TouristDestination",
+  "name": "<%= city.city %>, Morocco",
+  "description": "<%= city.description %>",
+  "image": "<%= city.image %>",
+  "url": "https://www.moroccotravelexperts.com/destinations/<%= city.city.toLowerCase() %>",
+  "touristType": ["Couples", "Families", "Adventure Travelers", "Culture Enthusiasts"],
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "<%= city.city %>",
+    "addressRegion": "<%= city.city %>",
+    "addressCountry": "MA"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "<%= city.city === 'Marrakech' ? '31.6295' : '34.0181' %>",
+    "longitude": "<%= city.city === 'Marrakech' ? '-7.9811' : '-5.0078' %>"
+  }
+}
+</script>
+</body>
+</html> 

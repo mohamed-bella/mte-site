@@ -27,11 +27,20 @@
                                              <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
                                                   <div class="py-1">
                                                        <form action="/admin/bookings/<%= booking._id %>/status" method="POST">
+                                                            <button type="submit" name="status" value="new" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                                 Mark as New
+                                                            </button>
+                                                            <button type="submit" name="status" value="contacted" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                                 Mark as Contacted
+                                                            </button>
                                                             <button type="submit" name="status" value="confirmed" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                                                  Mark as Confirmed
                                                             </button>
-                                                            <button type="submit" name="status" value="cancelled" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                                 Mark as Cancelled
+                                                            <button type="submit" name="status" value="canceled" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                                 Mark as Canceled
+                                                            </button>
+                                                            <button type="submit" name="status" value="completed" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                                 Mark as Completed
                                                             </button>
                                                        </form>
                                                   </div>
@@ -46,27 +55,35 @@
                                    <!-- Booking Status Banner -->
                                    <div class="mb-8 rounded-md p-4 
                         <%= booking.status === 'confirmed' ? 'bg-green-50' : 
-                            booking.status === 'pending' ? 'bg-yellow-50' : 
+                            booking.status === 'new' ? 'bg-blue-50' : 
+                            booking.status === 'contacted' ? 'bg-yellow-50' : 
+                            booking.status === 'completed' ? 'bg-purple-50' :
                             'bg-red-50' %>">
                                         <div class="flex">
                                              <div class="flex-shrink-0">
                                                   <svg class="h-5 w-5 
                                     <%= booking.status === 'confirmed' ? 'text-green-400' : 
-                                        booking.status === 'pending' ? 'text-yellow-400' : 
+                                        booking.status === 'new' ? 'text-blue-400' :
+                                        booking.status === 'contacted' ? 'text-yellow-400' : 
+                                        booking.status === 'completed' ? 'text-purple-400' :
                                         'text-red-400' %>" viewBox="0 0 20 20" fill="currentColor">
-                                                       <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l22a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                       <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                                                   </svg>
                                              </div>
                                              <div class="ml-3">
                                                   <h3 class="text-sm font-medium 
                                     <%= booking.status === 'confirmed' ? 'text-green-800' : 
-                                        booking.status === 'pending' ? 'text-yellow-800' : 
+                                        booking.status === 'new' ? 'text-blue-800' :
+                                        booking.status === 'contacted' ? 'text-yellow-800' : 
+                                        booking.status === 'completed' ? 'text-purple-800' :
                                         'text-red-800' %>">
                                                        Booking Status: <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
                                                   </h3>
                                                   <div class="mt-2 text-sm 
                                     <%= booking.status === 'confirmed' ? 'text-green-700' : 
-                                        booking.status === 'pending' ? 'text-yellow-700' : 
+                                        booking.status === 'new' ? 'text-blue-700' :
+                                        booking.status === 'contacted' ? 'text-yellow-700' : 
+                                        booking.status === 'completed' ? 'text-purple-700' :
                                         'text-red-700' %>">
                                                        Last updated: <%= new Date(booking.updatedAt).toLocaleString() %>
                                                   </div>
@@ -86,15 +103,14 @@
                                                        <div>
                                                             <dt class="text-sm font-medium text-gray-500">Full Name</dt>
                                                             <dd class="mt-1 text-sm text-gray-900">
-                                                                 <%= booking.firstName %>
-                                                                      <%= booking.lastName %>
+                                                                 <%= booking.name || 'Not provided' %>
                                                             </dd>
                                                        </div>
                                                        <div>
                                                             <dt class="text-sm font-medium text-gray-500">Email</dt>
                                                             <dd class="mt-1 text-sm text-gray-900">
                                                                  <a href="mailto:<%= booking.email %>" class="text-orange-600 hover:text-orange-500">
-                                                                      <%= booking.email %>
+                                                                      <%= booking.email || 'Not provided' %>
                                                                  </a>
                                                             </dd>
                                                        </div>
@@ -117,64 +133,124 @@
                                         <!-- Tour Information -->
                                         <div class="bg-white shadow overflow-hidden sm:rounded-lg">
                                              <div class="px-4 py-5 sm:px-6">
-                                                  <h3 class="text-lg font-medium text-gray-900">Tour Details</h3>
+                                                  <h3 class="text-lg font-medium text-gray-900">Booking Details</h3>
                                              </div>
                                              <div class="border-t border-gray-200">
                                                   <div class="px-4 py-5 sm:px-6">
-                                                       <div class="flex items-center space-x-4">
-                                                            <img src="<%= booking.tour.mainImage %>" alt="<%= booking.tour.title %>" class="h-24 w-24 object-cover rounded-lg">
+                                                       <dl class="mt-2 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                                                             <div>
-                                                                 <h4 class="text-lg font-medium text-gray-900">
-                                                                      <%= booking.tour.title %>
-                                                                 </h4>
-                                                                 <p class="text-sm text-gray-500">
-                                                                      <%= booking.tour.duration %> days • <%= booking.tour.startLocation %>
-                                                                 </p>
-                                                            </div>
-                                                       </div>
-                                                       <dl class="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-                                                            <div>
-                                                                 <dt class="text-sm font-medium text-gray-500">Tour Date</dt>
+                                                                 <dt class="text-sm font-medium text-gray-500">Tour Type</dt>
                                                                  <dd class="mt-1 text-sm text-gray-900">
-                                                                      <%= new Date(booking.date).toLocaleDateString('en-US', { year: 'numeric' , month: 'long' , day: 'numeric' }) %>
+                                                                      <%= booking.tourType || 'General Inquiry' %>
                                                                  </dd>
                                                             </div>
                                                             <div>
-                                                                 <dt class="text-sm font-medium text-gray-500">Group Size</dt>
+                                                                 <dt class="text-sm font-medium text-gray-500">Travel Date</dt>
                                                                  <dd class="mt-1 text-sm text-gray-900">
-                                                                      <%= booking.groupSize %> people
+                                                                      <%= booking.travelDate ? new Date(booking.travelDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Not specified' %>
                                                                  </dd>
                                                             </div>
                                                             <div>
-                                                                 <dt class="text-sm font-medium text-gray-500">Price per Person</dt>
+                                                                 <dt class="text-sm font-medium text-gray-500">Source</dt>
                                                                  <dd class="mt-1 text-sm text-gray-900">
-                                                                      $<%= (booking.totalPrice / booking.groupSize).toLocaleString() %>
+                                                                      <%= booking.source || 'Website' %>
                                                                  </dd>
                                                             </div>
+                                                            <% if (booking.customTour && booking.customTour.travelerCount) { %>
                                                             <div>
-                                                                 <dt class="text-sm font-medium text-gray-500">Total Price</dt>
-                                                                 <dd class="mt-1 text-sm font-semibold text-gray-900">
-                                                                      $<%= booking.totalPrice.toLocaleString() %>
+                                                                 <dt class="text-sm font-medium text-gray-500">Number of Travelers</dt>
+                                                                 <dd class="mt-1 text-sm text-gray-900">
+                                                                      <%= booking.customTour.travelerCount %> people
                                                                  </dd>
                                                             </div>
+                                                            <% } %>
+                                                            <% if (booking.customTour && booking.customTour.duration) { %>
+                                                            <div>
+                                                                 <dt class="text-sm font-medium text-gray-500">Preferred Duration</dt>
+                                                                 <dd class="mt-1 text-sm text-gray-900">
+                                                                      <%= booking.customTour.duration %>
+                                                                 </dd>
+                                                            </div>
+                                                            <% } %>
+                                                            <% if (booking.customTour && booking.customTour.budget) { %>
+                                                            <div>
+                                                                 <dt class="text-sm font-medium text-gray-500">Budget Level</dt>
+                                                                 <dd class="mt-1 text-sm text-gray-900">
+                                                                      <%= booking.customTour.budget.charAt(0).toUpperCase() + booking.customTour.budget.slice(1) %>
+                                                                 </dd>
+                                                            </div>
+                                                            <% } %>
                                                        </dl>
                                                   </div>
                                              </div>
                                         </div>
 
-                                        <!-- Special Requests -->
+                                        <% if (booking.customTour && (booking.customTour.destinations.length > 0 || booking.customTour.activities.length > 0)) { %>
+                                        <!-- Custom Tour Preferences -->
+                                        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                                             <div class="px-4 py-5 sm:px-6">
+                                                  <h3 class="text-lg font-medium text-gray-900">Custom Tour Preferences</h3>
+                                             </div>
+                                             <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                                                  <% if (booking.customTour.destinations && booking.customTour.destinations.length > 0) { %>
+                                                  <div class="mb-6">
+                                                       <dt class="text-sm font-medium text-gray-500 mb-2">Requested Destinations</dt>
+                                                       <dd class="flex flex-wrap gap-2">
+                                                            <% booking.customTour.destinations.forEach(destination => { %>
+                                                                 <span class="inline-flex items-center rounded-full bg-orange-100 px-3 py-0.5 text-sm font-medium text-orange-800">
+                                                                      <%= destination %>
+                                                                 </span>
+                                                            <% }); %>
+                                                       </dd>
+                                                  </div>
+                                                  <% } %>
+
+                                                  <% if (booking.customTour.activities && booking.customTour.activities.length > 0) { %>
+                                                  <div>
+                                                       <dt class="text-sm font-medium text-gray-500 mb-2">Requested Activities</dt>
+                                                       <dd class="flex flex-wrap gap-2">
+                                                            <% booking.customTour.activities.forEach(activity => { %>
+                                                                 <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-0.5 text-sm font-medium text-blue-800">
+                                                                      <%= activity %>
+                                                                 </span>
+                                                            <% }); %>
+                                                       </dd>
+                                                  </div>
+                                                  <% } %>
+                                             </div>
+                                        </div>
+                                        <% } %>
+
+                                        <!-- Additional Information -->
                                         <div class="bg-white shadow overflow-hidden sm:rounded-lg">
                                              <div class="px-4 py-5 sm:px-6">
                                                   <h3 class="text-lg font-medium text-gray-900">Additional Information</h3>
                                              </div>
                                              <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
-                                                  <dt class="text-sm font-medium text-gray-500">Special Requests</dt>
-                                                  <dd class="mt-1 text-sm text-gray-900">
-                                                       <%= booking.specialRequests || 'No special requests' %>
-                                                  </dd>
+                                                  <% if (booking.notes) { %>
+                                                  <div class="mb-4">
+                                                       <dt class="text-sm font-medium text-gray-500">Notes</dt>
+                                                       <dd class="mt-1 text-sm text-gray-900">
+                                                            <%= booking.notes %>
+                                                       </dd>
+                                                  </div>
+                                                  <% } %>
+                                                  
+                                                  <% if (booking.customTour && booking.customTour.additionalNotes) { %>
+                                                  <div>
+                                                       <dt class="text-sm font-medium text-gray-500">Custom Tour Notes</dt>
+                                                       <dd class="mt-1 text-sm text-gray-900">
+                                                            <%= booking.customTour.additionalNotes %>
+                                                       </dd>
+                                                  </div>
+                                                  <% } %>
+
+                                                  <% if (!booking.notes && (!booking.customTour || !booking.customTour.additionalNotes)) { %>
+                                                  <p class="text-sm text-gray-500">No additional notes provided</p>
+                                                  <% } %>
                                              </div>
                                         </div>
-
+                                        
                                         <!-- Actions Card -->
                                         <div class="bg-white shadow overflow-hidden sm:rounded-lg">
                                              <div class="px-4 py-5 sm:px-6">
@@ -203,6 +279,103 @@
                                              </div>
                                         </div>
                                    </div>
+                                   
+                                   <!-- AI-Generated Itinerary (if exists) -->
+                                   <% if (booking.aiItinerary) { 
+                                        let itinerary;
+                                        try {
+                                             itinerary = JSON.parse(booking.aiItinerary);
+                                        } catch(e) {
+                                             itinerary = null;
+                                        }
+                                        
+                                        if (itinerary) { %>
+                                   <div class="bg-white shadow overflow-hidden sm:rounded-lg mt-6">
+                                        <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
+                                             <h3 class="text-lg font-medium text-gray-900">AI-Generated Itinerary</h3>
+                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                                       <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.414L8 12.586l7.293-7.293a1 1 0 011.12-.38z" clip-rule="evenodd" />
+                                                  </svg>
+                                                  AI Recommended
+                                             </span>
+                                        </div>
+                                        <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                                             <!-- Itinerary Title -->
+                                             <h2 class="text-xl font-bold text-gray-900 mb-2"><%= itinerary.title || 'Personalized Morocco Journey' %></h2>
+                                             
+                                             <!-- Itinerary Summary -->
+                                             <div class="bg-gradient-to-r from-orange-50 to-amber-50 p-4 rounded-lg border border-orange-100 mb-6">
+                                                  <p class="text-sm text-orange-700"><%= itinerary.summary || 'A custom-designed tour for the client.' %></p>
+                                             </div>
+                                             
+                                             <!-- Days -->
+                                             <div class="space-y-4">
+                                                  <% if (itinerary.days && Array.isArray(itinerary.days)) { 
+                                                       itinerary.days.forEach(day => { %>
+                                                  <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm mb-4">
+                                                       <div class="flex items-center mb-3">
+                                                            <span class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 text-sm flex items-center justify-center font-medium mr-3">
+                                                                 <%= day.day %>
+                                                            </span>
+                                                            <h4 class="font-bold text-lg text-gray-800">Day <%= day.day %> - <%= day.location %></h4>
+                                                       </div>
+                                                       
+                                                       <div class="p-3 bg-gray-50 rounded-lg mb-4">
+                                                            <p class="text-sm text-gray-700"><%= day.description %></p>
+                                                       </div>
+                                                       
+                                                       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                            <div>
+                                                                 <h5 class="text-xs font-bold text-gray-500 uppercase mb-2 flex items-center">
+                                                                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1 text-orange-500" viewBox="0 0 20 20" fill="currentColor">
+                                                                           <path fill-rule="evenodd" d="M6 3a1 1 0 011-1h.01a1 1 0 010 2H7a1 1 0 01-1-1zm2 3a1 1 0 00-2 0v1a2 2 0 00-2 2v1a2 2 0 00-2 2v.683a3.7 3.7 0 011.055.485 1.704 1.704 0 001.89 0 3.704 3.704 0 014.11 0 1.704 1.704 0 001.89 0 3.704 3.704 0 014.11 0 1.704 1.704 0 001.89 0A3.7 3.7 0 0118 12.683V12a2 2 0 00-2-2V9a2 2 0 00-2-2V6a1 1 0 10-2 0v1h-1V6a1 1 0 10-2 0v1H8V6zm10 8.868a3.704 3.704 0 01-4.055-.036 1.704 1.704 0 00-1.89 0 3.704 3.704 0 01-4.11 0 1.704 1.704 0 00-1.89 0A3.704 3.704 0 012 14.868V17a1 1 0 001 1h14a1 1 0 001-1v-2.132zM9 3a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1zm3 0a1 1 0 011-1h.01a1 1 0 110 2H13a1 1 0 01-1-1z" clip-rule="evenodd" />
+                                                                      </svg>
+                                                                      Activities
+                                                                 </h5>
+                                                                 <div class="activities-container">
+                                                                      <% if (day.activities && Array.isArray(day.activities)) {
+                                                                           day.activities.forEach(activity => { %>
+                                                                      <div class="flex items-center p-2 mb-1 bg-white rounded border border-gray-100">
+                                                                           <span class="w-1.5 h-1.5 bg-orange-400 rounded-full mr-2"></span>
+                                                                           <span class="text-xs text-gray-700"><%= activity %></span>
+                                                                      </div>
+                                                                      <% }); } %>
+                                                                 </div>
+                                                            </div>
+                                                            
+                                                            <div>
+                                                                 <h5 class="text-xs font-bold text-gray-500 uppercase mb-2 flex items-center">
+                                                                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1 text-orange-500" viewBox="0 0 20 20" fill="currentColor">
+                                                                           <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+                                                                      </svg>
+                                                                      Meals
+                                                                 </h5>
+                                                                 <div class="p-3 bg-white rounded border border-gray-100">
+                                                                      <p class="text-xs text-gray-600">
+                                                                           <span class="font-medium">Breakfast:</span> <%= day.meals?.breakfast || 'Not specified' %><br>
+                                                                           <span class="font-medium">Lunch:</span> <%= day.meals?.lunch || 'Not specified' %><br>
+                                                                           <span class="font-medium">Dinner:</span> <%= day.meals?.dinner || 'Not specified' %>
+                                                                      </p>
+                                                                 </div>
+                                                                 
+                                                                 <h5 class="text-xs font-bold text-gray-500 uppercase mt-3 mb-2 flex items-center">
+                                                                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1 text-orange-500" viewBox="0 0 20 20" fill="currentColor">
+                                                                           <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                                                                      </svg>
+                                                                      Accommodation
+                                                                 </h5>
+                                                                 <div class="p-3 bg-white rounded border border-gray-100">
+                                                                      <p class="text-xs text-gray-600"><%= day.accommodation || 'Not specified' %></p>
+                                                                 </div>
+                                                            </div>
+                                                       </div>
+                                                  </div>
+                                                  <% }); } %>
+                                             </div>
+                                        </div>
+                                   </div>
+                                   <% } } %>
                               </div>
                          </div>
                     </div>
