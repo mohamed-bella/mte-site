@@ -23,6 +23,7 @@
   "license": "ISC",
   "dependencies": {
     "@mendable/firecrawl-js": "^1.0.0",
+    "@sendgrid/mail": "^8.1.4",
     "@vercel/analytics": "^1.5.0",
     "alpinejs": "^3.13.3",
     "aos": "^2.3.4",

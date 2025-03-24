@@ -692,28 +692,90 @@ router.post('/settings', async (req, res) => {
      try {
           const { 
                siteTitle, 
-               contactEmail, 
-               phoneNumber, 
+               email, 
+               phone, 
                facebook, 
                instagram, 
                twitter,
                address,
-               coordinates
+               coordinates,
+               siteDescription,
+               metaDescription,
+               metaKeywords
           } = req.body;
 
+          // Create update object
+          const updateData = { 
+               siteTitle, 
+               email, 
+               phone,
+               siteDescription,
+               metaDescription,
+               metaKeywords,
+               socialMedia: { facebook, instagram, twitter },
+               address
+          };
+
+          // Handle coordinates if provided
+          if (coordinates) {
+               updateData.coordinates = {
+                    lat: parseFloat(coordinates.lat),
+                    lng: parseFloat(coordinates.lng)
+               };
+          }
+
+          // Handle logo upload
+          if (req.files && req.files.logo) {
+               try {
+                    // Upload to Cloudinary
+                    const result = await cloudinary.uploader.upload(
+                         `data:${req.files.logo.mimetype};base64,${req.files.logo.data.toString('base64')}`,
+                         {
+                              folder: 'morocco-travel-experts/logos',
+                              resource_type: 'image'
+                         }
+                    );
+                    
+                    // Save logo information
+                    updateData.logo = {
+                         url: result.secure_url,
+                         cloudinaryId: result.public_id
+                    };
+               } catch (uploadError) {
+                    console.error('Logo upload error:', uploadError);
+                    req.flash('warning', 'Logo upload failed. Other settings saved.');
+               }
+          }
+
+          // Handle footer logo upload
+          if (req.files && req.files.footerLogo) {
+               try {
+                    // Upload to Cloudinary
+                    const result = await cloudinary.uploader.upload(
+                         `data:${req.files.footerLogo.mimetype};base64,${req.files.footerLogo.data.toString('base64')}`,
+                         {
+                              folder: 'morocco-travel-experts/logos',
+                              resource_type: 'image'
+                         }
+                    );
+                    
+                    // Save footer logo information
+                    updateData.footerLogo = {
+                         url: result.secure_url,
+                         cloudinaryId: result.public_id
+                    };
+               } catch (uploadError) {
+                    console.error('Footer logo upload error:', uploadError);
+                    req.flash('warning', 'Footer logo upload failed. Other settings saved.');
+               }
+          }
+          
+          console.log('Updating settings with:', updateData);
+
+          // Update or create settings
           const setting = await Setting.findOneAndUpdate(
                {},
-               { 
-                    siteTitle, 
-                    contactEmail, 
-                    phoneNumber, 
-                    socialMedia: { facebook, instagram, twitter },
-                    address,
-                    coordinates: {
-                         lat: parseFloat(coordinates.lat),
-                         lng: parseFloat(coordinates.lng)
-                    }
-               },
+               updateData,
                { new: true, upsert: true }
           );
 

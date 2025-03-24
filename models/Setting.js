@@ -16,7 +16,26 @@ const settingSchema = new mongoose.Schema({
         required: true,
         default: '+212612210183'
     },
-
+    logo: {
+        url: {
+            type: String,
+            default: ''
+        },
+        cloudinaryId: {
+            type: String,
+            default: ''
+        }
+    },
+    footerLogo: {
+        url: {
+            type: String,
+            default: ''
+        },
+        cloudinaryId: {
+            type: String,
+            default: ''
+        }
+    },
     socialMedia: {
         facebook: {
             type: String,

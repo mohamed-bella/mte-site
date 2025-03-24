@@ -462,4 +462,21 @@ router.post('/visitor-notification', async (req, res) => {
   }
 });
 
+// Add routes for tour-customizer and thank-you pages
+router.get('/tour-customizer', (req, res) => {
+    res.render('pages/tour-customizer', {
+        title: 'Customize Your Morocco Tour',
+        metaDescription: 'Create your perfect Morocco adventure with our personalized tour customizer. Choose destinations, activities, and experiences for a custom itinerary.',
+        metaKeywords: 'morocco tour, custom tour, personalized travel, morocco travel planner'
+    });
+});
+
+router.get('/thank-you', (req, res) => {
+    res.render('pages/thank-you', {
+        title: 'Thank You For Your Booking',
+        metaDescription: 'Thank you for booking your Morocco adventure with us. Our team will contact you shortly with your personalized travel itinerary.',
+        metaKeywords: 'morocco booking confirmation, travel thanks, morocco tour booked'
+    });
+});
+
 module.exports = router;

@@ -152,6 +152,9 @@ const adminRoutes = require('./routes/adminRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const excursionRoutes = require('./routes/excursionRoutes');
 const adminExcursionRoutes = require('./routes/admin/excursionRoutes');
+// api
+const apiRoutes = require('./routes/api');
+
 
 // Use routes
 app.use('/', indexRoutes);
@@ -159,6 +162,7 @@ app.use('/admin', adminRoutes);
 app.use('/admin/excursions', adminExcursionRoutes);
 app.use('/booking', bookingRoutes);
 app.use('/', excursionRoutes);
+app.use('/api', apiRoutes);
 
 // Admin login page
 app.get('/admin/login', (req, res) => {

@@ -100,6 +100,19 @@
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Administration
+    </div>
+    
+    <!-- Nav Item - Settings -->
+    <li class="nav-item <%= currentPage === 'settings' ? 'active' : '' %>">
+        <a class="nav-link" href="/admin/settings">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Settings</span>
+        </a>
+    </li>
+
     <!-- Visit Website -->
     <li class="nav-item">
         <a class="nav-link" href="/" target="_blank">

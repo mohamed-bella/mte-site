@@ -5,7 +5,7 @@
                <!-- Company Info -->
                <div>
                     <div class="mb-6">
-                         <img src="<%= settings?.footerLogo || '/images/logo.png' %>" alt="<%= settings?.siteTitle || 'Morocco Tours' %> Logo" class="h-14">
+                         <img src="<%= settings?.footerLogo?.url || '/images/logo.png' %>" alt="<%= settings?.siteTitle || 'Morocco Tours' %> Logo" class="h-14">
                     </div>
                     <p class="text-gray-400 mb-6">
                          <%= settings?.footerAbout || 'Your trusted partner for unforgettable Moroccan adventures. Discover the magic of Morocco with our expert-guided tours.' %>

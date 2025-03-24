@@ -1,0 +1,690 @@
+
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<main class="bg-gray-50 min-h-screen">
+    <!-- Progress Bar -->
+    <div class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div id="progress-bar" class="bg-orange-600 h-2.5 rounded-full" style="width: 25%"></div>
+            </div>
+            <div class="flex justify-between text-sm mt-2 text-gray-500">
+                <span>Your Details</span>
+                <span>Destinations</span>
+                <span>Activities</span>
+                <span>Finalize</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Container -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <!-- Hero Section -->
+            <div class="relative bg-orange-600 text-white p-8 md:p-12">
+                <div class="absolute inset-0 opacity-20 bg-pattern"></div>
+                <div class="relative z-10">
+                    <h1 id="customizer-title" class="text-3xl md:text-4xl font-bold mb-4">Customize Your Morocco Adventure</h1>
+                    <p id="customizer-description" class="text-lg md:text-xl max-w-3xl">Tell us more about your dream Morocco trip and our system will create the perfect itinerary for you.</p>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="p-8 md:p-12">
+                <!-- Step 1: Custom Overview (Initial info saved) -->
+                <div id="step-overview" class="mb-10">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Your Trip Details</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <h3 class="font-medium text-gray-700 mb-2">Traveler Information</h3>
+                            <p id="traveler-name" class="text-gray-800 font-semibold"></p>
+                            <p id="traveler-email" class="text-gray-600"></p>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <h3 class="font-medium text-gray-700 mb-2">Trip Overview</h3>
+                            <p id="trip-type" class="text-gray-800 font-semibold mb-1"></p>
+                            <p id="trip-date" class="text-gray-600"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Destination Selection -->
+                <div id="step-destinations" class="mb-10">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Select Your Destinations</h2>
+                    <p class="text-gray-600 mb-6">Choose the cities and locations you'd like to visit on your journey.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                        <div class="destination-card" data-city="marrakech">
+                            <div class="relative aspect-w-16 aspect-h-10 rounded-lg overflow-hidden mb-3">
+                                <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0009.webp" 
+                                    alt="Marrakech" class="object-cover w-full h-full">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <h3 class="text-white text-xl font-bold">Marrakech</h3>
+                                </div>
+                                <div class="absolute top-3 right-3">
+                                    <div class="city-checkbox">
+                                        <input type="checkbox" id="marrakech" class="hidden">
+                                        <label for="marrakech" class="checkbox-custom"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="destination-card" data-city="fes">
+                            <div class="relative aspect-w-16 aspect-h-10 rounded-lg overflow-hidden mb-3">
+                                <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0010.webp" 
+                                    alt="Fes" class="object-cover w-full h-full">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <h3 class="text-white text-xl font-bold">Fes</h3>
+                                </div>
+                                <div class="absolute top-3 right-3">
+                                    <div class="city-checkbox">
+                                        <input type="checkbox" id="fes" class="hidden">
+                                        <label for="fes" class="checkbox-custom"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="destination-card" data-city="casablanca">
+                            <div class="relative aspect-w-16 aspect-h-10 rounded-lg overflow-hidden mb-3">
+                                <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0011.webp" 
+                                    alt="Casablanca" class="object-cover w-full h-full">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <h3 class="text-white text-xl font-bold">Casablanca</h3>
+                                </div>
+                                <div class="absolute top-3 right-3">
+                                    <div class="city-checkbox">
+                                        <input type="checkbox" id="casablanca" class="hidden">
+                                        <label for="casablanca" class="checkbox-custom"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="destination-card" data-city="chefchaouen">
+                            <div class="relative aspect-w-16 aspect-h-10 rounded-lg overflow-hidden mb-3">
+                                <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0012.webp" 
+                                    alt="Chefchaouen" class="object-cover w-full h-full">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <h3 class="text-white text-xl font-bold">Chefchaouen</h3>
+                                </div>
+                                <div class="absolute top-3 right-3">
+                                    <div class="city-checkbox">
+                                        <input type="checkbox" id="chefchaouen" class="hidden">
+                                        <label for="chefchaouen" class="checkbox-custom"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="destination-card" data-city="merzouga">
+                            <div class="relative aspect-w-16 aspect-h-10 rounded-lg overflow-hidden mb-3">
+                                <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0013.webp" 
+                                    alt="Merzouga (Sahara)" class="object-cover w-full h-full">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <h3 class="text-white text-xl font-bold">Merzouga (Sahara)</h3>
+                                </div>
+                                <div class="absolute top-3 right-3">
+                                    <div class="city-checkbox">
+                                        <input type="checkbox" id="merzouga" class="hidden">
+                                        <label for="merzouga" class="checkbox-custom"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="destination-card" data-city="essaouira">
+                            <div class="relative aspect-w-16 aspect-h-10 rounded-lg overflow-hidden mb-3">
+                                <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0014.webp" 
+                                    alt="Essaouira" class="object-cover w-full h-full">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <h3 class="text-white text-xl font-bold">Essaouira</h3>
+                                </div>
+                                <div class="absolute top-3 right-3">
+                                    <div class="city-checkbox">
+                                        <input type="checkbox" id="essaouira" class="hidden">
+                                        <label for="essaouira" class="checkbox-custom"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Activities Selection (Initially Hidden) -->
+                <div id="step-activities" class="mb-10 hidden">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Choose Your Activities</h2>
+                    <p class="text-gray-600 mb-6">Select the experiences you're most interested in.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                        <div class="activity-card">
+                            <div class="flex items-center p-4 border rounded-lg">
+                                <input type="checkbox" id="camel-riding" name="activities[]" value="camel-riding" class="h-5 w-5 text-orange-600">
+                                <label for="camel-riding" class="ml-3 flex items-center">
+                                    <i class="fas fa-horse text-2xl text-orange-500 mr-3"></i>
+                                    <div>
+                                        <span class="block font-medium text-gray-800">Camel Riding</span>
+                                        <span class="text-sm text-gray-500">Experience the traditional desert transport</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-card">
+                            <div class="flex items-center p-4 border rounded-lg">
+                                <input type="checkbox" id="cooking-class" name="activities[]" value="cooking-class" class="h-5 w-5 text-orange-600">
+                                <label for="cooking-class" class="ml-3 flex items-center">
+                                    <i class="fas fa-utensils text-2xl text-orange-500 mr-3"></i>
+                                    <div>
+                                        <span class="block font-medium text-gray-800">Cooking Class</span>
+                                        <span class="text-sm text-gray-500">Learn to make authentic Moroccan dishes</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-card">
+                            <div class="flex items-center p-4 border rounded-lg">
+                                <input type="checkbox" id="historical-tour" name="activities[]" value="historical-tour" class="h-5 w-5 text-orange-600">
+                                <label for="historical-tour" class="ml-3 flex items-center">
+                                    <i class="fas fa-landmark text-2xl text-orange-500 mr-3"></i>
+                                    <div>
+                                        <span class="block font-medium text-gray-800">Historical Tours</span>
+                                        <span class="text-sm text-gray-500">Discover Morocco's rich heritage</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-card">
+                            <div class="flex items-center p-4 border rounded-lg">
+                                <input type="checkbox" id="marketplace" name="activities[]" value="marketplace" class="h-5 w-5 text-orange-600">
+                                <label for="marketplace" class="ml-3 flex items-center">
+                                    <i class="fas fa-store text-2xl text-orange-500 mr-3"></i>
+                                    <div>
+                                        <span class="block font-medium text-gray-800">Market Exploration</span>
+                                        <span class="text-sm text-gray-500">Navigate the vibrant souks with a local</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-card">
+                            <div class="flex items-center p-4 border rounded-lg">
+                                <input type="checkbox" id="sandboarding" name="activities[]" value="sandboarding" class="h-5 w-5 text-orange-600">
+                                <label for="sandboarding" class="ml-3 flex items-center">
+                                    <i class="fas fa-mountain text-2xl text-orange-500 mr-3"></i>
+                                    <div>
+                                        <span class="block font-medium text-gray-800">Sandboarding</span>
+                                        <span class="text-sm text-gray-500">Thrilling rides down Sahara dunes</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-card">
+                            <div class="flex items-center p-4 border rounded-lg">
+                                <input type="checkbox" id="photography" name="activities[]" value="photography" class="h-5 w-5 text-orange-600">
+                                <label for="photography" class="ml-3 flex items-center">
+                                    <i class="fas fa-camera text-2xl text-orange-500 mr-3"></i>
+                                    <div>
+                                        <span class="block font-medium text-gray-800">Photography Tour</span>
+                                        <span class="text-sm text-gray-500">Capture Morocco's most photogenic spots</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 4: Finalize (Initially Hidden) -->
+                <div id="step-finalize" class="hidden">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Your Customized Morocco Experience</h2>
+                    
+                    <div class="bg-orange-50 rounded-lg p-6 mb-8 border border-orange-100">
+                        <h3 class="text-xl font-semibold text-orange-800 mb-4">Your Personalized Itinerary</h3>
+                        <div id="customized-itinerary" class="space-y-4">
+                            <!-- Dynamic content will be inserted here -->
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-6 mb-8">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Trip Summary</h3>
+                        <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Traveler</dt>
+                                <dd id="summary-name" class="mt-1 text-gray-900"></dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Email</dt>
+                                <dd id="summary-email" class="mt-1 text-gray-900"></dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Tour Type</dt>
+                                <dd id="summary-tour-type" class="mt-1 text-gray-900"></dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Travel Date</dt>
+                                <dd id="summary-date" class="mt-1 text-gray-900"></dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Destinations</dt>
+                                <dd id="summary-destinations" class="mt-1 text-gray-900"></dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Activities</dt>
+                                <dd id="summary-activities" class="mt-1 text-gray-900"></dd>
+                            </div>
+                        </dl>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-6 mb-8">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Additional Comments</h3>
+                        <textarea id="additional-comments" placeholder="Any special requests or details about your trip?" class="w-full p-3 border rounded-lg" rows="4"></textarea>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button id="submit-final-booking" class="px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                            Submit Your Custom Trip Request
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Navigation Buttons -->
+                <div class="flex justify-between mt-8">
+                    <button id="prev-step" class="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg invisible">
+                        <i class="fas fa-arrow-left mr-2"></i> Previous Step
+                    </button>
+                    <button id="next-step" class="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg">
+                        Next Step <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<style>
+.bg-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.checkbox-custom {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+}
+
+.checkbox-custom::after {
+    content: '\f00c';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ff5722;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+input[type="checkbox"]:checked + .checkbox-custom::after {
+    opacity: 1;
+}
+
+.destination-card {
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.destination-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Fix aspect ratio on older browsers */
+.aspect-w-16 {
+    position: relative;
+    padding-bottom: calc(var(--tw-aspect-h) / var(--tw-aspect-w) * 100%);
+    --tw-aspect-w: 16;
+}
+
+.aspect-h-10 {
+    --tw-aspect-h: 10;
+}
+
+.aspect-w-16 > * {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get query parameters and local storage data
+    const urlParams = new URLSearchParams(window.location.search);
+    const tourType = urlParams.get('type');
+    const savedData = JSON.parse(localStorage.getItem('pendingBooking') || '{}');
+    
+    // Set current step
+    let currentStep = 1;
+    const totalSteps = 4;
+    
+    // DOM elements
+    const progressBar = document.getElementById('progress-bar');
+    const prevButton = document.getElementById('prev-step');
+    const nextButton = document.getElementById('next-step');
+    
+    // Step sections
+    const stepOverview = document.getElementById('step-overview');
+    const stepDestinations = document.getElementById('step-destinations');
+    const stepActivities = document.getElementById('step-activities');
+    const stepFinalize = document.getElementById('step-finalize');
+    
+    // Initialize with saved data
+    if (savedData.name) {
+        document.getElementById('traveler-name').textContent = savedData.name;
+        document.getElementById('traveler-email').textContent = savedData.email;
+        
+        // Format tour type for display
+        const tourTypeFormatted = savedData.tour_type ? savedData.tour_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Custom Tour';
+        document.getElementById('trip-type').textContent = tourTypeFormatted;
+        
+        // Format date for display
+        const dateFormatted = savedData.travel_date ? new Date(savedData.travel_date).toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        }) : 'Flexible';
+        document.getElementById('trip-date').textContent = `Traveling on: ${dateFormatted}`;
+        
+        // Customize page based on tour type
+        customizeForTourType(savedData.tour_type);
+    }
+    
+    // Customize page based on tour type
+    function customizeForTourType(type) {
+        const title = document.getElementById('customizer-title');
+        const description = document.getElementById('customizer-description');
+        
+        // Pre-select cities based on tour type
+        if (type === 'desert_tours') {
+            title.textContent = 'Customize Your Desert Adventure';
+            description.textContent = 'Create your perfect Sahara journey with camel rides, desert camps, and oasis visits.';
+            
+            // Pre-select destinations for desert tours
+            document.getElementById('merzouga').checked = true;
+            document.getElementById('marrakech').checked = true;
+        } 
+        else if (type === 'city_tours') {
+            title.textContent = 'Customize Your City Experience';
+            description.textContent = 'Explore Morocco\'s vibrant cities, historic medinas, and cultural landmarks.';
+            
+            // Pre-select destinations for city tours
+            document.getElementById('marrakech').checked = true;
+            document.getElementById('fes').checked = true;
+            document.getElementById('casablanca').checked = true;
+        }
+        else if (type === 'cultural_experiences') {
+            title.textContent = 'Customize Your Cultural Journey';
+            description.textContent = 'Immerse yourself in authentic Moroccan culture, traditions, and local experiences.';
+            
+            // Pre-select destinations for cultural tours
+            document.getElementById('fes').checked = true;
+            document.getElementById('chefchaouen').checked = true;
+        }
+    }
+    
+    // Handle destination card clicks
+    document.querySelectorAll('.destination-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            const cityId = this.getAttribute('data-city');
+            const checkbox = document.getElementById(cityId);
+            
+            // Don't toggle if clicking directly on checkbox
+            if (e.target.classList.contains('checkbox-custom') || e.target === checkbox) {
+                return;
+            }
+            
+            checkbox.checked = !checkbox.checked;
+        });
+    });
+    
+    // Navigation functions
+    function updateProgress() {
+        const progressPercentage = (currentStep / totalSteps) * 100;
+        progressBar.style.width = `${progressPercentage}%`;
+        
+        // Show/hide prev button
+        if (currentStep === 1) {
+            prevButton.classList.add('invisible');
+        } else {
+            prevButton.classList.remove('invisible');
+        }
+        
+        // Update next button text for final step
+        if (currentStep === totalSteps - 1) {
+            nextButton.innerHTML = 'Complete <i class="fas fa-check ml-2"></i>';
+        } else {
+            nextButton.innerHTML = 'Next Step <i class="fas fa-arrow-right ml-2"></i>';
+        }
+    }
+    
+    function showStep(step) {
+        // Hide all steps
+        stepOverview.classList.add('hidden');
+        stepDestinations.classList.add('hidden');
+        stepActivities.classList.add('hidden');
+        stepFinalize.classList.add('hidden');
+        
+        // Show current step
+        if (step === 1) {
+            stepOverview.classList.remove('hidden');
+            stepDestinations.classList.remove('hidden');
+        } else if (step === 2) {
+            stepActivities.classList.remove('hidden');
+        } else if (step === 3) {
+            generateItinerary();
+            stepFinalize.classList.remove('hidden');
+        }
+    }
+    
+    // Generate personalized itinerary based on selections
+    function generateItinerary() {
+        const itineraryContainer = document.getElementById('customized-itinerary');
+        itineraryContainer.innerHTML = '';
+        
+        // Get selected destinations
+        const selectedDestinations = [];
+        document.querySelectorAll('input[type="checkbox"][id]:checked').forEach(checkbox => {
+            if (['marrakech', 'fes', 'casablanca', 'chefchaouen', 'merzouga', 'essaouira'].includes(checkbox.id)) {
+                selectedDestinations.push(checkbox.id);
+            }
+        });
+        
+        // Get selected activities
+        const selectedActivities = [];
+        document.querySelectorAll('input[name="activities[]"]:checked').forEach(checkbox => {
+            selectedActivities.push(checkbox.value);
+        });
+        
+        // Fill summary info
+        document.getElementById('summary-name').textContent = savedData.name;
+        document.getElementById('summary-email').textContent = savedData.email;
+        document.getElementById('summary-tour-type').textContent = savedData.tour_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        document.getElementById('summary-date').textContent = new Date(savedData.travel_date).toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        document.getElementById('summary-destinations').textContent = selectedDestinations.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ');
+        document.getElementById('summary-activities').textContent = selectedActivities.length > 0 
+            ? selectedActivities.map(a => a.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ')
+            : 'No specific activities selected';
+        
+        // Generate day-by-day itinerary based on selections
+        const tourDays = Math.max(selectedDestinations.length * 2, 3); // At least 3 days, or 2 days per destination
+        
+        // Create itinerary days
+        for (let day = 1; day <= tourDays; day++) {
+            const destinationIndex = (day - 1) % selectedDestinations.length;
+            const destination = selectedDestinations[destinationIndex];
+            
+            let dayContent = `
+                <div class="day-item">
+                    <h4 class="font-bold text-orange-700">Day ${day}: ${destination.charAt(0).toUpperCase() + destination.slice(1)}</h4>
+                    <p class="text-gray-700">
+            `;
+            
+            // Add destination-specific activities
+            if (destination === 'marrakech') {
+                dayContent += 'Explore the vibrant medina, visit Jardin Majorelle, and experience Jemaa el-Fnaa square at sunset.';
+            } else if (destination === 'fes') {
+                dayContent += 'Discover the medieval medina, visit the famous tanneries, and explore the Al-Qarawiyyin University.';
+            } else if (destination === 'casablanca') {
+                dayContent += 'Visit the spectacular Hassan II Mosque and explore the modern side of Morocco.';
+            } else if (destination === 'chefchaouen') {
+                dayContent += 'Wander through the blue streets, hike in the surrounding mountains, and experience local crafts.';
+            } else if (destination === 'merzouga') {
+                dayContent += 'Camel trek into the Sahara Desert, overnight in a luxury desert camp, and witness the stunning starry sky.';
+            } else if (destination === 'essaouira') {
+                dayContent += 'Explore the coastal fortress, enjoy the beach, and savor the freshest seafood in Morocco.';
+            }
+            
+            // Add selected activities if applicable
+            if (selectedActivities.includes('cooking-class') && day === 2) {
+                dayContent += ' Participate in a traditional Moroccan cooking class to learn local cuisine secrets.';
+            } else if (selectedActivities.includes('historical-tour') && day === 3) {
+                dayContent += ' Enjoy a guided historical tour with a local expert revealing hidden stories.';
+            } else if (selectedActivities.includes('sandboarding') && destination === 'merzouga') {
+                dayContent += ' Experience the thrill of sandboarding down the golden dunes.';
+            }
+            
+            dayContent += '</p></div>';
+            itineraryContainer.innerHTML += dayContent;
+        }
+        
+        // Add final day
+        itineraryContainer.innerHTML += `
+            <div class="day-item">
+                <h4 class="font-bold text-orange-700">Day ${tourDays + 1}: Departure</h4>
+                <p class="text-gray-700">Transfer to the airport for your departure flight, taking with you unforgettable memories of Morocco.</p>
+            </div>
+        `;
+    }
+    
+    // Event listeners for navigation
+    prevButton.addEventListener('click', function() {
+        if (currentStep > 1) {
+            currentStep--;
+            updateProgress();
+            showStep(currentStep);
+        }
+    });
+    
+    nextButton.addEventListener('click', function() {
+        // Validate current step
+        if (currentStep === 1) {
+            // Check if at least one destination is selected
+            const hasDestinations = document.querySelectorAll('input[type="checkbox"][id]:checked').length > 0;
+            if (!hasDestinations) {
+                alert('Please select at least one destination to continue.');
+                return;
+            }
+        }
+        
+        if (currentStep < totalSteps) {
+            currentStep++;
+            updateProgress();
+            showStep(currentStep);
+            
+            // Scroll to top of step
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    });
+    
+    // Handle final submission
+    document.getElementById('submit-final-booking').addEventListener('click', function() {
+        // Gather all data
+        const finalData = {
+            ...savedData,
+            destinations: [],
+            activities: [],
+            comments: document.getElementById('additional-comments').value
+        };
+        
+        // Get selected destinations
+        document.querySelectorAll('input[type="checkbox"][id]:checked').forEach(checkbox => {
+            if (['marrakech', 'fes', 'casablanca', 'chefchaouen', 'merzouga', 'essaouira'].includes(checkbox.id)) {
+                finalData.destinations.push(checkbox.id);
+            }
+        });
+        
+        // Get selected activities
+        document.querySelectorAll('input[name="activities[]"]:checked').forEach(checkbox => {
+            finalData.activities.push(checkbox.value);
+        });
+        
+        // Disable button and show loading state
+        const button = document.getElementById('submit-final-booking');
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+        
+        // Send data to server
+        fetch('/api/custom-booking', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(finalData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Clear pending booking data
+                localStorage.removeItem('pendingBooking');
+                
+                // Redirect to thank you page
+                window.location.href = `/thank-you?booking_id=${data.data.booking_id}`;
+            } else {
+                alert('There was an error processing your booking. Please try again.');
+                button.disabled = false;
+                button.innerHTML = 'Submit Your Custom Trip Request';
+            }
+        })
+        .catch(error => {
+            console.error('Error submitting booking:', error);
+            alert('There was an error processing your booking. Please try again.');
+            
+            button.disabled = false;
+            button.innerHTML = 'Submit Your Custom Trip Request';
+        });
+    });
+    
+    // Initialize the UI
+    updateProgress();
+    showStep(currentStep);
+});
+</script>
+
+<%- include('../partials/footer') %> 

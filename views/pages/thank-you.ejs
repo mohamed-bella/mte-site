@@ -1,0 +1,132 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<main class="min-h-screen bg-gray-50 py-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <!-- Success Banner -->
+            <div class="relative bg-gradient-to-r from-orange-500 to-orange-600 text-white py-16 px-8 text-center">
+                <div class="absolute inset-0 opacity-20">
+                    <svg width="100%" height="100%">
+                        <pattern id="pattern-circles" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse" patternContentUnits="userSpaceOnUse">
+                            <circle id="pattern-circle" cx="10" cy="10" r="2" fill="#ffffff"></circle>
+                        </pattern>
+                        <rect x="0" y="0" width="100%" height="100%" fill="url(#pattern-circles)"></rect>
+                    </svg>
+                </div>
+                
+                <div class="relative z-10 max-w-3xl mx-auto">
+                    <div class="inline-block bg-white p-2 rounded-full mb-6">
+                        <svg class="w-16 h-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <h1 class="text-4xl font-bold mb-4">Thank You for Your Request!</h1>
+                    <p class="text-xl mb-2">Your custom tour request has been successfully submitted.</p>
+                    <p class="text-lg opacity-80">Our travel specialists will contact you within 24 hours.</p>
+                </div>
+            </div>
+            
+            <!-- Content Section -->
+            <div class="py-12 px-8">
+                <div class="mb-10 text-center">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">What Happens Next?</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="p-6 border border-gray-100 rounded-xl bg-gray-50">
+                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-600 mb-4">
+                                <i class="fas fa-envelope-open-text text-xl"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold mb-2">Confirmation Email</h3>
+                            <p class="text-gray-600">You'll receive a confirmation email with your request details.</p>
+                        </div>
+                        
+                        <div class="p-6 border border-gray-100 rounded-xl bg-gray-50">
+                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-600 mb-4">
+                                <i class="fas fa-file-alt text-xl"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold mb-2">Custom Itinerary</h3>
+                            <p class="text-gray-600">Our team will create a personalized itinerary based on your preferences.</p>
+                        </div>
+                        
+                        <div class="p-6 border border-gray-100 rounded-xl bg-gray-50">
+                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-600 mb-4">
+                                <i class="fas fa-phone-alt text-xl"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold mb-2">Personal Contact</h3>
+                            <p class="text-gray-600">A travel specialist will contact you within 24 hours to discuss details.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-orange-50 p-6 rounded-xl mb-8">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-lightbulb text-2xl text-orange-500 mr-4 mt-1"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Pro Tip: Prepare for Your Call</h3>
+                            <p class="text-gray-600 mb-2">When our specialist calls you, it's helpful to have:</p>
+                            <ul class="text-gray-600 space-y-1 list-inside list-disc">
+                                <li>Your budget range per person</li>
+                                <li>Preferred accommodation type (luxury, mid-range, budget)</li>
+                                <li>Any dietary requirements or health considerations</li>
+                                <li>Questions about local customs or safety</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">While You Wait, Explore Morocco</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <a href="/blog" class="group flex flex-col h-full overflow-hidden rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="relative aspect-w-16 aspect-h-9 bg-orange-100">
+                                <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0006.webp" alt="Morocco Travel Blog" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <div class="p-6 flex-grow bg-white">
+                                <h4 class="text-lg font-semibold mb-2 group-hover:text-orange-600 transition-colors">Read Our Travel Blog</h4>
+                                <p class="text-gray-600">Discover insider tips and inspiration for your Morocco journey.</p>
+                            </div>
+                        </a>
+                        
+                        <a href="/gallery" class="group flex flex-col h-full overflow-hidden rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="relative aspect-w-16 aspect-h-9 bg-orange-100">
+                                <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0013.webp" alt="Morocco Photo Gallery" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <div class="p-6 flex-grow bg-white">
+                                <h4 class="text-lg font-semibold mb-2 group-hover:text-orange-600 transition-colors">Explore Photo Gallery</h4>
+                                <p class="text-gray-600">See stunning images from across Morocco to fuel your wanderlust.</p>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <a href="/" class="inline-flex items-center text-orange-600 hover:text-orange-700 font-medium">
+                            <i class="fas fa-arrow-left mr-2"></i> Back to Homepage
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Track conversion -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Track conversion in Google Analytics if available
+    if (typeof gtag !== 'undefined') {
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookingId = urlParams.get('booking_id');
+        
+        gtag('event', 'conversion', {
+            'send_to': 'AW-CONVERSION_ID/CONVERSION_LABEL', // Replace with your actual values
+            'transaction_id': bookingId
+        });
+    }
+});
+</script>
+
+<%- include('../partials/footer') %> 
