@@ -55,7 +55,7 @@
                     <!-- Grid of Cities -->
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                         <% const cities = [
-                            { id: 'marrakech', name: 'Marrakech', image: 'https://images.unsplash.com/photo-1548784252-4dd5ed451c41?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
+                            { id: 'marrakech', name: 'Marrakech', image: 'https://github.com/bellacdn/moroccotravelexperts/blob/main/moroccotravelexperts-marrakech.jpg?raw=true' },
                             { id: 'fes', name: 'Fes', image: 'https://images.unsplash.com/photo-1548019979-e5c3c08baef9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
                             { id: 'casablanca', name: 'Casablanca', image: 'https://images.unsplash.com/photo-1577147443647-81856d5151af?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
                             { id: 'chefchaouen', name: 'Chefchaouen', image: 'https://images.unsplash.com/photo-1560602641-36d9b973455a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
@@ -67,18 +67,12 @@
                         <div class="city-card relative group">
                             <input type="checkbox" id="<%= city.id %>" class="hidden">
                             <label for="<%= city.id %>" class="block cursor-pointer">
-                                <div class="aspect-w-1 aspect-h-1 rounded-xl overflow-hidden">
-                                    <img src="<%= city.image %>" alt="<%= city.name %>" class="object-cover w-full h-full transform transition-transform group-hover:scale-110">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/0"></div>
-                                    
-                                    <!-- City Name -->
-                                    <div class="absolute bottom-0 left-0 p-3">
-                                        <h3 class="text-white font-medium text-sm md:text-base"><%= city.name %></h3>
-                                    </div>
+                                <div class="bg-white rounded-xl border border-gray-200 hover:border-orange-300 transition-colors p-4 h-full flex items-center justify-center">
+                                    <h3 class="text-gray-800 font-medium text-center"><%= city.name %></h3>
                                     
                                     <!-- Selection Indicator -->
-                                    <div class="absolute top-0 right-0 p-2">
-                                        <div class="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center">
+                                    <div class="ml-2">
+                                        <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white opacity-0" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                                             </svg>
@@ -405,6 +399,11 @@
     
     .city-card input:checked + label .opacity-0 {
         opacity: 1;
+    }
+    
+    .city-card input:checked + label .bg-white {
+        background-color: rgb(255, 247, 237);
+        border-color: rgb(249, 115, 22);
     }
     
     /* Fix for activity card checkboxes */

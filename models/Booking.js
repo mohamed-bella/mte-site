@@ -27,7 +27,7 @@ const bookingSchema = new mongoose.Schema({
     },
     source: {
         type: String,
-        enum: ['website', 'custom_tour_builder', 'admin', 'referral', 'social', 'other'],
+        enum: ['website', 'custom_tour_builder', 'admin', 'referral', 'social', 'other', 'ai_itinerary_generator'],
         default: 'website'
     },
     status: {
