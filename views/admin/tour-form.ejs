@@ -18,6 +18,23 @@
 
                          <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                               <div class="py-5">
+                                   <!-- Error container for form submission errors -->
+                                   <div id="form-error-container" class="hidden mb-5 rounded-md bg-red-50 p-4">
+                                        <div class="flex">
+                                             <div class="flex-shrink-0">
+                                                  <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                       <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                                                  </svg>
+                                             </div>
+                                             <div class="ml-3">
+                                                  <h3 class="text-sm font-medium text-red-800">Error</h3>
+                                                  <div class="mt-2 text-sm text-red-700">
+                                                       <p id="form-error-message"></p>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                   </div>
+
                                    <form id="tourForm" class="space-y-8 divide-y divide-gray-200" enctype="multipart/form-data">
                                         <!-- Basic Information -->
                                         <div class="space-y-6 sm:space-y-5">
@@ -54,8 +71,14 @@
                                                        <label for="price" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
                                                             Price (USD) *
                                                        </label>
-                                                       <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                                       <div class="mt-1 sm:mt-0 sm:col-span-2 flex items-center">
                                                             <input type="number" name="price" id="price" required min="0" step="0.01" value="<%= tour ? tour.price : '' %>" class="max-w-lg block w-full shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
+                                                            <% if (tour) { %>
+                                                                 <button type="button" id="updatePriceBtn" onclick="updateTourPrice('<%= tour._id %>')" class="ml-3 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                                                                      Update Price
+                                                                 </button>
+                                                                 <span id="priceUpdateSuccess" class="ml-3 text-green-600 text-sm hidden">Price updated!</span>
+                                                            <% } %>
                                                        </div>
                                                   </div>
 
@@ -92,13 +115,13 @@
                                                   <!-- Map -->
                                                   <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
                                                        <label class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                                                            Tour Route Map Image *
+                                                            Tour Route Map Image <%= !tour || !tour.mapImage ? '*' : '' %>
                                                        </label>
                                                        <div class="mt-1 sm:mt-0 sm:col-span-2">
                                                             <input type="file" 
                                                                    name="mapImage" 
                                                                    accept="image/*"
-                                                                   required
+                                                                   <%= !tour || !tour.mapImage ? 'required' : '' %>
                                                                    class="block w-full text-sm text-gray-500
                                                                           file:mr-4 file:py-2 file:px-4
                                                                           file:rounded-full file:border-0
@@ -107,7 +130,10 @@
                                                                           hover:file:bg-orange-100">
                                                             <p class="mt-2 text-sm text-gray-500">Upload a static map image showing the tour route (recommended size: 800x600px)</p>
                                                             <% if (tour && tour.mapImage) { %>
-                                                                 <img src="<%= tour.mapImage %>" alt="Current map" class="mt-4 max-w-lg rounded-lg">
+                                                                 <div class="mt-4 relative">
+                                                                      <img src="<%= tour.mapImage %>" alt="Current map" class="max-w-lg rounded-lg">
+                                                                      <p class="mt-2 text-sm text-orange-600">Current map image will be used unless you select a new one</p>
+                                                                 </div>
                                                             <% } %>
                                                        </div>
                                                   </div>
@@ -182,7 +208,7 @@
 
                                                   <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
                                                        <label class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                                                            <%= tour && tour.images ? 'Add More Tour Images' : 'Tour Images *' %>
+                                                            <%= tour && tour.images && tour.images.length > 0 ? 'Add More Tour Images' : 'Tour Images *' %>
                                                        </label>
                                                        <div class="mt-1 sm:mt-0 sm:col-span-2">
                                                             <input type="file" 
@@ -191,7 +217,7 @@
                                                                    multiple 
                                                                    accept="image/*"
                                                                    class="hidden"
-                                                                   <%= !tour ? 'required' : '' %>
+                                                                   <%= !tour || !tour.images || tour.images.length === 0 ? 'required' : '' %>
                                                                    onchange="handleImageSelection(this)">
                                                             <div class="max-w-lg flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer" onclick="document.getElementById('multipleImages').click()">
                                                                  <div class="space-y-1 text-center">
@@ -199,7 +225,7 @@
                                                                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                                                       </svg>
                                                                       <div class="flex text-sm text-gray-600">
-                                                                           <span>Upload images</span>
+                                                                           <span><%= tour && tour.images && tour.images.length > 0 ? 'Add more images' : 'Upload images' %></span>
                                                                                 </div>
                                                                       <p class="text-xs text-gray-500">
                                                                            PNG, JPG, GIF up to 10MB each (max 20 images)
@@ -301,15 +327,40 @@
                     }).addTo(map);
                });
 
+               // Function to display form errors
+               function showFormError(message) {
+                    const errorContainer = document.getElementById('form-error-container');
+                    const errorMessage = document.getElementById('form-error-message');
+                    
+                    errorMessage.textContent = message;
+                    errorContainer.classList.remove('hidden');
+                    
+                    // Scroll to error
+                    errorContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // Hide after 10 seconds
+                    setTimeout(() => {
+                         errorContainer.classList.add('hidden');
+                    }, 10000);
+               }
+               
+               // Function to clear form errors
+               function clearFormError() {
+                    const errorContainer = document.getElementById('form-error-container');
+                    errorContainer.classList.add('hidden');
+               }
+
                // Function to handle image selection and preview
                function handleImageSelection(input) {
                     const preview = document.getElementById('selectedImagesPreview');
                     preview.innerHTML = '';
                     
+                    clearFormError(); // Clear previous errors
+                    
                     if (input.files && input.files.length > 0) {
                         // Check if there are too many files
                         if (input.files.length > 20) {
-                            alert('You can only upload up to 20 images at once. Please try again with fewer images.');
+                            showFormError('You can only upload up to 20 images at once. Please try again with fewer images.');
                             input.value = '';
                             return;
                         }
@@ -318,6 +369,7 @@
                         const maxSize = 10 * 1024 * 1024; // 10MB
                         let totalSize = 0;
                         let overSizedFiles = [];
+                        let emptyFiles = [];
                         
                         for (let i = 0; i < input.files.length; i++) {
                             totalSize += input.files[i].size;
@@ -325,11 +377,23 @@
                             if (input.files[i].size > maxSize) {
                                 overSizedFiles.push(`${input.files[i].name} (${Math.round(input.files[i].size / 1024 / 1024)}MB)`);
                             }
+                            
+                            if (input.files[i].size <= 0) {
+                                emptyFiles.push(input.files[i].name || `File ${i+1}`);
+                            }
                         }
                         
                         if (overSizedFiles.length > 0) {
-                            alert(`The following files exceed the 10MB size limit:\n${overSizedFiles.join('\n')}\n\nPlease optimize these images and try again.`);
+                            showFormError(`The following files exceed the 10MB size limit:\n${overSizedFiles.join('\n')}\n\nPlease optimize these images and try again.`);
                             input.value = '';
+                            input.dataset.hadError = 'true';
+                            return;
+                        }
+                        
+                        if (emptyFiles.length > 0) {
+                            showFormError(`The following files appear to be empty or corrupted:\n${emptyFiles.join('\n')}\n\nPlease select valid image files.`);
+                            input.value = '';
+                            input.dataset.hadError = 'true';
                             return;
                         }
                         
@@ -438,12 +502,99 @@
                     }
                });
 
+               // Validate if all file inputs are filled correctly
+               function validateFileInputs() {
+                    // Check the map image input
+                    const mapInput = document.querySelector('input[name="mapImage"]');
+                    const hasTourWithMap = <%= tour && tour.mapImage ? 'true' : 'false' %>;
+                    
+                    if (mapInput.required && mapInput.files.length === 0) {
+                         showFormError('Please select a map image for the tour.');
+                         return false;
+                    }
+                    
+                    if (mapInput.files.length > 0 && mapInput.files[0].size <= 0) {
+                         showFormError('The map image appears to be empty or corrupted. Please select a valid image file.');
+                         mapInput.dataset.hadError = 'true';
+                         return false;
+                    }
+                    
+                    // Check the tour images input
+                    const imageInput = document.getElementById('multipleImages');
+                    const hasTourWithImages = <%= tour && tour.images && tour.images.length > 0 ? 'true' : 'false' %>;
+                    
+                    if (imageInput.required && imageInput.files.length === 0) {
+                         showFormError('Please select at least one image for the tour.');
+                         return false;
+                    }
+                    
+                    if (imageInput.files.length > 0) {
+                         let hasEmptyFile = false;
+                         let emptyFileNames = [];
+                         
+                         for (let i = 0; i < imageInput.files.length; i++) {
+                              if (imageInput.files[i].size <= 0) {
+                                   hasEmptyFile = true;
+                                   emptyFileNames.push(imageInput.files[i].name || `File ${i+1}`);
+                              }
+                         }
+                         
+                         if (hasEmptyFile) {
+                              showFormError(`One or more tour images appear to be empty or corrupted: ${emptyFileNames.join(', ')}. Please review your image selections.`);
+                              imageInput.dataset.hadError = 'true';
+                              return false;
+                         }
+                    }
+                    
+                    return true;
+               }
+
                // Handle form submission with AJAX
                document.querySelector('form').addEventListener('submit', async function(e) {
                     e.preventDefault();
                     
+                    clearFormError(); // Clear any existing errors
+                    
+                    // Validate all inputs
+                    if (!validateFileInputs()) {
+                         return; // Stop submission if validation fails
+                    }
+                    
                     const form = this;
-                    const formData = new FormData(form);
+                    const formData = new FormData();
+                    
+                    // Only add non-empty fields to the FormData
+                    // Add basic form data fields
+                    formData.append('title', form.querySelector('#title').value);
+                    formData.append('description', form.querySelector('#description').value);
+                    formData.append('price', form.querySelector('#price').value);
+                    formData.append('duration', form.querySelector('#duration').value);
+                    formData.append('groupSize', form.querySelector('#groupSize').value);
+                    formData.append('startLocation', form.querySelector('#startLocation').value);
+                    formData.append('accommodation', form.querySelector('#accommodation').value);
+                    
+                    // Only add map image if it's not empty
+                    const mapInput = document.querySelector('input[name="mapImage"]');
+                    if (mapInput.files.length > 0 && mapInput.files[0].size > 0) {
+                         formData.append('mapImage', mapInput.files[0]);
+                    }
+                    
+                    // Only add tour images if they're not empty
+                    const imageInput = document.getElementById('multipleImages');
+                    if (imageInput.files.length > 0) {
+                         let hasValidFiles = false;
+                         for (let i = 0; i < imageInput.files.length; i++) {
+                              if (imageInput.files[i].size > 0) {
+                                   formData.append('images', imageInput.files[i]);
+                                   hasValidFiles = true;
+                              }
+                         }
+                         
+                         if (!hasValidFiles && imageInput.required) {
+                              showFormError('Please select at least one valid image for the tour.');
+                              return;
+                         }
+                    }
                     
                     // Convert itinerary to JSON string
                     const days = [];
@@ -462,37 +613,23 @@
                          dayNumber++;
                     }
                     
-                    // Remove original itinerary data
-                    for (let i = 0; i < dayNumber; i++) {
-                         formData.delete(`itinerary[${i}][day]`);
-                         formData.delete(`itinerary[${i}][title]`);
-                         formData.delete(`itinerary[${i}][description]`);
-                    }
-                    
                     // Add itinerary as JSON
-                    formData.set('itinerary', JSON.stringify(days));
+                    formData.append('itinerary', JSON.stringify(days));
                     
                     // Handle existing images properly - get all values and convert to an array
                     const existingImagesInputs = form.querySelectorAll('input[name="existingImages"]');
                     if (existingImagesInputs.length > 0) {
-                        // Remove all existingImages entries from formData (it will have only the last one otherwise)
-                        formData.delete('existingImages');
-                        
-                        // Re-add all of them
-                        existingImagesInputs.forEach(input => {
-                            formData.append('existingImages', input.value);
-                        });
+                         // Add all existing images
+                         existingImagesInputs.forEach(input => {
+                             formData.append('existingImages', input.value);
+                         });
                     }
 
                     // Convert includes and excludes textareas to arrays
                     const includes = form.querySelector('#includes').value.split('\n').filter(item => item.trim());
                     const excludes = form.querySelector('#excludes').value.split('\n').filter(item => item.trim());
                     
-                    // Remove the original includes/excludes from formData
-                    formData.delete('includes');
-                    formData.delete('excludes');
-                    
-                    // Add each include/exclude item as an array element
+                    // Add includes and excludes as arrays
                     includes.forEach(item => formData.append('includes[]', item.trim()));
                     excludes.forEach(item => formData.append('excludes[]', item.trim()));
                     
@@ -507,13 +644,35 @@
                     
                     try {
                          const url = '<%= tour ? `/admin/tours/${tour._id}/edit` : `/admin/tours/new` %>';
+                         console.log("Submitting to:", url);
+                         
                          const response = await fetch(url, {
                               method: 'POST',
-                              body: formData
+                              body: formData,
+                              // Don't set Content-Type header, let the browser set it automatically with boundary
+                              // The browser will automatically set Content-Type: multipart/form-data with boundary
                          });
 
                          if (!response.ok) {
-                              throw new Error('Network response was not ok');
+                              let errorMessage = 'Network response was not ok';
+                              
+                              try {
+                                   // Attempt to parse JSON error if available
+                                   const errorData = await response.json();
+                                   errorMessage = errorData.message || errorMessage;
+                              } catch (parseError) {
+                                   // If not JSON, try to get text error
+                                   try {
+                                        const textError = await response.text();
+                                        // Log the raw response for debugging
+                                        console.error("Server responded with:", textError.substring(0, 500) + "...");
+                                        errorMessage = "Server error occurred. See console for details.";
+                                   } catch (textError) {
+                                        console.error("Failed to parse server response");
+                                   }
+                              }
+                              
+                              throw new Error(errorMessage);
                          }
 
                          const result = await response.json();
@@ -521,7 +680,7 @@
                          if (result.success) {
                               window.location.href = '/admin/tours';
                          } else {
-                              alert(result.message || 'Error saving tour');
+                              showFormError(result.message || 'Error saving tour');
                               // Re-enable button and hide spinner on error
                               submitBtn.disabled = false;
                               submitText.classList.remove('opacity-50');
@@ -529,13 +688,98 @@
                          }
                     } catch (error) {
                          console.error('Error:', error);
-                         alert('Error saving tour. Please try again.');
+                         showFormError(error.message || 'Error saving tour. Please try again.');
                          // Re-enable button and hide spinner on error
                          submitBtn.disabled = false;
                          submitText.classList.remove('opacity-50');
                          submitSpinner.classList.add('hidden');
                     }
                });
+
+               // Add cache-busting to file inputs to ensure they reset properly
+               document.addEventListener('DOMContentLoaded', function() {
+                    // Add random parameter to file inputs to prevent caching issues
+                    const mapInput = document.querySelector('input[name="mapImage"]');
+                    const imagesInput = document.getElementById('multipleImages');
+                    
+                    if (mapInput) {
+                         // Add a timestamp to reset the file input when the form is loaded
+                         mapInput.setAttribute('data-timestamp', Date.now());
+                         
+                         // Monitor for any value changes in the form that might affect image uploads
+                         mapInput.addEventListener('click', function() {
+                              // Clear any previous selection if there was an error
+                              if (this.dataset.hadError === 'true') {
+                                   this.value = '';
+                                   this.dataset.hadError = 'false';
+                              }
+                         });
+                    }
+                    
+                    if (imagesInput) {
+                         imagesInput.setAttribute('data-timestamp', Date.now());
+                         
+                         imagesInput.addEventListener('click', function() {
+                              if (this.dataset.hadError === 'true') {
+                                   this.value = '';
+                                   this.dataset.hadError = 'false';
+                              }
+                         });
+                    }
+               });
+
+               // Add function to update just the tour price
+               async function updateTourPrice(tourId) {
+                    try {
+                         // Get the price value
+                         const price = document.getElementById('price').value;
+                         
+                         // Validate price
+                         if (!price || isNaN(parseFloat(price)) || parseFloat(price) < 0) {
+                              showFormError('Please enter a valid price');
+                              return;
+                         }
+                         
+                         // Show loading state
+                         const updateBtn = document.getElementById('updatePriceBtn');
+                         const originalText = updateBtn.textContent;
+                         updateBtn.disabled = true;
+                         updateBtn.textContent = 'Updating...';
+                         
+                         // Send the request
+                         const response = await fetch(`/admin/tours/${tourId}/update-price`, {
+                              method: 'POST',
+                              headers: {
+                                   'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({ price: parseFloat(price) })
+                         });
+                         
+                         if (!response.ok) {
+                              const errorData = await response.json();
+                              throw new Error(errorData.message || 'Failed to update price');
+                         }
+                         
+                         // Show success message
+                         const successElement = document.getElementById('priceUpdateSuccess');
+                         successElement.classList.remove('hidden');
+                         
+                         // Hide success message after 3 seconds
+                         setTimeout(() => {
+                              successElement.classList.add('hidden');
+                         }, 3000);
+                         
+                         console.log('Price updated successfully');
+                    } catch (error) {
+                         console.error('Error updating price:', error);
+                         showFormError(error.message || 'Failed to update price');
+                    } finally {
+                         // Restore button state
+                         const updateBtn = document.getElementById('updatePriceBtn');
+                         updateBtn.disabled = false;
+                         updateBtn.textContent = 'Update Price';
+                    }
+               }
           </script>
 
           <%- include('../partials/admin/footer') %>

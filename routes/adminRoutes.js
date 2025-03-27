@@ -35,6 +35,11 @@ const upload = multer({
 });
 // Check file type helper function
 function checkFileType(file, cb) {
+     // Skip validation if file is empty (during edit)
+     if (!file.size) {
+         return cb(null, true);
+     }
+     
      const filetypes = /jpeg|jpg|png|gif/;
      const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
      const mimetype = filetypes.test(file.mimetype);
@@ -116,17 +121,64 @@ router.post('/tours/new', upload.fields([
         let imageUrls = [];
         let mapImageUrl = '';
 
+        // Validate required files
+        if (!req.files.images || req.files.images.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'At least one tour image is required'
+            });
+        }
+
+        if (!req.files.mapImage || req.files.mapImage.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'A map image is required'
+            });
+        }
+
+        // Check for empty files
+        const emptyImages = req.files.images.filter(file => !file.size);
+        if (emptyImages.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: `Some image files appear to be empty or corrupted: ${emptyImages.map(f => f.originalname).join(', ')}`
+            });
+        }
+
+        if (req.files.mapImage[0] && !req.files.mapImage[0].size) {
+            return res.status(400).json({
+                success: false,
+                message: 'The map image appears to be empty or corrupted'
+            });
+        }
+
         // Handle regular tour images
         if (req.files.images) {
-            for (const file of req.files.images) {
-                const imageUrl = await uploadToGithub(file);
-                imageUrls.push(imageUrl);
+            try {
+                for (const file of req.files.images) {
+                    const imageUrl = await uploadToGithub(file);
+                    imageUrls.push(imageUrl);
+                }
+            } catch (uploadError) {
+                console.error('Image upload error:', uploadError);
+                return res.status(500).json({
+                    success: false,
+                    message: `Error uploading tour images: ${uploadError.message}`
+                });
             }
         }
 
         // Handle map image
         if (req.files.mapImage && req.files.mapImage[0]) {
-            mapImageUrl = await uploadToGithub(req.files.mapImage[0]);
+            try {
+                mapImageUrl = await uploadToGithub(req.files.mapImage[0]);
+            } catch (uploadError) {
+                console.error('Map image upload error:', uploadError);
+                return res.status(500).json({
+                    success: false,
+                    message: `Error uploading map image: ${uploadError.message}`
+                });
+            }
         }
 
         const newTour = new Tour({
@@ -154,7 +206,7 @@ router.post('/tours/new', upload.fields([
         });
 
     } catch (error) {
-        console.error(error);
+        console.error('Tour creation error:', error);
         res.status(500).json({
             success: false,
             message: error.message || 'Error creating tour'
@@ -165,21 +217,27 @@ router.post('/tours/new', upload.fields([
 // Helper function to upload to GitHub
 async function uploadToGithub(file) {
     try {
+        // First check if file is valid
+        if (!file.originalname || !file.size || file.size <= 0) {
+            console.error(`Invalid file detected: ${file.originalname || 'unknown file'}, size: ${file.size || 0} bytes`);
+            throw new Error('Invalid file: File appears to be empty or corrupted.');
+        }
+
         const imageBuffer = file.buffer;
         const fileName = `IMG-${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9.]/g, '-')}`;
+        
+        // Log file details for debugging
+        console.log(`Processing file: ${fileName}, size: ${Math.round(imageBuffer.length/1024)}KB`);
         
         // For large files, use a different approach
         if (imageBuffer.length > 750000) { // ~750KB, GitHub API limit is around 1MB
             console.log(`Large file detected (${Math.round(imageBuffer.length/1024)}KB), using optimized upload method.`);
             
-            // Compress the image if it's larger than 1MB
-            let base64Image;
-            
             // Create a unique path for each image based on date and original name
             const filePath = `tours/${new Date().toISOString().slice(0,10)}/${fileName}`;
             
             // Convert to base64
-            base64Image = imageBuffer.toString('base64');
+            const base64Image = imageBuffer.toString('base64');
             
             const response = await fetch(`https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${filePath}`, {
                 method: 'PUT',
@@ -197,7 +255,8 @@ async function uploadToGithub(file) {
             
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(`GitHub API Error: ${errorData.message}`);
+                console.error('GitHub API Error:', errorData);
+                throw new Error(`GitHub API Error: ${errorData.message || 'Unknown error'}`);
             }
             
             const data = await response.json();
@@ -223,7 +282,8 @@ async function uploadToGithub(file) {
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(`GitHub API Error: ${errorData.message}`);
+            console.error('GitHub API Error:', errorData);
+            throw new Error(`GitHub API Error: ${errorData.message || 'Unknown error'}`);
         }
 
         const data = await response.json();
@@ -254,11 +314,22 @@ router.get('/tours/:id/edit', async (req, res) => {
      }
 });
 
-router.post('/tours/:id/edit', upload.fields([
+router.post('/tours/:id/edit', (req, res, next) => {
+    // Check if the request is multipart/form-data
+    if (!req.is('multipart/form-data')) {
+        console.log('Warning: Request is not multipart/form-data, which is required for file uploads.');
+    }
+    // Continue with processing
+    next();
+}, upload.fields([
     { name: 'images', maxCount: 20 },
     { name: 'mapImage', maxCount: 1 }
 ]), async (req, res) => {
     try {
+        console.log('Editing tour:', req.params.id);
+        console.log('Files received:', req.files ? Object.keys(req.files).length > 0 ? Object.keys(req.files) : 'Empty files object' : 'No files');
+        console.log('Body fields received:', Object.keys(req.body).length > 0 ? Object.keys(req.body) : 'No body fields');
+        
         const {
             title,
             description,
@@ -287,32 +358,87 @@ router.post('/tours/:id/edit', upload.fields([
             (Array.isArray(existingImages) ? existingImages : [existingImages]) : 
             (currentTour.images || []);
 
+        // Keep existing map image if no new one is uploaded
         let mapImageUrl = currentTour.mapImage || '';
 
         // Handle new tour images - append to existing images
-        if (req.files.images && req.files.images.length > 0) {
-            for (const file of req.files.images) {
-                const imageUrl = await uploadToGithub(file);
-                imageUrls.push(imageUrl);
+        if (req.files && req.files.images && req.files.images.length > 0) {
+            try {
+                for (const file of req.files.images) {
+                    if (file.size > 0) { // Only process files with content
+                        const imageUrl = await uploadToGithub(file);
+                        imageUrls.push(imageUrl);
+                    }
+                }
+                console.log(`Successfully uploaded ${req.files.images.filter(f => f.size > 0).length} new tour images`);
+            } catch (uploadError) {
+                console.error('Image upload error:', uploadError);
+                return res.status(500).json({
+                    success: false,
+                    message: `Error uploading tour images: ${uploadError.message}`
+                });
             }
         }
 
         // Handle map image - only replace if a new one is uploaded
-        if (req.files.mapImage && req.files.mapImage[0]) {
-            mapImageUrl = await uploadToGithub(req.files.mapImage[0]);
+        if (req.files && req.files.mapImage && req.files.mapImage[0] && req.files.mapImage[0].size > 0) {
+            try {
+                mapImageUrl = await uploadToGithub(req.files.mapImage[0]);
+                console.log('Successfully uploaded new map image');
+            } catch (uploadError) {
+                console.error('Map image upload error:', uploadError);
+                return res.status(500).json({
+                    success: false,
+                    message: `Error uploading map image: ${uploadError.message}`
+                });
+            }
+        } else {
+            console.log('Keeping existing map image:', mapImageUrl);
+        }
+
+        // Convert string values to correct types
+        let parsedPrice, parsedDuration, parsedGroupSize;
+        try {
+            parsedPrice = parseFloat(price);
+            parsedDuration = parseInt(duration);
+            parsedGroupSize = parseInt(groupSize);
+            
+            if (isNaN(parsedPrice)) throw new Error('Invalid price');
+            if (isNaN(parsedDuration)) throw new Error('Invalid duration');
+            if (isNaN(parsedGroupSize)) throw new Error('Invalid group size');
+        } catch (parseError) {
+            console.error('Error parsing numeric values:', parseError);
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid numeric values: ' + parseError.message
+            });
+        }
+        
+        // Parse JSON fields
+        let parsedItinerary, parsedIncludes, parsedExcludes;
+        try {
+            parsedItinerary = typeof itinerary === 'string' ? JSON.parse(itinerary) : itinerary;
+            parsedIncludes = Array.isArray(includes) ? includes : (typeof includes === 'string' ? includes.split(',') : []);
+            parsedExcludes = Array.isArray(excludes) ? excludes : (typeof excludes === 'string' ? excludes.split(',') : []);
+        } catch (parseError) {
+            console.error('Error parsing JSON fields:', parseError);
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid data format: ' + parseError.message
+            });
         }
 
         const updateData = {
             title,
             description,
-            price: parseFloat(price),
-            duration: parseInt(duration),
-            groupSize: parseInt(groupSize),
+            price: parsedPrice,
+            duration: parsedDuration,
+            groupSize: parsedGroupSize,
             startLocation,
             accommodation,
-            itinerary: Array.isArray(itinerary) ? itinerary : JSON.parse(itinerary),
-            includes: Array.isArray(includes) ? includes : JSON.parse(includes),
-            excludes: Array.isArray(excludes) ? excludes : JSON.parse(excludes)
+            itinerary: parsedItinerary,
+            includes: parsedIncludes,
+            excludes: parsedExcludes
         };
 
         // Update images only if we have any
@@ -324,16 +450,19 @@ router.post('/tours/:id/edit', upload.fields([
             }
         }
 
+        // Only update map image if we have one
         if (mapImageUrl) {
             updateData.mapImage = mapImageUrl;
         }
 
+        console.log('Updating tour with data:', Object.keys(updateData));
         const tour = await Tour.findByIdAndUpdate(
             req.params.id,
             updateData,
             { new: true, runValidators: true }
         );
 
+        console.log('Tour updated successfully');
         res.json({
             success: true,
             message: 'Tour updated successfully',
@@ -341,10 +470,59 @@ router.post('/tours/:id/edit', upload.fields([
         });
 
     } catch (error) {
-        console.error(error);
+        console.error('Tour update error:', error);
         res.status(500).json({
             success: false,
             message: error.message || 'Error updating tour'
+        });
+    }
+});
+
+router.post('/tours/:id/update-price', async (req, res) => {
+    try {
+        const { price } = req.body;
+        
+        // Validate price
+        if (!price || isNaN(parseFloat(price)) || parseFloat(price) < 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide a valid price'
+            });
+        }
+        
+        console.log(`Updating price for tour ${req.params.id} to $${price}`);
+        
+        // Update only the price field
+        const tour = await Tour.findByIdAndUpdate(
+            req.params.id,
+            { price: parseFloat(price) },
+            { new: true, runValidators: true }
+        );
+        
+        if (!tour) {
+            return res.status(404).json({
+                success: false,
+                message: 'Tour not found'
+            });
+        }
+        
+        console.log('Tour price updated successfully');
+        
+        // Return success response
+        res.json({
+            success: true,
+            message: 'Tour price updated successfully',
+            tour: {
+                _id: tour._id,
+                title: tour.title,
+                price: tour.price
+            }
+        });
+    } catch (error) {
+        console.error('Error updating tour price:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Error updating tour price'
         });
     }
 });

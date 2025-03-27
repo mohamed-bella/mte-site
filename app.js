@@ -30,20 +30,15 @@ app.use(compression({
 // File Upload middleware
 app.use(fileUpload({
     createParentPath: true,
-    limits: { 
-        fileSize: 10 * 1024 * 1024 // 10MB max file size
-    },
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
     abortOnLimit: true,
-    responseOnLimit: "File size limit has been reached",
-    limitHandler: function (req, res, next) {
-        return res.status(413).json({
-            success: false,
-            message: "File size limit has been reached (max 10MB)"
-        });
-    },
     useTempFiles: false,
-    tempFileDir: '/tmp/',
-    debug: process.env.NODE_ENV !== 'production'
+    debug: false, // Disable debug messages
+    // Only handle multipart/form-data requests
+    preserveExtension: true,
+    safeFileNames: true,
+    parseNested: true,
+    uploadTimeout: 60000 // 60 seconds
 }));
 
 // Cache Control Middleware

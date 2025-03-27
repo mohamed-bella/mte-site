@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
     // Basic booking information
+    tour: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Tour',
+        required: false // Make it optional to allow custom tour bookings
+    },
     name: {
         type: String,
         required: true,
