@@ -251,6 +251,62 @@
                                              </div>
                                         </div>
                                         
+                                        <!-- Pricing Information Card -->
+                                        <% if (booking.pricing && booking.pricing.finalPrice > 0) { %>
+                                        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                                             <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
+                                                  <h3 class="text-lg font-medium text-gray-900">Pricing Details</h3>
+                                                  <% if (booking.pricing.discount > 0) { %>
+                                                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                       Discount Applied
+                                                  </span>
+                                                  <% } %>
+                                             </div>
+                                             <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                                                  <div class="space-y-4">
+                                                       <!-- Base Price -->
+                                                       <div class="flex justify-between items-center">
+                                                            <span class="text-sm text-gray-600">Base Price:</span>
+                                                            <span class="text-sm font-medium">$<%= booking.pricing.basePrice.toFixed(2) %></span>
+                                                       </div>
+                                                       
+                                                       <!-- Discount (if any) -->
+                                                       <% if (booking.pricing.discount > 0) { %>
+                                                       <div class="flex justify-between items-center">
+                                                            <span class="text-sm text-green-600 flex items-center">
+                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                                                 </svg>
+                                                                 Group Discount:
+                                                            </span>
+                                                            <span class="text-sm font-medium text-green-600">-$<%= booking.pricing.discount.toFixed(2) %></span>
+                                                       </div>
+                                                       
+                                                       <div class="border-t border-dashed border-gray-200 my-2"></div>
+                                                       <% } %>
+                                                       
+                                                       <!-- Final Price -->
+                                                       <div class="flex justify-between items-center">
+                                                            <span class="font-semibold">Final Price:</span>
+                                                            <span class="font-bold text-lg text-orange-600">$<%= booking.pricing.finalPrice.toFixed(2) %></span>
+                                                       </div>
+                                                       
+                                                       <!-- Discount information -->
+                                                       <% if (booking.pricing.discount > 0) { %>
+                                                       <div class="bg-gray-50 p-3 rounded-lg text-xs text-gray-600 mt-2">
+                                                            <p class="font-medium mb-1">Discount Details:</p>
+                                                            <p>
+                                                                 A 9% discount per additional traveler was applied to this booking.
+                                                                 <% const discountPercentage = (booking.pricing.discount / booking.pricing.basePrice) * 100; %>
+                                                                 Total savings: $<%= booking.pricing.discount.toFixed(2) %> (<%= discountPercentage.toFixed(1) %>% off)
+                                                            </p>
+                                                       </div>
+                                                       <% } %>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                        <% } %>
+                                        
                                         <!-- Actions Card -->
                                         <div class="bg-white shadow overflow-hidden sm:rounded-lg">
                                              <div class="px-4 py-5 sm:px-6">

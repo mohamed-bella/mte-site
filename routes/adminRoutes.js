@@ -626,15 +626,66 @@ router.get('/analytics', async (req, res) => {
                time: booking.createdAt.toLocaleDateString()
           }));
 
+          // Basic stats
+          const confirmedBookings = await Booking.countDocuments({ status: 'confirmed' });
+          
+          // Revenue calculations - now using the pricing field
+          let calculatedRevenue = 0;
+          let avgBookingValue = 0;
+          let conversionRate = 2.5; // Default placeholder value
+          
+          // Discount statistics
+          let totalDiscounts = 0;
+          let avgDiscount = 0;
+          let avgDiscountPercentage = 0;
+          
+          // Get all bookings with pricing info
+          const bookingsWithPricing = await Booking.find({
+               'pricing.finalPrice': { $gt: 0 }
+          });
+          
+          // Calculate revenue and discount stats
+          if (bookingsWithPricing.length > 0) {
+               bookingsWithPricing.forEach(booking => {
+                    calculatedRevenue += booking.pricing.finalPrice || 0;
+                    totalDiscounts += booking.pricing.discount || 0;
+               });
+               
+               // Calculate averages
+               avgBookingValue = calculatedRevenue / bookingsWithPricing.length;
+               avgDiscount = totalDiscounts / bookingsWithPricing.length;
+               
+               // Calculate average discount percentage
+               let totalDiscountPercentage = 0;
+               let bookingsWithDiscount = 0;
+               
+               bookingsWithPricing.forEach(booking => {
+                    if (booking.pricing.discount > 0 && booking.pricing.basePrice > 0) {
+                         const discountPercentage = (booking.pricing.discount / booking.pricing.basePrice) * 100;
+                         totalDiscountPercentage += discountPercentage;
+                         bookingsWithDiscount++;
+                    }
+               });
+               
+               if (bookingsWithDiscount > 0) {
+                    avgDiscountPercentage = totalDiscountPercentage / bookingsWithDiscount;
+               }
+          }
+
           res.render('admin/analytics', {
-               title: 'Analytics',
+               title: 'Analytics Dashboard',
                stats: {
                     totalBookings,
-                    totalRevenue: totalRevenue[0]?.total || 0,
-                    avgBookingValue: totalBookings === 0 ? 0 : Math.round((totalRevenue[0]?.total || 0) / totalBookings),
-                    conversionRate: 0, // This would need additional data to calculate
+                    confirmedBookings,
+                    totalRevenue: calculatedRevenue,
                     bookingGrowth,
-                    revenueGrowth
+                    revenueGrowth,
+                    avgBookingValue,
+                    conversionRate,
+                    // Add discount statistics
+                    totalDiscounts,
+                    avgDiscount,
+                    avgDiscountPercentage
                },
                monthlyRevenue: formattedMonthlyData,
                monthlyBookings: formattedMonthlyData,

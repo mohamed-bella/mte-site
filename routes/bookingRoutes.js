@@ -7,6 +7,13 @@ const nodemailer = require('nodemailer');
 const path = require('path');
 const ejs = require('ejs');
 const axios = require('axios'); // Add axios for HTTP requests
+const crypto = require('crypto');
+
+// Helper function to generate a confirmation code
+function generateConfirmationCode() {
+    // Generate a random 6-character alphanumeric code
+    return crypto.randomBytes(3).toString('hex').toUpperCase();
+}
 
 // Helper function to send WhatsApp notification
 async function sendWhatsAppNotification(message) {
@@ -44,58 +51,95 @@ router.post('/', async (req, res) => {
             phone,
             startDate,
             groupSize,
-            specialRequests
+            specialRequests,
+            calculatedPrice
         } = req.body;
 
         // Find the tour
         const tour = await Tour.findById(tourId);
         if (!tour) {
-            req.flash('error', 'Tour not found');
-            return res.redirect('/tours');
+            return res.status(404).json({
+                success: false,
+                message: 'Tour not found'
+            });
         }
+        
+        // Validate and calculate the price server-side for security
+        const numGuests = parseInt(groupSize) || 1;
+        const basePrice = tour.price * numGuests;
+        let serverCalculatedPrice = basePrice;
+        let discount = 0;
+        
+        // Apply the same discount rules as the frontend
+        if (numGuests > 1) {
+            // Calculate discount - 9% per additional person
+            discount = tour.price * (numGuests - 1) * 0.09;
+            serverCalculatedPrice = basePrice - discount;
+        }
+        
+        // Round to 2 decimal places to match frontend calculation
+        serverCalculatedPrice = Math.round(serverCalculatedPrice * 100) / 100;
+        
+        // Optional: Verify that the frontend calculation isn't too far off from server
+        // Add a small tolerance for floating point errors
+        const clientCalculatedPrice = parseFloat(calculatedPrice) || 0;
+        if (Math.abs(serverCalculatedPrice - clientCalculatedPrice) > 1) {
+            console.warn(`Price mismatch detected: Client sent ${clientCalculatedPrice}, server calculated ${serverCalculatedPrice}`);
+        }
+        
+        // Always use the server-calculated price for security
+        const finalPrice = serverCalculatedPrice;
+        
+        // Generate a confirmation code for the booking
+        const confirmationCode = generateConfirmationCode();
 
-        // Create new booking
+        // Create new booking with pending_payment status
         const booking = new Booking({
             tour: tourId,
-            firstName,
-            lastName,
+            name: `${firstName} ${lastName}`,
             email,
             phone,
-            date: new Date(startDate),
-            groupSize,
-            specialRequests,
-            status: 'pending',
-            totalPrice: tour.price * groupSize // Calculate total price
+            travelDate: new Date(startDate),
+            groupSize: numGuests,
+            notes: specialRequests || '',
+            status: 'pending_payment', // Set initial status to pending_payment
+            tourType: 'standard_tour',
+            source: 'website',
+            // Add pricing details to the booking
+            pricing: {
+                basePrice: basePrice,
+                discount: discount,
+                finalPrice: finalPrice
+            },
+            // Add payment information
+            payment: {
+                status: 'pending',
+                method: 'paypal',
+                confirmationCode: confirmationCode
+            }
         });
 
         await booking.save();
+        console.log('Booking saved successfully:', booking._id);
 
-        // Send confirmation email (commented out for testing)
-        // sendConfirmationEmail(booking, tour);
-        
-        // Send WhatsApp notification
-        const siteUrl = process.env.BASE_URL || 'https://moroccotravelexperts.com';
-        const bookingMessage = `💰 New Tour Booking!\n\n` +
-            `🏆 Tour: ${tour.title}\n` +
-            `👤 Name: ${firstName} ${lastName}\n` +
-            `📧 Email: ${email}\n` +
-            `📞 Phone: ${phone}\n` +
-            `📅 Date: ${new Date(startDate).toLocaleDateString()}\n` +
-            `👪 Group Size: ${groupSize}\n` +
-            `💲 Price: $${tour.price} per person\n` +
-            `💵 Total: $${tour.price * groupSize}\n` +
-            `📝 Requests: ${specialRequests || 'None'}\n\n` +
-            `🌐 Website: ${siteUrl}\n` +
-            `⏰ Time: ${new Date().toLocaleString()}`;
-            
-        sendWhatsAppNotification(bookingMessage);
-
-        req.flash('success', 'Booking submitted successfully. Check your email for confirmation.');
-        res.redirect(`/bookings/${booking._id}/confirmation`);
+        // Return JSON response for AJAX with payment data
+        return res.status(200).json({
+            success: true,
+            message: 'Your booking has been created. Please complete payment to confirm your reservation.',
+            bookingId: booking._id,
+            finalPrice: finalPrice.toFixed(2),
+            tourTitle: tour.title,
+            customerName: `${firstName} ${lastName}`,
+            confirmationCode: confirmationCode,
+            paymentPending: true, // Flag to indicate payment is needed
+            redirectUrl: `/booking/${booking._id}/confirmation`
+        });
     } catch (error) {
         console.error('Booking error:', error);
-        req.flash('error', 'Error processing booking');
-        res.redirect('back');
+        return res.status(500).json({
+            success: false,
+            message: 'There was an error processing your booking. Please try again or contact us directly.'
+        });
     }
 });
 
@@ -206,7 +250,7 @@ router.get('/:id/confirmation', async (req, res) => {
         });
     } catch (error) {
         console.error('Confirmation error:', error);
-        req.flash('error', 'Error loading confirmation');
+        req.flash('error', 'Error loading booking confirmation');
         res.redirect('/');
     }
 });
@@ -318,5 +362,191 @@ async function sendAdminNotification(customRequest) {
         text: emailContent
     });
 }
+
+// PayPal API Routes
+// Create a PayPal payment order
+router.post('/create-paypal-order', async (req, res) => {
+    try {
+        const { bookingId } = req.body;
+        
+        // Find booking
+        const booking = await Booking.findById(bookingId).populate('tour');
+        if (!booking) {
+            return res.status(404).json({
+                success: false,
+                message: 'Booking not found'
+            });
+        }
+        
+        // PayPal order details
+        const orderDetails = {
+            intent: 'CAPTURE',
+            purchase_units: [{
+                reference_id: booking._id.toString(),
+                description: `Morocco Travel Experts - ${booking.tour ? booking.tour.title : 'Tour Booking'}`,
+                amount: {
+                    currency_code: 'USD',
+                    value: booking.pricing.finalPrice.toFixed(2)
+                }
+            }],
+            application_context: {
+                brand_name: 'Morocco Travel Experts',
+                shipping_preference: 'NO_SHIPPING'
+            }
+        };
+        
+        // Create PayPal order with Node.js SDK using Fetch API
+        const auth = Buffer.from(`${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`).toString('base64');
+        
+        // Get PayPal access token first
+        const tokenResponse = await fetch('https://api-m.sandbox.paypal.com/v1/oauth2/token', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Basic ${auth}`,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'grant_type=client_credentials'
+        });
+        
+        const tokenData = await tokenResponse.json();
+        
+        if (!tokenResponse.ok) {
+            console.error('PayPal token error:', tokenData);
+            return res.status(500).json({
+                success: false,
+                message: 'Error creating PayPal token'
+            });
+        }
+        
+        // Create order with the token
+        const response = await fetch('https://api-m.sandbox.paypal.com/v2/checkout/orders', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${tokenData.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(orderDetails)
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            console.error('PayPal order error:', data);
+            return res.status(500).json({
+                success: false,
+                message: 'Error creating PayPal order'
+            });
+        }
+        
+        res.json({
+            success: true,
+            orderId: data.id
+        });
+    } catch (error) {
+        console.error('PayPal order creation error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error creating PayPal order'
+        });
+    }
+});
+
+// Capture PayPal payment
+router.post('/capture-paypal-payment', async (req, res) => {
+    try {
+        const { orderID, bookingId } = req.body;
+        
+        // Find booking
+        const booking = await Booking.findById(bookingId).populate('tour');
+        if (!booking) {
+            return res.status(404).json({
+                success: false,
+                message: 'Booking not found'
+            });
+        }
+        
+        // Get PayPal access token
+        const auth = Buffer.from(`${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`).toString('base64');
+        const tokenResponse = await fetch('https://api-m.sandbox.paypal.com/v1/oauth2/token', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Basic ${auth}`,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'grant_type=client_credentials'
+        });
+        
+        const tokenData = await tokenResponse.json();
+        
+        if (!tokenResponse.ok) {
+            console.error('PayPal token error:', tokenData);
+            return res.status(500).json({
+                success: false,
+                message: 'Error getting PayPal token'
+            });
+        }
+        
+        // Capture the order
+        const response = await fetch(`https://api-m.sandbox.paypal.com/v2/checkout/orders/${orderID}/capture`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${tokenData.access_token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            console.error('PayPal capture error:', data);
+            return res.status(500).json({
+                success: false,
+                message: 'Error capturing PayPal payment'
+            });
+        }
+        
+        // Update booking with payment information
+        booking.status = 'paid';
+        booking.payment.status = 'completed';
+        booking.payment.transactionId = data.purchase_units[0].payments.captures[0].id;
+        booking.payment.paymentDate = new Date();
+        await booking.save();
+        
+        // Send WhatsApp notification with payment confirmation
+        const siteUrl = process.env.BASE_URL || 'https://moroccotravelexperts.com';
+        const bookingMessage = `💰 New Paid Booking!\n\n` +
+            `🏆 Tour: ${booking.tour.title}\n` +
+            `👤 Name: ${booking.name}\n` +
+            `📧 Email: ${booking.email}\n` +
+            `📞 Phone: ${booking.phone}\n` +
+            `📅 Date: ${new Date(booking.travelDate).toLocaleDateString()}\n` +
+            `👪 Group Size: ${booking.groupSize}\n` +
+            `💲 Price: $${booking.tour.price} per person\n` +
+            `💰 Discount: $${booking.pricing.discount.toFixed(2)}\n` +
+            `💵 Total Paid: $${booking.pricing.finalPrice.toFixed(2)}\n` +
+            `🧾 Confirmation Code: ${booking.payment.confirmationCode}\n` +
+            `💳 Transaction ID: ${booking.payment.transactionId}\n` +
+            `📝 Requests: ${booking.notes || 'None'}\n\n` +
+            `🌐 Website: ${siteUrl}\n` +
+            `⏰ Time: ${new Date().toLocaleString()}`;
+            
+        sendWhatsAppNotification(bookingMessage);
+        
+        res.json({
+            success: true,
+            confirmationCode: booking.payment.confirmationCode,
+            bookingId: booking._id,
+            tourTitle: booking.tour.title,
+            finalPrice: booking.pricing.finalPrice.toFixed(2),
+            whatsappLink: `https://wa.me/212704969534?text=Hello,%20I%20have%20just%20booked%20the%20${encodeURIComponent(booking.tour.title)}%20tour.%20My%20confirmation%20code%20is%20${booking.payment.confirmationCode}.%20Please%20confirm%20my%20reservation.%20Thank%20you!`
+        });
+    } catch (error) {
+        console.error('PayPal capture error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error capturing PayPal payment'
+        });
+    }
+});
 
 module.exports = router; 

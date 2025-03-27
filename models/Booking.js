@@ -32,7 +32,7 @@ const bookingSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['new', 'contacted', 'confirmed', 'canceled', 'completed'],
+        enum: ['new', 'pending_payment', 'paid', 'contacted', 'confirmed', 'canceled', 'completed'],
         default: 'new'
     },
     notes: {
@@ -74,10 +74,51 @@ const bookingSchema = new mongoose.Schema({
         }
     },
     
+    // Pricing information
+    pricing: {
+        basePrice: {
+            type: Number,
+            default: 0
+        },
+        discount: {
+            type: Number,
+            default: 0
+        },
+        finalPrice: {
+            type: Number,
+            default: 0
+        }
+    },
+    
     // AI-generated itinerary (stored as JSON string)
     aiItinerary: {
         type: String,
         trim: true
+    },
+    
+    // Payment information
+    payment: {
+        status: {
+            type: String,
+            enum: ['not_paid', 'pending', 'completed', 'failed'],
+            default: 'not_paid'
+        },
+        method: {
+            type: String,
+            enum: ['paypal', 'bank_transfer', 'cash', 'other'],
+            default: 'paypal'
+        },
+        transactionId: {
+            type: String,
+            trim: true
+        },
+        paymentDate: {
+            type: Date
+        },
+        confirmationCode: {
+            type: String,
+            trim: true
+        }
     },
     
     // For tracking and analysis

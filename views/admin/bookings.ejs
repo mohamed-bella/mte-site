@@ -47,6 +47,9 @@
                                                                       <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                                                            Status
                                                                       </th>
+                                                                      <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                                           Pricing
+                                                                      </th>
                                                                       <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                                                                            <span class="sr-only">Actions</span>
                                                                       </th>
@@ -91,6 +94,23 @@
                                                                    'bg-red-100 text-red-800' %>">
                                                                                           <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
                                                                                      </span>
+                                                                                </td>
+                                                                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                                                     <% if (booking.pricing && booking.pricing.finalPrice > 0) { %>
+                                                                                          <div>
+                                                                                               <span class="font-medium text-gray-900">$<%= booking.pricing.finalPrice.toFixed(2) %></span>
+                                                                                          </div>
+                                                                                          <div class="text-xs text-gray-500">
+                                                                                               Base: $<%= booking.pricing.basePrice.toFixed(2) %>
+                                                                                          </div>
+                                                                                          <% if (booking.pricing.discount > 0) { %>
+                                                                                          <div class="text-xs text-green-600">
+                                                                                               Discount: -$<%= booking.pricing.discount.toFixed(2) %>
+                                                                                          </div>
+                                                                                          <% } %>
+                                                                                     <% } else { %>
+                                                                                          N/A
+                                                                                     <% } %>
                                                                                 </td>
                                                                                 <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                                                                      <div class="flex justify-end space-x-3">
