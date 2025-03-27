@@ -363,15 +363,127 @@ async function sendAdminNotification(customRequest) {
     });
 }
 
+// Test route for PayPal credentials
+router.get('/test-paypal-auth', async (req, res) => {
+    try {
+        // Log the exact credentials being used (first few chars only for security)
+        console.log('=== PAYPAL LIVE AUTH TEST ===');
+        console.log('Client ID first 10 chars:', process.env.PAYPAL_CLIENT_ID?.substring(0, 10));
+        console.log('Client Secret first 10 chars:', process.env.PAYPAL_CLIENT_SECRET?.substring(0, 10));
+        
+        // Create the authorization string without any potential extra spaces
+        const clientId = process.env.PAYPAL_CLIENT_ID?.trim() || '';
+        const clientSecret = process.env.PAYPAL_CLIENT_SECRET?.trim() || '';
+        
+        if (!clientId || !clientSecret) {
+            console.error('Missing PayPal credentials in environment variables');
+            return res.status(500).json({
+                success: false,
+                message: 'PayPal credentials are not configured properly'
+            });
+        }
+        
+        console.log('Client ID length:', clientId.length);
+        console.log('Client Secret length:', clientSecret.length);
+        
+        const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+        console.log('Authorization header first 10 chars:', auth.substring(0, 10));
+        
+        console.log('Testing standard token generation method with LIVE API...');
+        const tokenResponse = await fetch('https://api-m.paypal.com/v1/oauth2/token', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Basic ${auth}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'grant_type=client_credentials'
+        });
+        
+        if (tokenResponse.ok) {
+            const tokenData = await tokenResponse.json();
+            console.log('SUCCESS: Token received using standard method');
+            console.log('Token type:', tokenData.token_type);
+            console.log('Expires in:', tokenData.expires_in);
+            console.log('Access token first 10 chars:', tokenData.access_token.substring(0, 10));
+            
+            return res.json({
+                success: true,
+                message: 'PayPal credentials are valid!',
+                method: 'standard',
+                tokenType: tokenData.token_type,
+                expiresIn: tokenData.expires_in
+            });
+        } else {
+            const errorData = await tokenResponse.json();
+            console.error('Standard method failed:', errorData);
+            
+            // Try alternative method
+            console.log('Testing alternative token generation method with LIVE API...');
+            const altTokenResponse = await fetch('https://api-m.paypal.com/v1/oauth2/token', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `grant_type=client_credentials&client_id=${encodeURIComponent(clientId)}&client_secret=${encodeURIComponent(clientSecret)}`
+            });
+            
+            if (altTokenResponse.ok) {
+                const altTokenData = await altTokenResponse.json();
+                console.log('SUCCESS: Token received using alternative method');
+                console.log('Token type:', altTokenData.token_type);
+                console.log('Expires in:', altTokenData.expires_in);
+                console.log('Access token first 10 chars:', altTokenData.access_token.substring(0, 10));
+                
+                return res.json({
+                    success: true,
+                    message: 'PayPal credentials are valid with alternative method!',
+                    method: 'alternative',
+                    tokenType: altTokenData.token_type,
+                    expiresIn: altTokenData.expires_in
+                });
+            } else {
+                const altErrorData = await altTokenResponse.json();
+                console.error('Alternative method also failed:', altErrorData);
+                
+                return res.status(400).json({
+                    success: false,
+                    standardError: errorData,
+                    alternativeError: altErrorData,
+                    message: 'PayPal authentication failed with both methods'
+                });
+            }
+        }
+    } catch (error) {
+        console.error('TEST AUTH ERROR:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error testing PayPal authentication: ' + error.message
+        });
+    }
+});
+
 // PayPal API Routes
 // Create a PayPal payment order
 router.post('/create-paypal-order', async (req, res) => {
     try {
         const { bookingId } = req.body;
         
+        if (!bookingId) {
+            console.error('Missing bookingId in request');
+            return res.status(400).json({
+                success: false,
+                message: 'Booking ID is required'
+            });
+        }
+        
+        console.log('Creating PayPal order for booking:', bookingId);
+        
         // Find booking
         const booking = await Booking.findById(bookingId).populate('tour');
         if (!booking) {
+            console.error('Booking not found:', bookingId);
             return res.status(404).json({
                 success: false,
                 message: 'Booking not found'
@@ -395,58 +507,145 @@ router.post('/create-paypal-order', async (req, res) => {
             }
         };
         
-        // Create PayPal order with Node.js SDK using Fetch API
-        const auth = Buffer.from(`${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`).toString('base64');
+        console.log('Order details:', JSON.stringify(orderDetails));
         
-        // Get PayPal access token first
-        const tokenResponse = await fetch('https://api-m.sandbox.paypal.com/v1/oauth2/token', {
+        // Get credentials and trim any whitespace
+        const clientId = process.env.PAYPAL_CLIENT_ID?.trim() || '';
+        const clientSecret = process.env.PAYPAL_CLIENT_SECRET?.trim() || '';
+        
+        if (!clientId || !clientSecret) {
+            console.error('Missing PayPal credentials in environment variables');
+            return res.status(500).json({
+                success: false,
+                message: 'PayPal is not configured properly. Please contact support.'
+            });
+        }
+        
+        console.log('Using PayPal credentials:');
+        console.log('Client ID length:', clientId.length);
+        console.log('Client Secret length:', clientSecret.length);
+        
+        // Create auth header with trimmed credentials
+        const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+        console.log('Auth token first 10 chars:', auth.substring(0, 10));
+        
+        // Step 1: Get PayPal access token first using standard method
+        console.log('Requesting PayPal access token using standard method...');
+        const tokenResponse = await fetch('https://api-m.paypal.com/v1/oauth2/token', {
             method: 'POST',
             headers: {
                 'Authorization': `Basic ${auth}`,
+                'Accept': 'application/json',
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: 'grant_type=client_credentials'
         });
         
-        const tokenData = await tokenResponse.json();
-        
-        if (!tokenResponse.ok) {
-            console.error('PayPal token error:', tokenData);
-            return res.status(500).json({
-                success: false,
-                message: 'Error creating PayPal token'
+        // Check if standard method succeeded
+        if (tokenResponse.ok) {
+            // Standard method successful
+            const standardTokenData = await tokenResponse.json();
+            console.log('Successfully obtained token using standard method');
+            console.log('Access token first 10 chars:', standardTokenData.access_token.substring(0, 10));
+            
+            // Step 2: Create order with the token
+            console.log('Creating PayPal order using standard token...');
+            const response = await fetch('https://api-m.paypal.com/v2/checkout/orders', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${standardTokenData.access_token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderDetails)
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                console.error('PayPal order creation error:', data);
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error creating PayPal order: ' + (data.message || 'Unknown error')
+                });
+            }
+            
+            console.log('PayPal order created successfully with ID:', data.id);
+            
+            return res.json({
+                success: true,
+                orderId: data.id,
+                method: 'standard'
+            });
+        } else {
+            // Standard method failed, try alternative approach
+            const tokenErrorData = await tokenResponse.json();
+            console.error('Standard method failed:', tokenErrorData);
+            
+            // Try direct approach as fallback
+            console.log('Trying alternative authentication method...');
+            const altTokenResponse = await fetch('https://api-m.paypal.com/v1/oauth2/token', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `grant_type=client_credentials&client_id=${encodeURIComponent(clientId)}&client_secret=${encodeURIComponent(clientSecret)}`
+            });
+            
+            if (!altTokenResponse.ok) {
+                const altTokenErrorData = await altTokenResponse.json();
+                console.error('Alternative method also failed:', altTokenErrorData);
+                
+                // Both methods failed - return detailed error
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error creating PayPal token. Please try again later or contact support.',
+                    details: {
+                        standardError: tokenErrorData.error_description || 'Unknown error',
+                        alternativeError: altTokenErrorData.error_description || 'Unknown error'
+                    }
+                });
+            }
+            
+            // Alternative method successful
+            const altTokenData = await altTokenResponse.json();
+            console.log('Successfully obtained token using alternative method');
+            console.log('Access token first 10 chars:', altTokenData.access_token.substring(0, 10));
+            
+            // Create order with the token from alternate method
+            console.log('Creating PayPal order with alternative token...');
+            const response = await fetch('https://api-m.paypal.com/v2/checkout/orders', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${altTokenData.access_token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderDetails)
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                console.error('PayPal order creation error (alternative method):', data);
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error creating PayPal order: ' + (data.message || 'Unknown error')
+                });
+            }
+            
+            console.log('PayPal order created successfully with ID (alternative method):', data.id);
+            
+            return res.json({
+                success: true,
+                orderId: data.id,
+                method: 'alternative'
             });
         }
-        
-        // Create order with the token
-        const response = await fetch('https://api-m.sandbox.paypal.com/v2/checkout/orders', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${tokenData.access_token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(orderDetails)
-        });
-        
-        const data = await response.json();
-        
-        if (!response.ok) {
-            console.error('PayPal order error:', data);
-            return res.status(500).json({
-                success: false,
-                message: 'Error creating PayPal order'
-            });
-        }
-        
-        res.json({
-            success: true,
-            orderId: data.id
-        });
     } catch (error) {
         console.error('PayPal order creation error:', error);
         res.status(500).json({
             success: false,
-            message: 'Error creating PayPal order'
+            message: 'Error creating PayPal order: ' + error.message
         });
     }
 });
@@ -456,97 +655,217 @@ router.post('/capture-paypal-payment', async (req, res) => {
     try {
         const { orderID, bookingId } = req.body;
         
+        if (!orderID || !bookingId) {
+            console.error('Missing required parameters:', { orderID, bookingId });
+            return res.status(400).json({
+                success: false,
+                message: 'Order ID and Booking ID are required'
+            });
+        }
+        
+        console.log('Capturing PayPal payment for order:', orderID, 'booking:', bookingId);
+        
         // Find booking
         const booking = await Booking.findById(bookingId).populate('tour');
         if (!booking) {
+            console.error('Booking not found:', bookingId);
             return res.status(404).json({
                 success: false,
                 message: 'Booking not found'
             });
         }
         
-        // Get PayPal access token
-        const auth = Buffer.from(`${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`).toString('base64');
-        const tokenResponse = await fetch('https://api-m.sandbox.paypal.com/v1/oauth2/token', {
+        // Get credentials and trim any whitespace
+        const clientId = process.env.PAYPAL_CLIENT_ID?.trim() || '';
+        const clientSecret = process.env.PAYPAL_CLIENT_SECRET?.trim() || '';
+        
+        if (!clientId || !clientSecret) {
+            console.error('Missing PayPal credentials in environment variables');
+            return res.status(500).json({
+                success: false,
+                message: 'PayPal is not configured properly. Please contact support.'
+            });
+        }
+        
+        // Step 1: Get PayPal access token using standard method
+        const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+        console.log('Requesting PayPal access token for capture using standard method...');
+        const tokenResponse = await fetch('https://api-m.paypal.com/v1/oauth2/token', {
             method: 'POST',
             headers: {
                 'Authorization': `Basic ${auth}`,
+                'Accept': 'application/json',
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: 'grant_type=client_credentials'
         });
         
-        const tokenData = await tokenResponse.json();
-        
-        if (!tokenResponse.ok) {
-            console.error('PayPal token error:', tokenData);
-            return res.status(500).json({
-                success: false,
-                message: 'Error getting PayPal token'
-            });
-        }
-        
-        // Capture the order
-        const response = await fetch(`https://api-m.sandbox.paypal.com/v2/checkout/orders/${orderID}/capture`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${tokenData.access_token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-        
-        const data = await response.json();
-        
-        if (!response.ok) {
-            console.error('PayPal capture error:', data);
-            return res.status(500).json({
-                success: false,
-                message: 'Error capturing PayPal payment'
-            });
-        }
-        
-        // Update booking with payment information
-        booking.status = 'paid';
-        booking.payment.status = 'completed';
-        booking.payment.transactionId = data.purchase_units[0].payments.captures[0].id;
-        booking.payment.paymentDate = new Date();
-        await booking.save();
-        
-        // Send WhatsApp notification with payment confirmation
-        const siteUrl = process.env.BASE_URL || 'https://moroccotravelexperts.com';
-        const bookingMessage = `💰 New Paid Booking!\n\n` +
-            `🏆 Tour: ${booking.tour.title}\n` +
-            `👤 Name: ${booking.name}\n` +
-            `📧 Email: ${booking.email}\n` +
-            `📞 Phone: ${booking.phone}\n` +
-            `📅 Date: ${new Date(booking.travelDate).toLocaleDateString()}\n` +
-            `👪 Group Size: ${booking.groupSize}\n` +
-            `💲 Price: $${booking.tour.price} per person\n` +
-            `💰 Discount: $${booking.pricing.discount.toFixed(2)}\n` +
-            `💵 Total Paid: $${booking.pricing.finalPrice.toFixed(2)}\n` +
-            `🧾 Confirmation Code: ${booking.payment.confirmationCode}\n` +
-            `💳 Transaction ID: ${booking.payment.transactionId}\n` +
-            `📝 Requests: ${booking.notes || 'None'}\n\n` +
-            `🌐 Website: ${siteUrl}\n` +
-            `⏰ Time: ${new Date().toLocaleString()}`;
+        // Check if standard method succeeded
+        if (tokenResponse.ok) {
+            // Standard method successful
+            const standardTokenData = await tokenResponse.json();
+            console.log('Successfully obtained token for capture using standard method');
             
-        sendWhatsAppNotification(bookingMessage);
-        
-        res.json({
-            success: true,
-            confirmationCode: booking.payment.confirmationCode,
-            bookingId: booking._id,
-            tourTitle: booking.tour.title,
-            finalPrice: booking.pricing.finalPrice.toFixed(2),
-            whatsappLink: `https://wa.me/212704969534?text=Hello,%20I%20have%20just%20booked%20the%20${encodeURIComponent(booking.tour.title)}%20tour.%20My%20confirmation%20code%20is%20${booking.payment.confirmationCode}.%20Please%20confirm%20my%20reservation.%20Thank%20you!`
-        });
+            // Step 2: Capture the payment
+            console.log('Capturing payment for order:', orderID);
+            const response = await fetch(`https://api-m.paypal.com/v2/checkout/orders/${orderID}/capture`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${standardTokenData.access_token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                console.error('PayPal capture error (standard method):', data);
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error capturing PayPal payment: ' + (data.message || 'Unknown error')
+                });
+            }
+            
+            console.log('Payment captured successfully (standard method)');
+            
+            // Step 3: Update booking with payment information
+            booking.status = 'paid';
+            booking.payment.status = 'completed';
+            booking.payment.transactionId = data.purchase_units[0].payments.captures[0].id;
+            booking.payment.paymentDate = new Date();
+            await booking.save();
+            
+            // Step 4: Send WhatsApp notification
+            const siteUrl = process.env.BASE_URL || 'https://moroccotravelexperts.com';
+            const bookingMessage = `💰 New Paid Booking!\n\n` +
+                `🏆 Tour: ${booking.tour.title}\n` +
+                `👤 Name: ${booking.name}\n` +
+                `📧 Email: ${booking.email}\n` +
+                `📞 Phone: ${booking.phone}\n` +
+                `📅 Date: ${new Date(booking.travelDate).toLocaleDateString()}\n` +
+                `👪 Group Size: ${booking.groupSize}\n` +
+                `💲 Price: $${booking.tour.price} per person\n` +
+                `💰 Discount: $${booking.pricing.discount.toFixed(2)}\n` +
+                `💵 Total Paid: $${booking.pricing.finalPrice.toFixed(2)}\n` +
+                `🧾 Confirmation Code: ${booking.payment.confirmationCode}\n` +
+                `💳 Transaction ID: ${booking.payment.transactionId}\n` +
+                `📝 Requests: ${booking.notes || 'None'}\n\n` +
+                `🌐 Website: ${siteUrl}\n` +
+                `⏰ Time: ${new Date().toLocaleString()}`;
+                
+            sendWhatsAppNotification(bookingMessage);
+            
+            // Step 5: Return success response
+            return res.json({
+                success: true,
+                method: 'standard',
+                confirmationCode: booking.payment.confirmationCode,
+                bookingId: booking._id,
+                tourTitle: booking.tour.title,
+                finalPrice: booking.pricing.finalPrice.toFixed(2),
+                whatsappLink: `https://wa.me/212704969534?text=Hello,%20I%20have%20just%20booked%20the%20${encodeURIComponent(booking.tour.title)}%20tour.%20My%20confirmation%20code%20is%20${booking.payment.confirmationCode}.%20Please%20confirm%20my%20reservation.%20Thank%20you!`
+            });
+        } else {
+            // Standard method failed, try alternative
+            const captureTokenErrorData = await tokenResponse.json();
+            console.error('Standard token method failed for capture:', captureTokenErrorData);
+            
+            // Try alternative approach
+            console.log('Trying alternative authentication method for capture...');
+            const altTokenResponse = await fetch('https://api-m.paypal.com/v1/oauth2/token', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `grant_type=client_credentials&client_id=${encodeURIComponent(clientId)}&client_secret=${encodeURIComponent(clientSecret)}`
+            });
+            
+            if (!altTokenResponse.ok) {
+                const captureAltTokenErrorData = await altTokenResponse.json();
+                console.error('Alternative token method also failed for capture:', captureAltTokenErrorData);
+                
+                // Both methods failed - return detailed error
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error getting PayPal token for capture. Please try again later or contact support.',
+                    details: {
+                        standardError: captureTokenErrorData.error_description || 'Unknown error',
+                        alternativeError: captureAltTokenErrorData.error_description || 'Unknown error'
+                    }
+                });
+            }
+            
+            // Alternative method successful
+            const captureAltTokenData = await altTokenResponse.json();
+            console.log('Successfully obtained token for capture using alternative method');
+            
+            // Capture with the token from alternate method
+            console.log('Capturing PayPal payment with alternative token...');
+            const response = await fetch(`https://api-m.paypal.com/v2/checkout/orders/${orderID}/capture`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${captureAltTokenData.access_token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                console.error('PayPal capture error (alternative method):', data);
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error capturing PayPal payment: ' + (data.message || 'Unknown error')
+                });
+            }
+            
+            console.log('Payment captured successfully (alternative method)');
+            
+            // Update booking with payment information
+            booking.status = 'paid';
+            booking.payment.status = 'completed';
+            booking.payment.transactionId = data.purchase_units[0].payments.captures[0].id;
+            booking.payment.paymentDate = new Date();
+            await booking.save();
+            
+            // Send WhatsApp notification with payment confirmation
+            const siteUrl = process.env.BASE_URL || 'https://moroccotravelexperts.com';
+            const bookingMessage = `💰 New Paid Booking!\n\n` +
+                `🏆 Tour: ${booking.tour.title}\n` +
+                `👤 Name: ${booking.name}\n` +
+                `📧 Email: ${booking.email}\n` +
+                `📞 Phone: ${booking.phone}\n` +
+                `📅 Date: ${new Date(booking.travelDate).toLocaleDateString()}\n` +
+                `👪 Group Size: ${booking.groupSize}\n` +
+                `💲 Price: $${booking.tour.price} per person\n` +
+                `💰 Discount: $${booking.pricing.discount.toFixed(2)}\n` +
+                `💵 Total Paid: $${booking.pricing.finalPrice.toFixed(2)}\n` +
+                `🧾 Confirmation Code: ${booking.payment.confirmationCode}\n` +
+                `💳 Transaction ID: ${booking.payment.transactionId}\n` +
+                `📝 Requests: ${booking.notes || 'None'}\n\n` +
+                `🌐 Website: ${siteUrl}\n` +
+                `⏰ Time: ${new Date().toLocaleString()}`;
+                
+            sendWhatsAppNotification(bookingMessage);
+            
+            return res.json({
+                success: true,
+                method: 'alternative',
+                confirmationCode: booking.payment.confirmationCode,
+                bookingId: booking._id,
+                tourTitle: booking.tour.title,
+                finalPrice: booking.pricing.finalPrice.toFixed(2),
+                whatsappLink: `https://wa.me/212704969534?text=Hello,%20I%20have%20just%20booked%20the%20${encodeURIComponent(booking.tour.title)}%20tour.%20My%20confirmation%20code%20is%20${booking.payment.confirmationCode}.%20Please%20confirm%20my%20reservation.%20Thank%20you!`
+            });
+        }
     } catch (error) {
         console.error('PayPal capture error:', error);
         res.status(500).json({
             success: false,
-            message: 'Error capturing PayPal payment'
+            message: 'Error capturing PayPal payment: ' + error.message
         });
     }
 });
 
-module.exports = router; 
+module.exports = router;
