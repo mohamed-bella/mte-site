@@ -320,7 +320,7 @@ router.get('/tours/:slug', async (req, res, next) => {
             startLocation: tour.startLocation 
         }).limit(3);
 
-          res.render('pages/tour-details', {
+          res.render('pages/tour-detail', {
                title: tour.title,
                tour,
                relatedTours,

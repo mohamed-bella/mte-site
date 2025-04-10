@@ -16,461 +16,210 @@
      });
 </script> -->
 
-<!-- Ultra Modern Navbar with Split Navigation -->
-<header x-data="{ megaMenuOpen: false, activeMenu: null, mobileNavOpen: false, scrolled: false }" 
-    @scroll.window="scrolled = window.pageYOffset > 50"
-    :class="{ 'shadow-xl backdrop-blur-lg bg-white/90': scrolled, 'bg-transparent': !scrolled }"
-    class="fixed top-0 left-0 w-full z-50 transition-all duration-700">
+<!-- Initialize global sidebar state -->
+<div x-data="{ globalSidebarOpen: false }" x-on:keydown.escape="globalSidebarOpen = false" id="sidebar-controller">
 
-    <!-- Admin Toolbar (Hidden on Mobile) -->
-    <% if (locals.isAdmin) { %>
-    <div class="hidden md:block bg-gradient-to-r from-indigo-900 to-purple-900 text-white">
-        <div class="container mx-auto px-4 py-1">
-            <div class="flex items-center space-x-1 overflow-x-auto text-xs font-medium">
-                <a href="/admin/dashboard" class="px-3 py-1 rounded-full hover:bg-white/10 transition-colors">
-                    <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
-                </a>
-                <a href="/admin/tours/new" class="px-3 py-1 rounded-full hover:bg-white/10 transition-colors">
-                    <i class="fas fa-plus mr-1"></i> New Tour
-                </a>
-                <a href="/admin/tours" class="px-3 py-1 rounded-full hover:bg-white/10 transition-colors">
-                    <i class="fas fa-route mr-1"></i> Tours
-                </a>
-                <a href="/admin/blogs" class="px-3 py-1 rounded-full hover:bg-white/10 transition-colors">
-                    <i class="fas fa-blog mr-1"></i> Blogs
-                </a>
-                <a href="/admin/bookings" class="px-3 py-1 rounded-full hover:bg-white/10 transition-colors">
-                    <i class="fas fa-calendar-check mr-1"></i> Bookings
-                </a>
-                <a href="/admin/analytics" class="px-3 py-1 rounded-full hover:bg-white/10 transition-colors">
-                    <i class="fas fa-chart-line mr-1"></i> Analytics
-                </a>
-            </div>
-        </div>
-    </div>
-    <% } %>
-
-    <!-- Top Mini-info Bar -->
-    <div class="hidden md:block bg-gradient-to-r from-orange-600 to-orange-500 text-white text-sm py-1.5">
-        <div class="container mx-auto px-4">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-6">
-                    <a href="tel:+212123456789" class="flex items-center hover:text-white/80 transition-colors">
-                        <i class="fas fa-phone text-xs mr-2"></i>
-                        <span>+212 123 456 789</span>
-                    </a>
-                    <a href="mailto:info@moroccotravel.com" class="flex items-center hover:text-white/80 transition-colors">
-                        <i class="fas fa-envelope text-xs mr-2"></i>
-                        <span>info@moroccotravel.com</span>
-                    </a>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <div class="gtranslate_wrapper"></div>
-                    <div class="flex items-center space-x-2 ml-3">
-                        <a href="#" class="w-6 h-6 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-colors">
-                            <i class="fab fa-facebook-f text-xs"></i>
-                        </a>
-                        <a href="#" class="w-6 h-6 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-colors">
-                            <i class="fab fa-instagram text-xs"></i>
-                        </a>
-                        <a href="#" class="w-6 h-6 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-colors">
-                            <i class="fab fa-twitter text-xs"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Navigation -->
-    <div :class="{ 'py-2': scrolled, 'py-4': !scrolled }" class="bg-white transition-all duration-500">
-        <div class="container mx-auto px-4">
-            <div class="flex justify-between items-center">
-                <!-- Mobile Menu and Translate Controls -->
-                <div class="flex items-center gap-2 lg:hidden">
-                    <!-- Mobile Toggle -->
-                    <button @click="mobileNavOpen = !mobileNavOpen" class="p-2 rounded-md text-gray-700 hover:bg-orange-50">
-                        <svg x-show="!mobileNavOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                        <svg x-show="mobileNavOpen" class="w-6 h-6" style="display: none;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                    
-                    <!-- Mobile GTranslate Widget -->
-                    <div class="gtranslate_wrapper"></div>
-                </div>
-
-                <!-- Logo (Center on Mobile, Left on Desktop) -->
-                <div class="flex-1 flex lg:justify-start justify-center">
-                    <a href="/" class="relative group max-w-[140px] lg:max-w-[180px]">
-                        <div class="absolute inset-0 rounded-xl bg-gradient-to-tr from-orange-600/20 via-yellow-400/10 to-orange-600/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                        <img src="<%= settings?.logo?.url || '/images/logo.png' %>" alt="<%= settings?.siteTitle || 'Morocco Tours' %>" class="h-12 w-auto object-contain relative">
-                    </a>
-                </div>
-
-                <!-- Desktop Navigation -->
-                <nav class="hidden lg:flex items-center justify-center space-x-1">
-                    <!-- Main Navigation Items -->
-                    <div class="relative group" @mouseenter="activeMenu = 'home'" @mouseleave="activeMenu = null">
-                        <a href="/" class="flex items-center px-4 py-2 font-medium text-gray-700 hover:text-orange-600 transition-colors">
-                            <span><%= locals.commonTranslations?.home || 'Home' %></span>
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </a>
-                        
-                        <!-- Home Mega Menu -->
-                        <div x-show="activeMenu === 'home'" 
-                            x-transition:enter="transition ease-out duration-300"
-                            x-transition:enter-start="opacity-0 translate-y-3"
-                            x-transition:enter-end="opacity-100 translate-y-0"
-                            x-transition:leave="transition ease-in duration-200"
-                            x-transition:leave-start="opacity-100 translate-y-0"
-                            x-transition:leave-end="opacity-0 translate-y-3"
-                            class="absolute top-full left-0 w-screen max-w-5xl bg-white shadow-2xl rounded-xl overflow-hidden grid grid-cols-3 gap-0 z-50"
-                            style="display: none;">
-                            
-                            <!-- Featured Section -->
-                            <div class="p-6 bg-gradient-to-br from-orange-50 to-orange-100">
-                                <h3 class="text-lg font-bold text-gray-800 mb-3">Discover Morocco</h3>
-                                <p class="text-sm text-gray-600 mb-4">Experience the magic of Morocco with our expert guides and customized tours.</p>
-                                <a href="/tour-customizer" class="inline-flex items-center text-sm font-medium text-orange-600 hover:text-orange-700">
-                                    <span>Create Custom Tour</span>
-                                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                                    </svg>
-                                </a>
-                                <div class="mt-6">
-                                    <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0004.webp" alt="Morocco Desert" class="rounded-lg h-32 w-full object-cover">
-                                </div>
-                            </div>
-                            
-                            <!-- Links Section -->
-                            <div class="col-span-2">
-                                <div class="grid grid-cols-2 gap-6 p-6">
-                                    <div>
-                                        <h4 class="text-sm font-semibold text-gray-800 mb-3">Popular Destinations</h4>
-                                        <ul class="space-y-2">
-                                            <li><a href="/destinations/marrakech" class="text-sm text-gray-600 hover:text-orange-600">Marrakech</a></li>
-                                            <li><a href="/destinations/fes" class="text-sm text-gray-600 hover:text-orange-600">Fes</a></li>
-                                            <li><a href="/destinations/chefchaouen" class="text-sm text-gray-600 hover:text-orange-600">Chefchaouen</a></li>
-                                            <li><a href="/destinations/sahara-desert" class="text-sm text-gray-600 hover:text-orange-600">Sahara Desert</a></li>
-                                            <li><a href="/destinations/casablanca" class="text-sm text-gray-600 hover:text-orange-600">Casablanca</a></li>
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <h4 class="text-sm font-semibold text-gray-800 mb-3">Quick Links</h4>
-                                        <ul class="space-y-2">
-                                            <li><a href="/about" class="text-sm text-gray-600 hover:text-orange-600">About Us</a></li>
-                                            <li><a href="/reviews" class="text-sm text-gray-600 hover:text-orange-600">Reviews</a></li>
-                                            <li><a href="/faqs" class="text-sm text-gray-600 hover:text-orange-600">FAQs</a></li>
-                                            <li><a href="/blog" class="text-sm text-gray-600 hover:text-orange-600">Travel Blog</a></li>
-                                            <li><a href="/contact" class="text-sm text-gray-600 hover:text-orange-600">Contact Us</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="relative group" @mouseenter="activeMenu = 'tours'" @mouseleave="activeMenu = null">
-                        <a href="/tours" class="flex items-center px-4 py-2 font-medium text-gray-700 hover:text-orange-600 transition-colors">
-                            <span><%= locals.commonTranslations?.tours || 'Tours' %></span>
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </a>
-                        
-                        <!-- Tours Mega Menu -->
-                        <div x-show="activeMenu === 'tours'" 
-                            x-transition:enter="transition ease-out duration-300"
-                            x-transition:enter-start="opacity-0 translate-y-3"
-                            x-transition:enter-end="opacity-100 translate-y-0"
-                            x-transition:leave="transition ease-in duration-200"
-                            x-transition:leave-start="opacity-100 translate-y-0"
-                            x-transition:leave-end="opacity-0 translate-y-3"
-                            class="absolute top-full left-0 w-screen max-w-5xl bg-white shadow-2xl rounded-xl overflow-hidden z-50"
-                            style="display: none;">
-                            
-                            <div class="grid grid-cols-3 gap-0">
-                                <!-- Tour Categories -->
-                                <div class="p-6">
-                                    <h4 class="text-sm font-semibold text-gray-800 mb-3">Tour Categories</h4>
-                                    <ul class="space-y-2">
-                                        <li><a href="/tours/desert" class="text-sm text-gray-600 hover:text-orange-600 flex items-center">
-                                            <i class="fas fa-sun mr-2 text-orange-500"></i>
-                                            Desert Tours
-                                        </a></li>
-                                        <li><a href="/tours/cultural" class="text-sm text-gray-600 hover:text-orange-600 flex items-center">
-                                            <i class="fas fa-landmark mr-2 text-orange-500"></i>
-                                            Cultural Tours
-                                        </a></li>
-                                        <li><a href="/tours/imperial-cities" class="text-sm text-gray-600 hover:text-orange-600 flex items-center">
-                                            <i class="fas fa-city mr-2 text-orange-500"></i>
-                                            Imperial Cities
-                                        </a></li>
-                                        <li><a href="/tours/coastal" class="text-sm text-gray-600 hover:text-orange-600 flex items-center">
-                                            <i class="fas fa-water mr-2 text-orange-500"></i>
-                                            Coastal Escapes
-                                        </a></li>
-                                        <li><a href="/tours/hiking" class="text-sm text-gray-600 hover:text-orange-600 flex items-center">
-                                            <i class="fas fa-hiking mr-2 text-orange-500"></i>
-                                            Hiking Adventures
-                                        </a></li>
-                                    </ul>
-                                </div>
-                                
-                                <!-- Popular Tours -->
-                                <div class="p-6 bg-gray-50">
-                                    <h4 class="text-sm font-semibold text-gray-800 mb-3">Popular Tours</h4>
-                                    <ul class="space-y-4">
-                                        <li>
-                                            <a href="/tours/marrakech-desert-3-days" class="group">
-                                                <div class="flex items-center">
-                                                    <div class="h-10 w-10 rounded overflow-hidden flex-shrink-0">
-                                                        <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0004.webp" alt="Marrakech to Desert" class="h-full w-full object-cover">
-                                                    </div>
-                                                    <div class="ml-3">
-                                                        <h5 class="text-sm font-medium text-gray-800 group-hover:text-orange-600">Marrakech to Desert</h5>
-                                                        <p class="text-xs text-gray-500">3 Days • From $299</p>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="/tours/imperial-cities-7-days" class="group">
-                                                <div class="flex items-center">
-                                                    <div class="h-10 w-10 rounded overflow-hidden flex-shrink-0">
-                                                        <img src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0004.webp" alt="Imperial Cities" class="h-full w-full object-cover">
-                                                    </div>
-                                                    <div class="ml-3">
-                                                        <h5 class="text-sm font-medium text-gray-800 group-hover:text-orange-600">Imperial Cities Tour</h5>
-                                                        <p class="text-xs text-gray-500">7 Days • From $799</p>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                    <a href="/tours" class="inline-flex items-center text-sm font-medium text-orange-600 hover:text-orange-700 mt-4">
-                                        <span>View All Tours</span>
-                                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                                        </svg>
-                                    </a>
-                                </div>
-                                
-                                <!-- Special Offers -->
-                                <div class="bg-gradient-to-br from-orange-600 to-orange-500 text-white p-6 flex flex-col justify-between">
-                                    <div>
-                                        <h4 class="text-lg font-bold mb-2">Special Offer</h4>
-                                        <p class="text-white/90 text-sm mb-4">Book any tour package and get 15% off your next booking!</p>
-                                        <p class="text-sm font-bold text-white">Use code: <span class="bg-white/20 px-2 py-1 rounded">MOROCCO15</span></p>
-                                    </div>
-                                    <div class="mt-4">
-                                        <a href="/tour-customizer" class="inline-block px-4 py-2 bg-white text-orange-600 rounded-lg text-sm font-medium hover:bg-orange-50 transition-colors">
-                                            Customize Your Tour
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <a href="/excursions" class="px-4 py-2 font-medium text-gray-700 hover:text-orange-600 transition-colors">
-                        <span><%= locals.commonTranslations?.excursions || 'Excursions' %></span>
-                    </a>
-                    
-                    <a href="/blog" class="px-4 py-2 font-medium text-gray-700 hover:text-orange-600 transition-colors">
-                        <span><%= locals.commonTranslations?.blog || 'Blog' %></span>
-                    </a>
-                    
-                    <a href="/about" class="px-4 py-2 font-medium text-gray-700 hover:text-orange-600 transition-colors">
-                        <span><%= locals.commonTranslations?.about || 'About' %></span>
-                    </a>
-                    
-                    <a href="/contact" class="px-4 py-2 font-medium text-gray-700 hover:text-orange-600 transition-colors">
-                        <span><%= locals.commonTranslations?.contact || 'Contact' %></span>
-                    </a>
-                </nav>
-
-                <!-- Right Actions -->
-                <div class="hidden lg:flex items-center">
-                    <div class="gtranslate_wrapper md:hidden"></div>
-                    <a href="/tour-customizer" class="ml-6 inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-600 to-orange-500 text-white font-medium rounded-lg shadow-lg hover:from-orange-700 hover:to-orange-600 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0">
-                        <i class="fas fa-calendar-check mr-2"></i>
-                        <span><%= locals.commonTranslations?.bookNow || 'Book Now' %></span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Mobile Navigation Drawer -->
-    <div 
-        x-show="mobileNavOpen" 
-        x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="opacity-0 -translate-y-full"
-        x-transition:enter-end="opacity-100 translate-y-0"
-        x-transition:leave="transition ease-in duration-200"
-        x-transition:leave-start="opacity-100 translate-y-0"
-        x-transition:leave-end="opacity-0 -translate-y-full"
-        class="lg:hidden fixed inset-0 z-40 overflow-y-auto"
-        style="display: none;">
-        
-        <!-- Overlay -->
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="mobileNavOpen = false"></div>
-        
-        <!-- Menu Content -->
-        <div class="relative bg-white h-auto w-full max-h-[90vh] overflow-y-auto">
-            <!-- Mobile Menu Header -->
-            <div class="flex items-center justify-between p-4 border-b">
-                <div class="flex items-center">
-                    <img src="<%= settings?.logo?.url || '/images/logo.png' %>" alt="<%= settings?.siteTitle || 'Morocco Tours' %>" class="h-10 w-auto">
-                </div>
-                <button @click="mobileNavOpen = false" class="text-gray-500 hover:text-gray-700">
+<!-- Main Navigation -->
+<header 
+    x-data="{ 
+        lastScrollTop: 0,
+        showNavbar: true,
+        scrollPosition: 0
+    }" 
+    @scroll.window="
+        scrollPosition = window.pageYOffset;
+        if(scrollPosition > lastScrollTop + 50) {
+            showNavbar = false;
+        } else if(scrollPosition < lastScrollTop - 10) {
+            showNavbar = true;
+        }
+        lastScrollTop = scrollPosition <= 0 ? 0 : scrollPosition;
+    "
+    :class="{ 
+        'transform -translate-y-full': !showNavbar && scrollPosition > 100,
+        'shadow-lg bg-white/95 backdrop-blur-sm': scrollPosition > 50
+    }"
+    class="fixed top-0 left-0 w-full z-50 transition-transform duration-300 ease-in-out bg-white">
+    
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+            <!-- Mobile: Hamburger and Logo -->
+            <div class="flex items-center">
+                <!-- Hamburger Toggle -->
+                <button 
+                    @click="$store.sidebar.open()" 
+                    class="p-2 lg:hidden text-gray-700 hover:text-orange-500 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
-            </div>
-            
-            <!-- Language Selector in Mobile Menu -->
-            <div class="p-4 border-b">
-                <div class="text-gray-600 text-sm px-2">
-                    <p>Use the language selector in the top bar to change the language.</p>
-                </div>
-            </div>
-            
-            <!-- Mobile Links -->
-            <div class="py-2" x-data="{ openSubmenu: null }">
-                <div>
-                    <div @click="openSubmenu = openSubmenu === 'home' ? null : 'home'" class="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50">
-                        <div class="flex items-center">
-                            <i class="fas fa-home w-8 text-orange-500"></i>
-                            <span class="font-medium"><%= locals.commonTranslations?.home || 'Home' %></span>
-                        </div>
-                        <svg :class="openSubmenu === 'home' ? 'rotate-180' : ''" class="w-5 h-5 text-gray-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </div>
-                    
-                    <div x-show="openSubmenu === 'home'" class="bg-gray-50 px-4 py-3 space-y-2" style="display: none;">
-                        <a href="/about" class="block pl-8 py-2 text-sm text-gray-600 hover:text-orange-600">About Us</a>
-                        <a href="/reviews" class="block pl-8 py-2 text-sm text-gray-600 hover:text-orange-600">Reviews</a>
-                        <a href="/faqs" class="block pl-8 py-2 text-sm text-gray-600 hover:text-orange-600">FAQs</a>
-                    </div>
-                </div>
                 
-                <div>
-                    <div @click="openSubmenu = openSubmenu === 'tours' ? null : 'tours'" class="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50">
-                        <div class="flex items-center">
-                            <i class="fas fa-route w-8 text-orange-500"></i>
-                            <span class="font-medium"><%= locals.commonTranslations?.tours || 'Tours' %></span>
-                        </div>
-                        <svg :class="openSubmenu === 'tours' ? 'rotate-180' : ''" class="w-5 h-5 text-gray-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </div>
-                    
-                    <div x-show="openSubmenu === 'tours'" class="bg-gray-50 px-4 py-3 space-y-2" style="display: none;">
-                        <a href="/tours/desert" class="block pl-8 py-2 text-sm text-gray-600 hover:text-orange-600">Desert Tours</a>
-                        <a href="/tours/cultural" class="block pl-8 py-2 text-sm text-gray-600 hover:text-orange-600">Cultural Tours</a>
-                        <a href="/tours/imperial-cities" class="block pl-8 py-2 text-sm text-gray-600 hover:text-orange-600">Imperial Cities</a>
-                        <a href="/tours/coastal" class="block pl-8 py-2 text-sm text-gray-600 hover:text-orange-600">Coastal Escapes</a>
-                        <a href="/tours/hiking" class="block pl-8 py-2 text-sm text-gray-600 hover:text-orange-600">Hiking Adventures</a>
-                    </div>
-                </div>
-                
-                <a href="/excursions" class="flex items-center px-4 py-3 hover:bg-gray-50">
-                    <i class="fas fa-hiking w-8 text-orange-500"></i>
-                    <span class="font-medium"><%= locals.commonTranslations?.excursions || 'Excursions' %></span>
-                </a>
-                
-                <a href="/blog" class="flex items-center px-4 py-3 hover:bg-gray-50">
-                    <i class="fas fa-blog w-8 text-orange-500"></i>
-                    <span class="font-medium"><%= locals.commonTranslations?.blog || 'Blog' %></span>
-                </a>
-                
-                <a href="/about" class="flex items-center px-4 py-3 hover:bg-gray-50">
-                    <i class="fas fa-info-circle w-8 text-orange-500"></i>
-                    <span class="font-medium"><%= locals.commonTranslations?.about || 'About' %></span>
-                </a>
-                
-                <a href="/contact" class="flex items-center px-4 py-3 hover:bg-gray-50">
-                    <i class="fas fa-envelope w-8 text-orange-500"></i>
-                    <span class="font-medium"><%= locals.commonTranslations?.contact || 'Contact' %></span>
+                <!-- Logo -->
+                <a href="/" class="ml-2 lg:ml-0">
+                    <img src="<%= settings?.logo?.url || '/images/logo.png' %>" alt="<%= settings?.siteTitle || 'Morocco Travel Experts' %>" class="h-10 w-auto object-contain">
                 </a>
             </div>
             
-            <!-- Mobile CTA -->
-            <div class="p-4 border-t">
-                <a href="/tour-customizer" class="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-orange-600 to-orange-500 text-white font-medium rounded-lg">
-                    <i class="fas fa-calendar-check mr-2"></i>
-                    <span><%= locals.commonTranslations?.bookNow || 'Book Now' %></span>
+            <!-- Desktop: Main Navigation -->
+            <nav class="hidden lg:flex items-center space-x-6">
+                <a href="/" class="font-medium text-gray-700 hover:text-orange-500 transition-colors"><%= locals.commonTranslations?.home || 'Home' %></a>
+                <a href="/tours" class="font-medium text-gray-700 hover:text-orange-500 transition-colors"><%= locals.commonTranslations?.tours || 'Tours' %></a>
+                <a href="/excursions" class="font-medium text-gray-700 hover:text-orange-500 transition-colors"><%= locals.commonTranslations?.excursions || 'Excursions' %></a>
+                <a href="/blog" class="font-medium text-gray-700 hover:text-orange-500 transition-colors"><%= locals.commonTranslations?.blog || 'Blog' %></a>
+                <a href="/about" class="font-medium text-gray-700 hover:text-orange-500 transition-colors"><%= locals.commonTranslations?.about || 'About' %></a>
+                <a href="/contact" class="font-medium text-gray-700 hover:text-orange-500 transition-colors"><%= locals.commonTranslations?.contact || 'Contact' %></a>
+            </nav>
+            
+            <!-- Translation and Contact Button (visible on all screens) -->
+            <div class="flex items-center space-x-4">
+                <!-- Translation Widget -->
+                <div class="gtranslate_wrapper"></div>
+                
+                <!-- Contact Button -->
+                <a href="/contact" class="flex items-center justify-center h-10 w-10 bg-orange-500 hover:bg-orange-600 text-white rounded-full transition-colors">
+                    <i class="fas fa-envelope"></i>
                 </a>
                 
-                <!-- Mobile Contact Info -->
-                <div class="mt-4 space-y-3">
-                    <a href="tel:+212123456789" class="flex items-center text-sm text-gray-600">
-                        <i class="fas fa-phone w-8 text-orange-500"></i>
-                        <span>+212 123 456 789</span>
-                    </a>
-                    
-                    <a href="mailto:info@moroccotravel.com" class="flex items-center text-sm text-gray-600">
-                        <i class="fas fa-envelope w-8 text-orange-500"></i>
-                        <span>info@moroccotravel.com</span>
-                    </a>
-                    
-                    <!-- Social Links -->
-                    <div class="flex items-center mt-4">
-                        <i class="fas fa-share-alt w-8 text-orange-500"></i>
-                        <div class="flex space-x-3">
-                            <a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-orange-100 hover:text-orange-600">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-orange-100 hover:text-orange-600">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-orange-100 hover:text-orange-600">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <% if (locals.user && locals.user.isAdmin) { %>
+                <!-- Admin Link -->
+                <a href="/admin/dashboard" class="hidden md:flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-sm transition-colors">
+                    <i class="fas fa-user-shield mr-2"></i>
+                    Admin
+                </a>
+                <% } %>
             </div>
-            
-            <!-- Admin Links on Mobile -->
-            <% if (locals.isAdmin) { %>
-            <div class="p-4 border-t bg-gray-50">
-                <h3 class="font-semibold text-sm text-gray-900 mb-3">Admin Tools</h3>
-                <div class="grid grid-cols-2 gap-2">
-                    <a href="/admin/dashboard" class="flex items-center px-3 py-2 bg-white rounded border text-sm">
-                        <i class="fas fa-tachometer-alt text-orange-500 mr-2"></i>
-                        Dashboard
-                    </a>
-                    <a href="/admin/tours" class="flex items-center px-3 py-2 bg-white rounded border text-sm">
-                        <i class="fas fa-route text-orange-500 mr-2"></i>
-                        Tours
-                    </a>
-                    <a href="/admin/blogs" class="flex items-center px-3 py-2 bg-white rounded border text-sm">
-                        <i class="fas fa-blog text-orange-500 mr-2"></i>
-                        Blogs
-                    </a>
-                    <a href="/admin/bookings" class="flex items-center px-3 py-2 bg-white rounded border text-sm">
-                        <i class="fas fa-calendar-check text-orange-500 mr-2"></i>
-                        Bookings
-                    </a>
-                </div>
-            </div>
-            <% } %>
         </div>
     </div>
 </header>
 
+<!-- Sidebar Navigation Overlay -->
+<div 
+    x-show="$store.sidebar.isOpen" 
+    x-transition:enter="transition-opacity ease-out duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition-opacity ease-in duration-200"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    @click="$store.sidebar.close()"
+    class="fixed inset-0 bg-black/60 z-40"
+    style="display: none;">
+</div>
+
+<!-- Sidebar Navigation -->
+<div 
+    x-show="$store.sidebar.isOpen" 
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="-translate-x-full"
+    x-transition:enter-end="translate-x-0"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="translate-x-0"
+    x-transition:leave-end="-translate-x-full"
+    class="fixed top-0 left-0 h-full w-72 bg-white z-50 overflow-y-auto shadow-xl transform"
+    style="display: none;">
+    
+    <!-- Sidebar Header -->
+    <div class="flex items-center justify-between p-4 border-b">
+        <a href="/">
+            <img src="<%= settings?.logo?.url || '/images/logo.png' %>" alt="<%= settings?.siteTitle || 'Morocco Travel Experts' %>" class="h-10 w-auto">
+        </a>
+        <button @click="$store.sidebar.close()" class="text-gray-500 hover:text-gray-700">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    </div>
+    
+    <!-- Sidebar Links -->
+    <nav class="py-4">
+        <a href="/" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
+            <i class="fas fa-home w-8 text-orange-500"></i>
+            <span><%= locals.commonTranslations?.home || 'Home' %></span>
+        </a>
+        <a href="/tours" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
+            <i class="fas fa-route w-8 text-orange-500"></i>
+            <span><%= locals.commonTranslations?.tours || 'Tours' %></span>
+        </a>
+        <a href="/excursions" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
+            <i class="fas fa-hiking w-8 text-orange-500"></i>
+            <span><%= locals.commonTranslations?.excursions || 'Excursions' %></span>
+        </a>
+        <a href="/blog" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
+            <i class="fas fa-blog w-8 text-orange-500"></i>
+            <span><%= locals.commonTranslations?.blog || 'Blog' %></span>
+        </a>
+        <a href="/about" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
+            <i class="fas fa-info-circle w-8 text-orange-500"></i>
+            <span><%= locals.commonTranslations?.about || 'About' %></span>
+        </a>
+        <a href="/contact" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
+            <i class="fas fa-envelope w-8 text-orange-500"></i>
+            <span><%= locals.commonTranslations?.contact || 'Contact' %></span>
+        </a>
+        
+        <% if (locals.user && locals.user.isAdmin) { %>
+        <!-- Admin Links in Sidebar -->
+        <div class="mt-4 pt-4 border-t mx-4">
+            <h3 class="px-4 py-2 text-sm font-semibold text-gray-500">Admin</h3>
+            <a href="/admin/dashboard" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
+                <i class="fas fa-tachometer-alt w-8 text-orange-500"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="/admin/tours" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
+                <i class="fas fa-route w-8 text-orange-500"></i>
+                <span>Tours</span>
+            </a>
+            <a href="/admin/bookings" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
+                <i class="fas fa-calendar-check w-8 text-orange-500"></i>
+                <span>Bookings</span>
+            </a>
+        </div>
+        <% } %>
+    </nav>
+</div>
+
 <!-- Spacer for Fixed Header -->
-<div class="h-24 md:h-32"></div>
+<div class="h-16"></div>
+
+<!-- Back to Top Button -->
+<button 
+    id="backToTopBtn"
+    x-data="{ showButton: false }"
+    @scroll.window="showButton = window.pageYOffset > 500"
+    x-show="showButton"
+    @click="window.scrollTo({top: 0, behavior: 'smooth'})"
+    x-transition:enter="transition-opacity duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition-opacity duration-300"
+    x-transition:leave-start="opacity-100" 
+    x-transition:leave-end="opacity-0"
+    class="fixed bottom-6 right-6 bg-orange-500 hover:bg-orange-600 text-white rounded-full p-3 shadow-lg transition-all duration-300 z-40"
+    style="display: none;">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+    </svg>
+</button>
+
+</div>
+
+<!-- Global Sidebar Store -->
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('sidebar', {
+            isOpen: false,
+            open() {
+                this.isOpen = true;
+            },
+            close() {
+                this.isOpen = false;
+            },
+            toggle() {
+                this.isOpen = !this.isOpen;
+            }
+        });
+    });
+</script>
 
 <!-- Font Awesome CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
