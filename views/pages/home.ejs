@@ -127,27 +127,7 @@
                     </a>
                 </div>
                 
-                <!-- Trust badges with modern Apple style -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-16 w-full max-w-2xl opacity-0 animate-fade-in-up animate-delay-400">
-                    <div class="glass-effect rounded-2xl p-4 flex items-center justify-center">
-                        <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center mr-3">
-                            <i class="fas fa-check text-orange-500"></i>
-                        </div>
-                        <span class="text-[#1d1d1f] font-medium">Expert Local Guides</span>
-                    </div>
-                    <div class="glass-effect rounded-2xl p-4 flex items-center justify-center">
-                        <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center mr-3">
-                            <i class="fas fa-shield-alt text-orange-500"></i>
-                        </div>
-                        <span class="text-[#1d1d1f] font-medium">Secure Booking</span>
-                    </div>
-                    <div class="glass-effect rounded-2xl p-4 flex items-center justify-center">
-                        <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center mr-3">
-                            <i class="fas fa-star text-orange-500"></i>
-                        </div>
-                        <span class="text-[#1d1d1f] font-medium">5-Star Experience</span>
-                    </div>
-                </div>
+               
                 
                 <!-- Scroll indicator (Apple style with subtle animation) -->
                 <div class="hidden md:flex flex-col items-center mt-16 opacity-0 animate-fade-in-up" style="animation-delay: 0.6s">
@@ -414,8 +394,6 @@
                             </div>
                         <% }); %>
                     </div>
-                    <!-- Apple-style pagination dots -->
-                    <div class="swiper-pagination !bottom-3"></div>
                 </div>
             </div>
         </div>
@@ -527,8 +505,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Apple-style pagination -->
-                <div class="swiper-pagination !bottom-0"></div>
             </div>
             
             <div class="text-center mt-10">
@@ -915,10 +891,6 @@
             spaceBetween: 16,
             centeredSlides: true,
             loop: true,
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
             autoplay: {
                 delay: 3500,
                 disableOnInteraction: false,
@@ -931,10 +903,6 @@
             spaceBetween: 10,
             centerInsufficientSlides: true,
             loop: true,
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
             autoplay: {
                 delay: 4000,
                 disableOnInteraction: false,
@@ -947,10 +915,6 @@
             spaceBetween: 30,
             grabCursor: true,
             loop: true,
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
             autoplay: {
                 delay: 5000,
                 disableOnInteraction: false,
@@ -1345,6 +1309,16 @@
         }
     });
 </script>
+
+<!-- Add CSS to hide any remaining pagination elements -->
+<style>
+    /* Add this to your existing styles at the end of the file */
+    .swiper-pagination {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+</style>
 
 </body>
 </html>
