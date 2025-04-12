@@ -19,7 +19,7 @@
 <!-- Initialize global sidebar state -->
 <div x-data="{ globalSidebarOpen: false }" x-on:keydown.escape="globalSidebarOpen = false" id="sidebar-controller">
 
-<!-- Main Navigation -->
+<!-- Apple-inspired Navigation -->
 <header 
     x-data="{ 
         lastScrollTop: 0,
@@ -37,62 +37,89 @@
     "
     :class="{ 
         'transform -translate-y-full': !showNavbar && scrollPosition > 100,
-        'shadow-lg bg-white/95 backdrop-blur-sm': scrollPosition > 50
+        'backdrop-blur-md bg-white/90 shadow-sm': scrollPosition > 50,
+        'bg-transparent': scrollPosition <= 50
     }"
-    class="fixed top-0 left-0 w-full z-50 transition-transform duration-300 ease-in-out bg-white">
+    class="fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-out">
     
-    <div class="container mx-auto px-4">
+    <div class="max-w-[1120px] mx-auto px-6">
         <div class="flex justify-between items-center h-16">
             <!-- Mobile: Hamburger and Logo -->
             <div class="flex items-center">
-                <!-- Hamburger Toggle -->
+                <!-- Hamburger Toggle with Apple-style animation -->
                 <button 
                     @click="$store.sidebar.open()" 
-                    class="p-2 lg:hidden text-gray-700 hover:text-orange-500 transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    class="p-2 lg:hidden text-[#1d1d1f] hover:text-orange-500 transition-colors duration-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
                 
-                <!-- Logo -->
-                <a href="/" class="ml-2 lg:ml-0">
+                <!-- Logo with subtle hover effect -->
+                <a href="/" class="ml-2 lg:ml-0 transition-transform duration-300 hover:scale-105">
                     <img src="<%= settings?.logo?.url || '/images/logo.png' %>" alt="<%= settings?.siteTitle || 'Morocco Travel Experts' %>" class="h-10 w-auto object-contain">
                 </a>
             </div>
             
-            <!-- Desktop: Main Navigation -->
-            <nav class="hidden lg:flex items-center space-x-6">
-                <a href="/" class="font-medium text-gray-700 hover:text-orange-500 transition-colors"><%= locals.commonTranslations?.home || 'Home' %></a>
-                <a href="/tours" class="font-medium text-gray-700 hover:text-orange-500 transition-colors"><%= locals.commonTranslations?.tours || 'Tours' %></a>
-                <a href="/excursions" class="font-medium text-gray-700 hover:text-orange-500 transition-colors"><%= locals.commonTranslations?.excursions || 'Excursions' %></a>
-                <a href="/blog" class="font-medium text-gray-700 hover:text-orange-500 transition-colors"><%= locals.commonTranslations?.blog || 'Blog' %></a>
-                <a href="/about" class="font-medium text-gray-700 hover:text-orange-500 transition-colors"><%= locals.commonTranslations?.about || 'About' %></a>
-                <a href="/contact" class="font-medium text-gray-700 hover:text-orange-500 transition-colors"><%= locals.commonTranslations?.contact || 'Contact' %></a>
+            <!-- Desktop: Apple-style Navigation -->
+            <nav class="hidden lg:flex items-center space-x-8">
+                <a href="/" class="font-medium text-[#1d1d1f] hover:text-orange-500 transition-colors duration-300 relative group py-1">
+                    <%= locals.commonTranslations?.home || 'Home' %>
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/tours" class="font-medium text-[#1d1d1f] hover:text-orange-500 transition-colors duration-300 relative group py-1">
+                    <%= locals.commonTranslations?.tours || 'Tours' %>
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/excursions" class="font-medium text-[#1d1d1f] hover:text-orange-500 transition-colors duration-300 relative group py-1">
+                    <%= locals.commonTranslations?.excursions || 'Excursions' %>
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/blog" class="font-medium text-[#1d1d1f] hover:text-orange-500 transition-colors duration-300 relative group py-1">
+                    <%= locals.commonTranslations?.blog || 'Blog' %>
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/about" class="font-medium text-[#1d1d1f] hover:text-orange-500 transition-colors duration-300 relative group py-1">
+                    <%= locals.commonTranslations?.about || 'About' %>
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/contact" class="font-medium text-[#1d1d1f] hover:text-orange-500 transition-colors duration-300 relative group py-1">
+                    <%= locals.commonTranslations?.contact || 'Contact' %>
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
+                </a>
             </nav>
             
             <!-- Translation and Contact Button (visible on all screens) -->
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-5">
                 <!-- Translation Widget -->
                 <div class="gtranslate_wrapper"></div>
                 
-                <!-- Contact Button -->
-                <a href="/contact" class="flex items-center justify-center h-10 w-10 bg-orange-500 hover:bg-orange-600 text-white rounded-full transition-colors">
-                    <i class="fas fa-envelope"></i>
+                <!-- Contact Button - Apple-style -->
+                <a href="/contact" class="flex items-center justify-center h-10 w-10 bg-orange-500 hover:bg-orange-600 text-white rounded-full transition-all duration-300 hover:scale-105 shadow-sm">
+                    <i class="fas fa-envelope text-sm"></i>
                 </a>
                 
                 <% if (locals.user && locals.user.isAdmin) { %>
-                <!-- Admin Link -->
-                <a href="/admin/dashboard" class="hidden md:flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-sm transition-colors">
-                    <i class="fas fa-user-shield mr-2"></i>
+                <!-- Admin Link - Apple-style -->
+                <a href="/admin/dashboard" class="hidden md:flex items-center px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-[#1d1d1f] rounded-full text-sm transition-all duration-300 hover:shadow-md">
+                    <i class="fas fa-user-shield mr-2 text-orange-500"></i>
                     Admin
                 </a>
                 <% } %>
             </div>
         </div>
     </div>
+    
+    <!-- Apple-style divider that appears on scroll -->
+    <div 
+        x-show="scrollPosition > 50" 
+        x-transition:enter="transition-opacity duration-300" 
+        x-transition:enter-start="opacity-0" 
+        x-transition:enter-end="opacity-100"
+        class="h-px w-full bg-gray-200"></div>
 </header>
 
-<!-- Sidebar Navigation Overlay -->
+<!-- Sidebar Navigation Overlay - Apple-style blur -->
 <div 
     x-show="$store.sidebar.isOpen" 
     x-transition:enter="transition-opacity ease-out duration-300"
@@ -102,11 +129,11 @@
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
     @click="$store.sidebar.close()"
-    class="fixed inset-0 bg-black/60 z-40"
+    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
     style="display: none;">
 </div>
 
-<!-- Sidebar Navigation -->
+<!-- Sidebar Navigation - Apple-style clean design -->
 <div 
     x-show="$store.sidebar.isOpen" 
     x-transition:enter="transition ease-out duration-300"
@@ -119,59 +146,59 @@
     style="display: none;">
     
     <!-- Sidebar Header -->
-    <div class="flex items-center justify-between p-4 border-b">
+    <div class="flex items-center justify-between p-5 border-b border-gray-100">
         <a href="/">
             <img src="<%= settings?.logo?.url || '/images/logo.png' %>" alt="<%= settings?.siteTitle || 'Morocco Travel Experts' %>" class="h-10 w-auto">
         </a>
-        <button @click="$store.sidebar.close()" class="text-gray-500 hover:text-gray-700">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        <button @click="$store.sidebar.close()" class="text-gray-400 hover:text-gray-700 transition-colors duration-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24">
+                <path d="M6 18L18 6M6 6l12 12"></path>
             </svg>
         </button>
     </div>
     
-    <!-- Sidebar Links -->
-    <nav class="py-4">
-        <a href="/" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
-            <i class="fas fa-home w-8 text-orange-500"></i>
-            <span><%= locals.commonTranslations?.home || 'Home' %></span>
+    <!-- Sidebar Links - Apple-style clean menu -->
+    <nav class="py-6">
+        <a href="/" class="flex items-center px-6 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
+            <i class="fas fa-home w-7 text-orange-500"></i>
+            <span class="font-medium"><%= locals.commonTranslations?.home || 'Home' %></span>
         </a>
-        <a href="/tours" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
-            <i class="fas fa-route w-8 text-orange-500"></i>
-            <span><%= locals.commonTranslations?.tours || 'Tours' %></span>
+        <a href="/tours" class="flex items-center px-6 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
+            <i class="fas fa-route w-7 text-orange-500"></i>
+            <span class="font-medium"><%= locals.commonTranslations?.tours || 'Tours' %></span>
         </a>
-        <a href="/excursions" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
-            <i class="fas fa-hiking w-8 text-orange-500"></i>
-            <span><%= locals.commonTranslations?.excursions || 'Excursions' %></span>
+        <a href="/excursions" class="flex items-center px-6 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
+            <i class="fas fa-hiking w-7 text-orange-500"></i>
+            <span class="font-medium"><%= locals.commonTranslations?.excursions || 'Excursions' %></span>
         </a>
-        <a href="/blog" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
-            <i class="fas fa-blog w-8 text-orange-500"></i>
-            <span><%= locals.commonTranslations?.blog || 'Blog' %></span>
+        <a href="/blog" class="flex items-center px-6 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
+            <i class="fas fa-blog w-7 text-orange-500"></i>
+            <span class="font-medium"><%= locals.commonTranslations?.blog || 'Blog' %></span>
         </a>
-        <a href="/about" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
-            <i class="fas fa-info-circle w-8 text-orange-500"></i>
-            <span><%= locals.commonTranslations?.about || 'About' %></span>
+        <a href="/about" class="flex items-center px-6 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
+            <i class="fas fa-info-circle w-7 text-orange-500"></i>
+            <span class="font-medium"><%= locals.commonTranslations?.about || 'About' %></span>
         </a>
-        <a href="/contact" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
-            <i class="fas fa-envelope w-8 text-orange-500"></i>
-            <span><%= locals.commonTranslations?.contact || 'Contact' %></span>
+        <a href="/contact" class="flex items-center px-6 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
+            <i class="fas fa-envelope w-7 text-orange-500"></i>
+            <span class="font-medium"><%= locals.commonTranslations?.contact || 'Contact' %></span>
         </a>
         
         <% if (locals.user && locals.user.isAdmin) { %>
         <!-- Admin Links in Sidebar -->
-        <div class="mt-4 pt-4 border-t mx-4">
-            <h3 class="px-4 py-2 text-sm font-semibold text-gray-500">Admin</h3>
-            <a href="/admin/dashboard" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
-                <i class="fas fa-tachometer-alt w-8 text-orange-500"></i>
-                <span>Dashboard</span>
+        <div class="mt-6 pt-6 border-t border-gray-100 mx-6">
+            <h3 class="px-4 py-2 text-sm font-semibold text-gray-500 uppercase tracking-wide">Admin</h3>
+            <a href="/admin/dashboard" class="flex items-center px-4 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
+                <i class="fas fa-tachometer-alt w-7 text-orange-500"></i>
+                <span class="font-medium">Dashboard</span>
             </a>
-            <a href="/admin/tours" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
-                <i class="fas fa-route w-8 text-orange-500"></i>
-                <span>Tours</span>
+            <a href="/admin/tours" class="flex items-center px-4 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
+                <i class="fas fa-route w-7 text-orange-500"></i>
+                <span class="font-medium">Tours</span>
             </a>
-            <a href="/admin/bookings" class="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50">
-                <i class="fas fa-calendar-check w-8 text-orange-500"></i>
-                <span>Bookings</span>
+            <a href="/admin/bookings" class="flex items-center px-4 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
+                <i class="fas fa-calendar-check w-7 text-orange-500"></i>
+                <span class="font-medium">Bookings</span>
             </a>
         </div>
         <% } %>
@@ -181,23 +208,23 @@
 <!-- Spacer for Fixed Header -->
 <div class="h-16"></div>
 
-<!-- Back to Top Button -->
+<!-- Back to Top Button - Apple-style with smooth transition -->
 <button 
     id="backToTopBtn"
     x-data="{ showButton: false }"
     @scroll.window="showButton = window.pageYOffset > 500"
     x-show="showButton"
     @click="window.scrollTo({top: 0, behavior: 'smooth'})"
-    x-transition:enter="transition-opacity duration-300"
-    x-transition:enter-start="opacity-0"
-    x-transition:enter-end="opacity-100"
-    x-transition:leave="transition-opacity duration-300"
-    x-transition:leave-start="opacity-100" 
-    x-transition:leave-end="opacity-0"
-    class="fixed bottom-6 right-6 bg-orange-500 hover:bg-orange-600 text-white rounded-full p-3 shadow-lg transition-all duration-300 z-40"
+    x-transition:enter="transition-all duration-300"
+    x-transition:enter-start="opacity-0 translate-y-4"
+    x-transition:enter-end="opacity-100 translate-y-0"
+    x-transition:leave="transition-all duration-300"
+    x-transition:leave-start="opacity-100 translate-y-0" 
+    x-transition:leave-end="opacity-0 translate-y-4"
+    class="fixed bottom-6 right-6 bg-orange-500 hover:bg-orange-600 text-white rounded-full p-3 shadow-lg transition-all duration-300 hover:shadow-xl z-40"
     style="display: none;">
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24">
+        <path d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
     </svg>
 </button>
 
@@ -210,12 +237,15 @@
             isOpen: false,
             open() {
                 this.isOpen = true;
+                document.body.style.overflow = 'hidden';
             },
             close() {
                 this.isOpen = false;
+                document.body.style.overflow = '';
             },
             toggle() {
                 this.isOpen = !this.isOpen;
+                document.body.style.overflow = this.isOpen ? 'hidden' : '';
             }
         });
     });

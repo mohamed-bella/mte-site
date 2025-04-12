@@ -100,6 +100,65 @@ router.get('/tours/new', (req, res) => {
           tour: null
      });
 });
+
+// New enhanced tour form route
+router.get('/tours/new-form', (req, res) => {
+     res.render('admin/tour-form-new', {
+          title: 'Add New Tour',
+          tour: null
+     });
+});
+
+router.get('/tours/:id/edit-enhanced', async (req, res) => {
+     try {
+          const tour = await Tour.findById(req.params.id);
+          if (!tour) {
+               req.flash('error', 'Tour not found');
+               return res.redirect('/admin/tours');
+          }
+          res.render('admin/tour-form-new', {
+               title: 'Edit Tour',
+               tour,
+               path: '/admin/tours' // Add path for sidebar highlighting
+          });
+     } catch (error) {
+          console.error('Error loading tour:', error);
+          req.flash('error', 'Error loading tour');
+          res.redirect('/admin/tours');
+     }
+});
+
+// API route to get tour data
+router.get('/tours/:id/data', async (req, res) => {
+     try {
+          const tour = await Tour.findById(req.params.id);
+          if (!tour) {
+               return res.status(404).json({
+                    success: false,
+                    message: 'Tour not found'
+               });
+          }
+          
+          res.json({
+               success: true,
+               tour: tour
+          });
+     } catch (error) {
+          console.error('Error fetching tour data:', error);
+          res.status(500).json({
+               success: false,
+               message: 'Error fetching tour data'
+          });
+     }
+});
+
+// Placeholder route for Dropzone temporary uploads
+router.post('/tours/temporary-upload', (req, res) => {
+     // This route is only used as a placeholder for Dropzone
+     // The actual file upload happens in the tour create/edit routes
+     res.json({ success: true });
+});
+
 router.post('/tours/new', upload.fields([
     { name: 'images', maxCount: 20 },
     { name: 'mapImage', maxCount: 1 }

@@ -17,6 +17,7 @@
      }) %>
      
      <style>
+          /* Core layout and scrolling */
           html {
                scroll-behavior: smooth;
                scroll-padding-top: 70px;
@@ -28,508 +29,786 @@
           .hide-scrollbar::-webkit-scrollbar {
                display: none;
           }
+          
+          /* Typography - Apple-inspired clean typography */
+          body {
+               font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", Helvetica, Arial, sans-serif;
+               -webkit-font-smoothing: antialiased;
+               -moz-osx-font-smoothing: grayscale;
+               color: #1d1d1f;
+               line-height: 1.5;
+               letter-spacing: -0.015em;
+          }
+          
+          h1, h2, h3, h4, h5, h6 {
+               font-weight: 600;
+               letter-spacing: -0.025em;
+          }
+          
+          /* Clean, simple section heading */
           .section-heading {
-               font-size: 2rem;
-               font-weight: 700;
+               font-size: 2.5rem;
+               font-weight: 600;
+               letter-spacing: -0.025em;
+               margin-bottom: 2rem;
+               color: #1d1d1f;
+          }
+          
+          /* Content container with reasonable width */
+          .content-container {
+               /* max-width: 1100px;
+               margin-left: auto;
+               margin-right: auto; */
+               /* padding: 0 24px; */
+          }
+          
+          /* Card styling with subtle effects */
+          .apple-card {
+               background-color: white;
+               border-radius: 14px;
+               box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+               transition: box-shadow 0.3s ease;
+               overflow: hidden;
+          }
+          
+          .apple-card:hover {
+               box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+          }
+          
+          /* Subtle image hover effect */
+          .img-container {
+               overflow: hidden;
+               position: relative;
+          }
+          
+          .img-container img {
+               transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+          }
+          
+          .img-container:hover img {
+               transform: scale(1.05);
+          }
+          
+          /* Navigation styles */
+          .nav-link {
+               position: relative;
+               color: #1d1d1f;
+               font-weight: 500;
+          }
+          
+          .nav-link::after {
+               content: "";
+               position: absolute;
+               bottom: 0;
+               left: 50%;
+               width: 0;
+               height: 1px;
+               background: currentColor;
+               transform: translateX(-50%);
+               transition: width 0.3s ease;
+          }
+          
+          .nav-link:hover::after, 
+          .nav-link.active::after {
+               width: 60%;
+          }
+          
+          /* Clean form elements */
+          .apple-input {
+               padding: 12px 16px;
+               border-radius: 10px;
+               border: 1px solid #d2d2d7;
+               background: #fff;
+               font-size: 1rem;
+               transition: all 0.2s ease;
+               width: 100%;
+               outline: none;
+          }
+          
+          .apple-input:focus {
+               border-color: #f97316;
+               box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+          }
+          
+          .apple-label {
+               font-size: 0.875rem;
+               color: #6e6e73;
+               margin-bottom: 8px;
+               display: block;
+          }
+          
+          /* Button styles */
+          .apple-button {
+               display: inline-block;
+               padding: 12px 24px;
+               background-color: #f97316;
+               color: white;
+               font-size: 1rem;
+               font-weight: 500;
+               border-radius: 980px;
+               border: none;
+               cursor: pointer;
+               text-align: center;
+               transition: all 0.2s ease;
+          }
+          
+          .apple-button:hover {
+               background-color: #fb923c;
+          }
+          
+          .apple-button-secondary {
+               background-color: #f5f5f7;
+               color: #1d1d1f;
+               border: 1px solid #d2d2d7;
+          }
+          
+          .apple-button-secondary:hover {
+               background-color: #e8e8ed;
+          }
+          
+          /* Modal styles */
+          .modal {
+               position: fixed;
+               top: 0;
+               left: 0;
+               right: 0;
+               bottom: 0;
+               background-color: rgba(0, 0, 0, 0.5);
+               display: flex;
+               align-items: center;
+               justify-content: center;
+               opacity: 0;
+               pointer-events: none;
+               transition: opacity 0.3s ease;
+               z-index: 100;
+          }
+          
+          .modal.active {
+               opacity: 1;
+               pointer-events: auto;
+          }
+          
+          .modal-content {
+               background-color: white;
+               border-radius: 14px;
+               max-width: 90%;
+               width: 500px;
+               max-height: 90vh;
+               overflow-y: auto;
+               box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+               transform: translateY(20px);
+               transition: transform 0.3s ease;
+          }
+          
+          .modal.active .modal-content {
+               transform: translateY(0);
+          }
+          
+          /* Floating action button */
+          .float-button {
+               position: fixed;
+               bottom: 20px;
+               right: 20px;
+               width: auto;
+               z-index: 50;
+               box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          }
+          
+          /* Apple-style accordion */
+          .accordion-item {
+               border-radius: 12px;
+               overflow: hidden;
+               margin-bottom: 16px;
+               background: white;
+               border: 1px solid #e8e8ed;
+          }
+          
+          .accordion-header {
+               padding: 16px 24px;
+               font-weight: 500;
+               cursor: pointer;
+               display: flex;
+               align-items: center;
+               justify-content: space-between;
+               color: #1d1d1f;
+          }
+          
+          .accordion-content {
+               padding: 0 24px 24px;
+          }
+          
+          /* Clean gallery styling */
+          .gallery-grid {
+               display: grid;
+               grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+               gap: 24px;
+          }
+          
+          .gallery-item {
+               border-radius: 12px;
+               overflow: hidden;
+               aspect-ratio: 4/3;
+          }
+          
+          /* Alternating section backgrounds */
+          .section-white {
+               background-color: #ffffff;
+               padding: 5rem 0;
+          }
+          
+          .section-gray {
+               background-color: #f5f5f7;
+               padding: 5rem 0;
+          }
+          
+          /* Section headings with subtle underline */
+          .clean-heading {
+               font-size: 2.25rem;
+               font-weight: 600;
                letter-spacing: -0.025em;
                position: relative;
                display: inline-block;
+               margin-bottom: 2.5rem;
+               color: #1d1d1f;
           }
-          .section-heading::after {
+          
+          .clean-heading::after {
                content: "";
-               display: block;
-               width: 100%;
+               position: absolute;
+               left: 0;
+               bottom: -0.75rem;
+               width: 3rem;
                height: 3px;
-               background: linear-gradient(to right, #f97316, transparent);
-               margin-top: 0.5rem;
+               background-color: #0071e3;
+               border-radius: 2px;
           }
-          .content-container {
-               max-width: 800px;
-               margin-left: auto;
-               margin-right: auto;
-               padding: 0 20px;
+          
+          /* Scrollable details container */
+          .scrollable-details {
+               max-height: 320px;
+               overflow-y: auto;
+               padding-right: 1rem;
+               margin-right: -1rem;
+               -webkit-overflow-scrolling: touch;
           }
-          .card-fresh {
-               background-color: white;
-               border-radius: 0.5rem;
-               box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-               border: 1px solid #f0f0f0;
-               transition: transform 0.3s ease, box-shadow 0.3s ease;
+          
+          .scrollable-details::-webkit-scrollbar {
+               width: 4px;
           }
-          .card-fresh:hover {
-               transform: translateY(-5px);
-               box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          
+          .scrollable-details::-webkit-scrollbar-track {
+               background: #f1f1f1;
+               border-radius: 10px;
           }
-          .timeline-connector {
-               position: absolute;
-               left: 8px;
-               top: 0;
-               bottom: 0;
-               width: 2px;
-               background: repeating-linear-gradient(
-                    to bottom,
-                    #f97316 0,
-                    #f97316 6px,
-                    transparent 6px,
-                    transparent 12px
-               );
+          
+          .scrollable-details::-webkit-scrollbar-thumb {
+               background: #c1c1c1;
+               border-radius: 10px;
           }
-          .timeline-dot {
-               position: relative;
-               z-index: 10;
+          
+          .scrollable-details::-webkit-scrollbar-thumb:hover {
+               background: #a8a8a8;
           }
-          .timeline-dot::before {
-               content: "";
-               position: absolute;
-               top: 50%;
-               left: -20px;
-               transform: translateY(-50%);
-               width: 10px;
-               height: 10px;
-               border-radius: 50%;
-               background-color: #f97316;
-               box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.2);
-          }
-          .img-hover-zoom {
-               overflow: hidden;
-          }
-          .img-hover-zoom img {
-               transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-          }
-          .img-hover-zoom:hover img {
-               transform: scale(1.1);
-          }
-          .accent-bar {
-               border-top: 4px solid;
-               border-image: linear-gradient(to right, #f97316, #fb923c, #fed7aa) 1;
-          }
-          .day-card-content {
-               transform: translateY(10px);
-               opacity: 0;
-               transition: all 0.3s ease;
-          }
-          .day-card:hover .day-card-content {
-               transform: translateY(0);
-               opacity: 1;
-          }
+          
+          /* Responsive adjustments */
           @media (max-width: 768px) {
-               .day-card-content {
-                    transform: none;
-                    opacity: 1;
-               }
                .content-container {
                     padding: 0 16px;
+               }
+               .section-heading {
+                    font-size: 1.75rem;
+               }
+               .clean-heading {
+                    font-size: 1.5rem;
+               }
+               .scrollable-details {
+                    max-height: 280px;
                }
           }
      </style>
 </head>
 
-<body class="bg-gray-50 font-sans text-gray-800">
+<body class="bg-white font-sans text-[#1d1d1f]">
      <%- include('../partials/header') %>
 
-     <!-- Simple Header Section (replacing hero) -->
-     <section class="py-12 bg-gray-100 border-b border-gray-200">
-          <div class="content-container">
-               <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-                    <div>
-                         <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
-                              <%= tour.title %>
-                         </h1>
-                         <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-gray-600">
-                              <div class="flex items-center gap-2">
-                                   <i class="fas fa-clock text-orange-500"></i>
-                                   <span><%= tour.duration %> Days</span>
-                              </div>
-                              <div class="flex items-center gap-2">
-                                   <i class="fas fa-map-marker-alt text-orange-500"></i>
-                                   <span><%= tour.startLocation %></span>
-                              </div>
-                              <div class="flex items-center gap-2">
-                                   <i class="fas fa-users text-orange-500"></i>
-                                   <span>Max <%= tour.groupSize %></span>
-                              </div>
-                         </div>
-                    </div>
-                    <div class="flex flex-col sm:flex-row gap-3">
-                         <a href="#booking" class="px-6 py-3 bg-orange-500 text-white font-medium rounded-md hover:bg-orange-600 transition-colors shadow-md text-center">
-                              Book Tour
-                         </a>
-                         <a href="mailto:book@moroccotravelexperts.com" class="px-6 py-3 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 transition-colors shadow-md text-center">
-                              Email Booking
-                         </a>
-                    </div>
-               </div>
-          </div>
-     </section>
-     
-     <!-- Quick Navigation -->
-     <div class="sticky top-0 bg-white shadow-md z-30 py-0">
-          <div class="content-container">
-               <div class="flex overflow-x-auto hide-scrollbar justify-center">
-                    <a href="#overview" class="px-5 py-4 text-gray-600 hover:text-orange-500 border-b-2 border-transparent hover:border-orange-500 transition-colors whitespace-nowrap font-medium">Overview</a>
-                    <a href="#itinerary" class="px-5 py-4 text-gray-600 hover:text-orange-500 border-b-2 border-transparent hover:border-orange-500 transition-colors whitespace-nowrap font-medium">Itinerary</a>
-                    <a href="#gallery" class="px-5 py-4 text-gray-600 hover:text-orange-500 border-b-2 border-transparent hover:border-orange-500 transition-colors whitespace-nowrap font-medium">Gallery</a>
-                    <a href="#includes" class="px-5 py-4 text-gray-600 hover:text-orange-500 border-b-2 border-transparent hover:border-orange-500 transition-colors whitespace-nowrap font-medium">Includes/Excludes</a>
-                    <a href="#booking" class="px-5 py-4 text-gray-600 hover:text-orange-500 border-b-2 border-transparent hover:border-orange-500 transition-colors whitespace-nowrap font-medium">Book</a>
-                    <a href="mailto:book@moroccotravelexperts.com" class="px-5 py-4 text-gray-600 hover:text-orange-500 border-b-2 border-transparent hover:border-orange-500 transition-colors whitespace-nowrap font-medium">
-                         <i class="fas fa-envelope mr-2"></i>Email Us
-                    </a>
-               </div>
-          </div>
-     </div>
+     <!-- Main content -->
+     <main class="pt-20 pb-16 bg-white">
+         
 
-     <!-- Overview Section -->
-     <section id="overview" class="py-20 bg-white">
-          <div class="content-container">
-               <h2 class="section-heading mb-12">Tour Overview</h2>
-               
-               <div class="space-y-10">
-                    <!-- Description -->
-                    <div class="card-fresh p-8">
-                         <div class="prose prose-lg max-w-none">
-                              <%= tour.description %>
-                         </div>
-                    </div>
-                    
-                    <!-- Highlights Card -->
-                    <% if (tour.highlights && tour.highlights.length) { %>
-                    <div class="card-fresh p-8 accent-bar">
-                         <h3 class="text-xl font-semibold mb-6 flex items-center gap-2">
-                              <i class="fas fa-star text-orange-500"></i>
-                              Tour Highlights
-                         </h3>
-                         <div class="grid sm:grid-cols-2 gap-5">
-                              <% tour.highlights.forEach(highlight => { %>
-                              <div class="flex items-start gap-3">
-                                   <div class="text-orange-500 mt-1 text-lg"><i class="fas fa-check-circle"></i></div>
-                                   <p class="text-gray-700"><%= highlight %></p>
-                              </div>
-                              <% }) %>
-                         </div>
-                    </div>
-                    <% } %>
-                    
-                    <!-- Map -->
-                    <% if (tour.mapImage) { %>
-                    <div class="card-fresh p-8 accent-bar">
-                         <h3 class="text-xl font-semibold mb-6 flex items-center gap-2">
-                              <i class="fas fa-map text-orange-500"></i>
-                              Tour Route Map
-                         </h3>
-                         <div class="img-hover-zoom rounded-lg overflow-hidden">
-                              <img src="<%= tour.mapImage %>" alt="Tour route map" class="w-full rounded-lg shadow-md">
-                         </div>
-                    </div>
-                    <% } %>
-                    
-                    <!-- Tour Details Card -->
-                    <div class="card-fresh p-8 accent-bar">
-                         <h3 class="text-xl font-semibold mb-6">Essential Details</h3>
-                         
-                         <div class="grid md:grid-cols-2 gap-6">
-                              <div class="space-y-4">
-                                   <div class="flex justify-between border-b pb-3">
-                                        <span class="text-gray-600">Price:</span>
-                                        <span class="font-medium">Contact for pricing</span>
+          <!-- Content Container -->
+          <div class="container mx-auto max-w-7xl px-4 md:px-8 ">
+               <!-- Tour Details Section -->
+               <div class="flex flex-col md:flex-row">
+                    <!-- Main Content -->
+                    <div class="w-full">
+                         <!-- Apple-style Header Section -->
+                         <section class="pt-24 pb-12 bg-white">
+                              <div class="content-container">
+                                   <!-- Tour Title and Subtitle -->
+                                   <div class="max-w-3xl mb-10">
+                                        <h1 class="text-4xl md:text-5xl font-semibold tracking-tight mb-6">
+                                             <%= tour.title %>
+                                        </h1>
+                                        <p class="text-xl text-[#6e6e73] leading-relaxed">
+                                             Discover the beauty of Morocco with our <%= tour.duration %>-day journey starting from <%= tour.startLocation %>.
+                                        </p>
                                    </div>
-                                   <div class="flex justify-between border-b pb-3">
-                                        <span class="text-gray-600">Duration:</span>
-                                        <span class="font-medium"><%= tour.duration %> Days</span>
-                                   </div>
-                                   <div class="flex justify-between">
-                                        <span class="text-gray-600">Group Size:</span>
-                                        <span class="font-medium">Max <%= tour.groupSize %></span>
-                                   </div>
-                              </div>
-                              
-                              <div class="space-y-4">
-                                   <div class="flex justify-between border-b pb-3">
-                                        <span class="text-gray-600">Starting Point:</span>
-                                        <span class="font-medium"><%= tour.startLocation %></span>
-                                   </div>
-                                   <div class="flex justify-between border-b pb-3">
-                                        <span class="text-gray-600">Accommodation:</span>
-                                        <span class="font-medium"><%= tour.accommodation %></span>
-                                   </div>
-                                   <div class="flex justify-between items-center">
-                                        <span class="text-gray-600">Rating:</span>
+                                   
+                                   <!-- Tour Quick Info -->
+                                   <div class="flex flex-wrap gap-x-12 gap-y-5 mb-8 text-[#6e6e73]">
                                         <div class="flex items-center">
-                                             <span class="font-medium mr-2"><%= tour.rating %>/5</span>
-                                             <div class="flex text-yellow-400">
-                                                  <% for(let i = 0; i < Math.floor(tour.rating); i++) { %>
-                                                       <i class="fas fa-star"></i>
-                                                  <% } %>
-                                                  <% if(tour.rating % 1 >= 0.5) { %>
-                                                       <i class="fas fa-star-half-alt"></i>
-                                                  <% } %>
-                                             </div>
+                                             <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                  <circle cx="12" cy="12" r="10"></circle>
+                                                  <polyline points="12 6 12 12 16 14"></polyline>
+                                             </svg>
+                                             <span><%= tour.duration %> Days</span>
                                         </div>
-                                   </div>
-                              </div>
-                         </div>
-                         
-                         <div class="grid grid-cols-1 gap-4 mt-8">
-                              <a href="#booking" class="block w-full py-3 bg-orange-500 text-white text-center rounded-md font-medium hover:bg-orange-600 transition-colors">
-                                   Book Now
-                              </a>
-                         </div>
-                    </div>
-                    
-                    <!-- Direct Booking Card -->
-                    <div class="card-fresh p-8 accent-bar bg-blue-50">
-                         <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
-                              <i class="fas fa-envelope text-blue-500"></i>
-                              Direct Booking Option
-                         </h3>
-                         <p class="mb-4 text-gray-600">
-                              Prefer to request a booking via email? Contact our booking department directly:
-                         </p>
-                         <a href="mailto:book@moroccotravelexperts.com" class="block w-full py-3 bg-blue-500 text-white text-center rounded-md font-medium hover:bg-blue-600 transition-colors">
-                              book@moroccotravelexperts.com
-                         </a>
-                    </div>
-               </div>
-          </div>
-     </section>
-
-     <!-- Itinerary Section -->
-     <section id="itinerary" class="py-20 bg-gray-50">
-          <div class="content-container">
-               <h2 class="section-heading mb-12">Day by Day Itinerary</h2>
-               
-               <div class="relative pl-8 md:pl-12">
-                    <!-- Timeline connector -->
-                    <div class="timeline-connector"></div>
-                    
-                    <div class="space-y-8">
-                         <% tour.itinerary.forEach((day, index) => { %>
-                         <div class="day-card relative timeline-dot">
-                              <div class="card-fresh overflow-hidden">
-                                   <!-- Day header -->
-                                   <div class="collapse-header cursor-pointer w-full flex items-center gap-4 p-6" onclick="toggleCollapse(this)">
-                                        <div class="w-14 h-14 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center font-bold text-xl flex-shrink-0 relative z-10 border-2 border-white">
-                                             <%= day.day %>
+                                        <div class="flex items-center">
+                                             <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                                  <circle cx="12" cy="10" r="3"></circle>
+                                             </svg>
+                                             <span><%= tour.startLocation %></span>
                                         </div>
-                                        <div class="flex-grow">
-                                             <h3 class="text-xl font-semibold"><%= day.title %></h3>
-                                             <% if(day.distance) { %>
-                                             <p class="text-gray-500 text-sm">Distance: <%= day.distance %></p>
-                                             <% } %>
+                                        <div class="flex items-center">
+                                             <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                                  <circle cx="9" cy="7" r="4"></circle>
+                                                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                             </svg>
+                                             <span>Max <%= tour.groupSize %> travelers</span>
                                         </div>
-                                        <div class="text-gray-400 transform transition-transform duration-300">
-                                             <i class="fas fa-chevron-down"></i>
+                                        <div class="flex items-center">
+                                             <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                  <circle cx="12" cy="7" r="4"></circle>
+                                             </svg>
+                                             <span><%= tour.accommodation %></span>
                                         </div>
                                    </div>
                                    
-                                   <!-- Day content -->
-                                   <div class="collapse-content hidden px-6 pb-6 day-card-content">
-                                        <div class="pl-0 md:pl-14">
-                                             <div class="prose text-gray-600 mb-4">
-                                                  <%= day.description %>
-                                             </div>
-                                             
-                                             <% if (day.highlights && day.highlights.length > 0) { %>
-                                             <div class="mt-6 bg-orange-50 p-4 rounded-md">
-                                                  <h4 class="font-medium text-gray-800 mb-3 flex items-center gap-2">
-                                                       <i class="fas fa-lightbulb text-orange-500"></i>
-                                                       Day Highlights
-                                                  </h4>
-                                                  <div class="flex flex-wrap gap-2">
-                                                       <% day.highlights.forEach(highlight => { %>
-                                                       <span class="px-3 py-1 bg-white text-orange-700 rounded-md text-sm border border-orange-200">
-                                                            <%= highlight %>
-                                                       </span>
-                                                       <% }) %>
-                                                  </div>
-                                             </div>
-                                             <% } %>
+                                   <!-- Call to Action Buttons -->
+                                   <div class="flex flex-wrap gap-4">
+                                        <a href="#booking" class="apple-button">
+                                             Book This Tour
+                                        </a>
+                                        <a href="mailto:book@moroccotravelexperts.com" class="inline-flex items-center px-6 py-3 text-base font-medium text-[#0071e3] bg-white border border-[#0071e3] rounded-lg hover:bg-[#0071e3] hover:text-white transition-colors duration-200">
+                                             Contact Us
+                                        </a>
+                                   </div>
+                              </div>
+                         </section>
+                         
+                         <!-- Clean Navigation Bar -->
+                         <div class="sticky top-0 bg-white bg-opacity-95 backdrop-blur-sm z-30 border-b border-gray-100">
+                              <div class="content-container">
+                                   <div class="flex overflow-x-auto hide-scrollbar justify-center">
+                                        <a href="#overview" class="nav-link px-6 py-4 whitespace-nowrap">Overview</a>
+                                        <a href="#itinerary" class="nav-link px-6 py-4 whitespace-nowrap">Itinerary</a>
+                                        <a href="#gallery" class="nav-link px-6 py-4 whitespace-nowrap">Gallery</a>
+                                        <a href="#includes" class="nav-link px-6 py-4 whitespace-nowrap">Details</a>
+                                        <a href="#booking" class="nav-link px-6 py-4 whitespace-nowrap">Book</a>
+                                   </div>
+                              </div>
+                         </div>
+
+                         <!-- ===== START: TOUR CONTENT SECTION ===== -->
+                         <!-- Overview Section - White Background -->
+                         <section class="section-white">
+                              <div class="content-container">
+                                   <div id="overview">
+                                        <h2 class="clean-heading">Overview</h2>
+                                        <div class="text-lg leading-relaxed text-[#1d1d1f] space-y-6">
+                                             <%= tour.description %>
                                         </div>
                                    </div>
                               </div>
-                         </div>
-                         <% }) %>
-                    </div>
-               </div>
-          </div>
-     </section>
+                         </section>
 
-     <!-- Gallery Section -->
-     <section id="gallery" class="py-20 bg-white">
-          <div class="content-container">
-               <h2 class="section-heading mb-12">Tour Gallery</h2>
-               
-               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <% tour.images.forEach((image, index) => { %>
-                    <div class="img-hover-zoom rounded-lg shadow-md overflow-hidden">
-                         <img 
-                              src="<%= image %>" 
-                              alt="<%= tour.title %> - View <%= index + 1 %>" 
-                              class="w-full h-64 object-cover"
+                         <!-- Itinerary Section - Gray Background -->
+                         <section class="section-gray">
+                              <div class="content-container">
+                                   <div id="itinerary">
+                                        <h2 class="clean-heading">Day by Day Itinerary</h2>
+                                        <div class="space-y-6">
+                                             <% tour.itinerary.forEach((day, index) => { %>
+                                             <div class="accordion-item overflow-hidden">
+                                                  <div class="accordion-header" onclick="toggleCollapse(this)">
+                                                       <div class="flex items-center">
+                                                            <span class="w-8 h-8 rounded-full bg-[#f5f5f7] flex items-center justify-center text-[#0071e3] mr-4">
+                                                                 <%= index + 1 %>
+                                                            </span>
+                                                            <h3 class="text-lg font-medium"><%= day.title %></h3>
+                                                       </div>
+                                                       <svg class="w-6 h-6 text-[#86868b]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7" />
+                                                       </svg>
+                                                  </div>
+                                                  <div class="accordion-content hidden">
+                                                       <div class="text-[#1d1d1f] space-y-4">
+                                                            <p><%= day.description %></p>
+                                                       </div>
+                                                       <% if (day.image) { %>
+                                                       <div class="mt-6 rounded-xl overflow-hidden">
+                                                            <img src="<%= day.image %>" alt="<%= day.title %>" class="w-full h-auto">
+                                                       </div>
+                                                       <% } %>
+                                                  </div>
+                                             </div>
+                                             <% }) %>
+                                        </div>
+                                   </div>
+                              </div>
+                         </section>
+
+                         <!-- Gallery Section - White Background -->
+                         <section class="section-white">
+                              <div class="content-container">
+                                   <div id="gallery">
+                                        <h2 class="clean-heading">Tour Gallery</h2>
+                                        <div class="gallery-grid">
+                                             <% tour.images.forEach(image => { %>
+                                             <a href="<%= image %>" class="gallery-item block">
+                                                  <div class="img-container h-full">
+                                                       <img src="<%= image %>" alt="Tour Image" class="w-full h-full object-cover">
+                                                  </div>
+                                             </a>
+                                             <% }) %>
+                                        </div>
+                                   </div>
+                              </div>
+                         </section>
+
+                         <!-- Tour Details Section with Scrollable Content - Gray Background -->
+                         <section class="section-gray">
+                              <div class="content-container">
+                                   <div id="includes">
+                                        <h2 class="clean-heading">Tour Details</h2>
+                                        <div class="grid md:grid-cols-2 gap-12">
+                                             <!-- What's Included - Scrollable -->
+                                             <div class="apple-card p-6">
+                                                  <h3 class="text-xl font-medium mb-4">What's Included</h3>
+                                                  <div class="scrollable-details">
+                                                       <ul class="space-y-4">
+                                                            <% tour.includes.forEach(item => { %>
+                                                            <li class="flex">
+                                                                 <svg class="w-5 h-5 text-[#0071e3] mt-1 mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                                      <polyline points="20 6 9 17 4 12"></polyline>
+                                                                 </svg>
+                                                                 <span><%= item %></span>
+                                                            </li>
+                                                            <% }) %>
+                                                       </ul>
+                                                  </div>
+                                             </div>
+                                             
+                                             <!-- What's Not Included - Scrollable -->
+                                             <div class="apple-card p-6">
+                                                  <h3 class="text-xl font-medium mb-4">Not Included</h3>
+                                                  <div class="scrollable-details">
+                                                       <ul class="space-y-4">
+                                                            <% tour.excludes.forEach(item => { %>
+                                                            <li class="flex">
+                                                                 <svg class="w-5 h-5 text-[#86868b] mt-1 mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                                 </svg>
+                                                                 <span><%= item %></span>
+                                                            </li>
+                                                            <% }) %>
+                                                       </ul>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                   </div>
+                              </div>
+                         </section>
+                         
+                         <!-- Key Attractions Section - White Background -->
+                         <% if (tour.keyHighlights && Array.isArray(tour.keyHighlights) && tour.keyHighlights.length > 0) { %>
+                         <section class="section-white">
+                              <div class="content-container">
+                                   <div id="attractions">
+                                        <h2 class="clean-heading">Key Attractions</h2>
+                                        
+                                        <div class="grid md:grid-cols-2 gap-8">
+                                             <% tour.keyHighlights.forEach(highlight => { %>
+                                             <div class="flex">
+                                                  <div class="mr-4 text-[#0071e3]">
+                                                       <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                                            <path d="M12 2L5 12 12 22 19 12 12 2Z"></path>
+                                                            <path d="M3 12h18"></path>
+                                                       </svg>
+                                                  </div>
+                                                  <div>
+                                                       <h3 class="text-lg font-medium mb-1"><%= highlight %></h3>
+                                                  </div>
+                                             </div>
+                                             <% }) %>
+                                        </div>
+                                   </div>
+                              </div>
+                         </section>
+                         <% } else if (tour.highlights && Array.isArray(tour.highlights) && tour.highlights.length > 0) { %>
+                         <!-- Fall back to tour.highlights if keyHighlights doesn't exist -->
+                         <section class="section-white">
+                              <div class="content-container">
+                                   <div id="attractions">
+                                        <h2 class="clean-heading">Key Attractions</h2>
+                                        
+                                        <div class="grid md:grid-cols-2 gap-8">
+                                             <% tour.highlights.forEach(highlight => { %>
+                                             <div class="flex">
+                                                  <div class="mr-4 text-[#0071e3]">
+                                                       <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                                            <path d="M12 2L5 12 12 22 19 12 12 2Z"></path>
+                                                            <path d="M3 12h18"></path>
+                                                       </svg>
+                                                  </div>
+                                                  <div>
+                                                       <h3 class="text-lg font-medium mb-1"><%= highlight %></h3>
+                                                  </div>
+                                             </div>
+                                             <% }) %>
+                                        </div>
+                                   </div>
+                              </div>
+                         </section>
+                         <% } %>
+                         
+                         <!-- Additional Info - Gray Background -->
+                         <section class="section-gray">
+                              <div class="content-container">
+                                   <div class="bg-white rounded-2xl p-8">
+                                        <div class="flex flex-col md:flex-row md:items-center">
+                                             <div class="mb-6 md:mb-0 md:mr-8">
+                                                  <svg class="w-12 h-12 text-[#f97316]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                                       <circle cx="12" cy="12" r="10"></circle>
+                                                       <line x1="12" y1="16" x2="12" y2="12"></line>
+                                                       <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                                  </svg>
+                                             </div>
+                                             <div>
+                                                  <h3 class="text-xl font-medium mb-2">Have Questions or Special Requirements?</h3>
+                                                  <p class="text-[#6e6e73] mb-4">Feel free to reach out to us directly for any custom booking requests or questions about this tour.</p>
+                                                  <a href="mailto:book@moroccotravelexperts.com" class="text-[#f97316] font-medium hover:underline">
+                                                       book@moroccotravelexperts.com
+                                                  </a>
+                                             </div>
+                                        </div>
+                                   </div>
+                              </div>
+                         </section>
+                         
+                         <!-- Tour Summary Button (Fixed Position) -->
+                         <button 
+                              id="tourSummaryBtn"
+                              class="fixed bottom-6 right-6 bg-[#FF8C00] hover:bg-[#E67E00] text-white font-semibold py-3 px-6 rounded-full shadow-lg flex items-center space-x-2 z-40"
                          >
-                    </div>
-                    <% }) %>
-               </div>
-          </div>
-     </section>
+                              <span>Tour Summary</span>
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                   <path fill-rule="evenodd" d="M4 5a2 2 0 012-2h8a2 2 0 012 2v14l-6-3-6 3V5z" clip-rule="evenodd" />
+                              </svg>
+                         </button>
 
-     <!-- Includes & Excludes Section -->
-     <section id="includes" class="py-20 bg-gray-50">
-          <div class="content-container">
-               <h2 class="section-heading mb-12">What's Included</h2>
-               
-               <div class="space-y-8">
-                    <div class="card-fresh p-8 accent-bar">
-                         <h3 class="text-xl font-semibold mb-6 flex items-center gap-2">
-                              <i class="fas fa-check-circle text-green-500"></i>
-                              Included in This Tour
-                         </h3>
-                         <ul class="space-y-4">
-                              <% tour.includes.forEach(item => { %>
-                              <li class="flex items-start gap-3">
-                                   <div class="text-green-500 mt-1"><i class="fas fa-check"></i></div>
-                                   <span class="text-gray-700"><%= item %></span>
-                              </li>
-                              <% }) %>
-                         </ul>
-                    </div>
-                    
-                    <div class="card-fresh p-8 accent-bar">
-                         <h3 class="text-xl font-semibold mb-6 flex items-center gap-2">
-                              <i class="fas fa-times-circle text-red-500"></i>
-                              Not Included
-                         </h3>
-                         <ul class="space-y-4">
-                              <% tour.excludes.forEach(item => { %>
-                              <li class="flex items-start gap-3">
-                                   <div class="text-red-500 mt-1"><i class="fas fa-times"></i></div>
-                                   <span class="text-gray-700"><%= item %></span>
-                              </li>
-                              <% }) %>
-                         </ul>
-                    </div>
-               </div>
-          </div>
-     </section>
-
-     <!-- Booking Section -->
-     <section id="booking" class="py-20 bg-white">
-          <div class="content-container">
-               <h2 class="section-heading mb-12">Book This Tour</h2>
-               
-               <div class="space-y-10">
-                    <!-- Booking Options Cards -->
-                    <div class="grid md:grid-cols-2 gap-6">
-                         <div class="card-fresh overflow-hidden">
-                              <div class="h-2 bg-orange-500"></div>
-                              <div class="p-6">
-                                   <h3 class="text-xl font-semibold mb-4">Standard Tour</h3>
-                                   <p class="text-gray-600 mb-6">
-                                        Book the standard tour package with the itinerary as described.
-                                   </p>
-                                   <a href="#booking-form" class="block w-full py-3 bg-orange-500 text-white text-center rounded-md font-medium hover:bg-orange-600 transition-colors mt-auto">
-                                        Book Standard
-                                   </a>
+                         <!-- Tour Summary Modal -->
+                         <div id="tourSummaryModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+                              <div class="bg-white rounded-lg shadow-xl w-11/12 max-w-2xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+                                   <!-- Modal Header -->
+                                   <div class="p-4 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white z-10">
+                                        <h3 class="text-xl font-semibold text-gray-900">Tour Summary</h3>
+                                        <button onclick="closeTourSummaryModal()" class="text-gray-400 hover:text-gray-500">
+                                             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                             </svg>
+                                        </button>
+                                   </div>
+                                   
+                                   <!-- Modal Content -->
+                                   <div class="p-6">
+                                        <!-- Tour Quick Facts -->
+                                        <div class="mb-6">
+                                             <h4 class="font-bold text-lg mb-3">Quick Facts</h4>
+                                             <div class="grid grid-cols-2 gap-4">
+                                                  <div class="flex items-start">
+                                                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#FF8C00] mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                       </svg>
+                                                       <div>
+                                                            <p class="text-sm text-gray-500">Duration</p>
+                                                            <p class="font-medium"><%= tour.duration %> days</p>
+                                                       </div>
+                                                  </div>
+                                                  <div class="flex items-start">
+                                                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#FF8C00] mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                       </svg>
+                                                       <div>
+                                                            <p class="text-sm text-gray-500">Group Size</p>
+                                                            <p class="font-medium"><%= tour.groupSize %> people</p>
+                                                       </div>
+                                                  </div>
+                                                  <div class="flex items-start">
+                                                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#FF8C00] mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                                       </svg>
+                                                       <div>
+                                                            <p class="text-sm text-gray-500">Difficulty</p>
+                                                            <p class="font-medium"><%= tour.difficulty %></p>
+                                                       </div>
+                                                  </div>
+                                                  <div class="flex items-start">
+                                                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#FF8C00] mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                                       </svg>
+                                                       <div>
+                                                            <p class="text-sm text-gray-500">Accommodation</p>
+                                                            <p class="font-medium"><%= tour.accommodation %></p>
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                        
+                                        <!-- Price Section -->
+                                        <div class="border-t border-gray-200 pt-6 mb-6">
+                                             <h4 class="font-bold text-lg mb-3">Price</h4>
+                                             <div class="flex items-baseline">
+                                                  <span class="text-3xl font-bold text-[#FF8C00]">$<%= tour.price %></span>
+                                                  <span class="text-gray-500 ml-2">per person</span>
+                                             </div>
+                                             <p class="text-sm text-gray-600 mt-2">Includes accommodation, transportation, and guided tours</p>
+                                        </div>
+                                        
+                                        <!-- Booking Button -->
+                                        <a href="/booking/<%= tour.id %>" class="block w-full bg-[#FF8C00] hover:bg-[#E67E00] text-white text-center font-bold py-3 px-4 rounded-lg transition duration-200">
+                                             Book Now
+                                        </a>
+                                   </div>
                               </div>
                          </div>
                          
-                         <div class="card-fresh overflow-hidden">
-                              <div class="h-2 bg-blue-500"></div>
-                              <div class="p-6">
-                                   <h3 class="text-xl font-semibold mb-4">Email Booking</h3>
-                                   <p class="text-gray-600 mb-6">
-                                        Request a booking directly via email contact.
+                         <!-- Booking Section - White Background -->
+                         <section id="booking" class="section-white">
+                              <div class="content-container max-w-4xl mx-auto">
+                                   <h2 class="clean-heading text-center">Book Your Tour</h2>
+                                   <p class="text-center text-[#6e6e73] text-lg mb-8 max-w-xl mx-auto">
+                                        Ready to experience the beauty of Morocco? Fill out the form below to secure your spot on this unforgettable journey.
                                    </p>
-                                   <a href="mailto:book@moroccotravelexperts.com" class="block w-full py-3 bg-blue-500 text-white text-center rounded-md font-medium hover:bg-blue-600 transition-colors mt-auto">
-                                        Email Us
-                                   </a>
-                              </div>
-                         </div>
-                    </div>
-                    
-                    <!-- Booking Form -->
-                    <div id="booking-form" class="card-fresh p-8">
-                         <h3 class="text-xl font-semibold mb-6">Book Your Tour</h3>
-                         
-                         <form id="tourBookingForm" class="space-y-6">
-                              <input type="hidden" name="tourId" value="<%= tour._id %>">
-                              <input type="hidden" name="tourName" value="<%= tour.title %>">
-                              
-                              <!-- Customer Information -->
-                              <div class="grid md:grid-cols-2 gap-6">
-                                   <div>
-                                        <label for="firstName" class="block text-gray-600 mb-2">First Name *</label>
-                                        <input type="text" id="firstName" name="firstName" required
-                                             class="w-full px-4 py-3 rounded-md border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
-                                   </div>
-                                   <div>
-                                        <label for="lastName" class="block text-gray-600 mb-2">Last Name *</label>
-                                        <input type="text" id="lastName" name="lastName" required
-                                             class="w-full px-4 py-3 rounded-md border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
-                                   </div>
-                              </div>
+                                   
+                                   <div class="apple-card p-8 md:p-12">
+                                        <form id="tourBookingForm" class="space-y-8">
+                                             <input type="hidden" name="tourId" value="<%= tour._id %>">
+                                             <input type="hidden" name="tourName" value="<%= tour.title %>">
+                                             
+                                             <!-- Personal Information Section -->
+                                             <div>
+                                                  <h3 class="text-xl font-medium mb-6 flex items-center">
+                                                       <svg class="w-6 h-6 mr-2 text-[#0071e3]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                                            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+                                                            <circle cx="12" cy="7" r="4"></circle>
+                                                       </svg>
+                                                       Personal Information
+                                                  </h3>
+                                                  
+                                                  <div class="grid md:grid-cols-2 gap-6">
+                                                       <div>
+                                                            <label for="firstName" class="apple-label">First Name</label>
+                                                            <input type="text" id="firstName" name="firstName" required class="apple-input">
+                                                       </div>
+                                                       <div>
+                                                            <label for="lastName" class="apple-label">Last Name</label>
+                                                            <input type="text" id="lastName" name="lastName" required class="apple-input">
+                                                       </div>
+                                                  </div>
 
-                              <div class="grid md:grid-cols-2 gap-6">
-                                   <div>
-                                        <label for="email" class="block text-gray-600 mb-2">Email *</label>
-                                        <input type="email" id="email" name="email" required
-                                             class="w-full px-4 py-3 rounded-md border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
-                                   </div>
-                                   <div>
-                                        <label for="phone" class="block text-gray-600 mb-2">Phone Number *</label>
-                                        <input type="tel" id="phone" name="phone" required
-                                             class="w-full px-4 py-3 rounded-md border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
+                                                  <div class="grid md:grid-cols-2 gap-6 mt-6">
+                                                       <div>
+                                                            <label for="email" class="apple-label">Email</label>
+                                                            <input type="email" id="email" name="email" required class="apple-input">
+                                                       </div>
+                                                       <div>
+                                                            <label for="phone" class="apple-label">Phone Number</label>
+                                                            <input type="tel" id="phone" name="phone" required class="apple-input">
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                             
+                                             <!-- Tour Details Section -->
+                                             <div class="pt-4">
+                                                  <h3 class="text-xl font-medium mb-6 flex items-center">
+                                                       <svg class="w-6 h-6 mr-2 text-[#0071e3]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                                       </svg>
+                                                       Tour Details
+                                                  </h3>
+                                                  
+                                                  <div class="grid md:grid-cols-2 gap-6">
+                                                       <div>
+                                                            <label for="startDate" class="apple-label">Start Date</label>
+                                                            <input type="date" id="startDate" name="startDate" required class="apple-input"
+                                                                 min="<%= new Date().toISOString().split('T')[0] %>">
+                                                       </div>
+                                                       <div>
+                                                            <label for="groupSize" class="apple-label">Number of People</label>
+                                                            <input type="number" id="groupSize" name="groupSize" min="1" max="<%= tour.groupSize %>" value="1" required class="apple-input">
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                             
+                                             <!-- Special Requests Section -->
+                                             <div class="pt-4">
+                                                  <h3 class="text-xl font-medium mb-6 flex items-center">
+                                                       <svg class="w-6 h-6 mr-2 text-[#0071e3]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                                       </svg>
+                                                       Special Requests
+                                                  </h3>
+                                                  
+                                                  <div>
+                                                       <label for="specialRequests" class="apple-label">Additional Information or Requests</label>
+                                                       <textarea id="specialRequests" name="specialRequests" rows="4" class="apple-input"></textarea>
+                                                  </div>
+                                             </div>
+                                             
+                                             <!-- Form status messages -->
+                                             <div id="bookingFormStatus" class="hidden"></div>
+
+                                             <!-- Submit Button -->
+                                             <div class="pt-4">
+                                                  <button type="submit" class="apple-button w-full py-4 text-lg">
+                                                       Book This Tour
+                                                  </button>
+
+                                                  <p class="text-sm text-[#6e6e73] text-center mt-4">
+                                                       By booking, you agree to our <a href="/terms" class="text-[#0071e3] hover:underline">Terms & Conditions</a>
+                                                  </p>
+                                             </div>
+                                        </form>
                                    </div>
                               </div>
-
-                              <!-- Booking Details -->
-                              <div class="grid md:grid-cols-2 gap-6">
-                                   <div>
-                                        <label for="startDate" class="block text-gray-600 mb-2">Preferred Start Date *</label>
-                                        <input type="date" id="startDate" name="startDate" required
-                                             min="<%= new Date().toISOString().split('T')[0] %>"
-                                             class="w-full px-4 py-3 rounded-md border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
-                                   </div>
-                                   <div>
-                                        <label for="groupSize" class="block text-gray-600 mb-2">Number of People *</label>
-                                        <input type="number" id="groupSize" name="groupSize" min="1" max="<%= tour.groupSize %>" required
-                                             class="w-full px-4 py-3 rounded-md border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
-                                   </div>
-                              </div>
-
-                              <div>
-                                   <label for="specialRequests" class="block text-gray-600 mb-2">Special Requests</label>
-                                   <textarea name="specialRequests" rows="4" 
-                                        class="w-full px-4 py-3 rounded-md border focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"></textarea>
-                              </div>
-                              
-                              <!-- Form status messages -->
-                              <div id="bookingFormStatus" class="hidden"></div>
-
-                              <button type="submit" 
-                                   class="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-md font-medium shadow-md transition-colors">
-                                   Book This Tour
-                              </button>
-
-                              <p class="text-sm text-gray-500 text-center">
-                                   By booking, you agree to our <a href="/terms" class="text-orange-500 hover:underline">Terms & Conditions</a>
-                              </p>
-                         </form>
+                         </section>
+                         <!-- ===== END: TOUR CONTENT SECTION ===== -->
                     </div>
                </div>
           </div>
-     </section>
+     </main>
 
      <!-- Related Tours Section -->
      <% if (relatedTours && relatedTours.length > 0) { %>
-     <section class="py-20 bg-gray-50">
+     <section class="py-24 bg-[#f5f5f7]">
           <div class="content-container">
-               <h2 class="section-heading mb-12">Similar Tours You Might Like</h2>
+               <h2 class="section-heading">You May Also Like</h2>
                
-               <div class="grid md:grid-cols-2 gap-8">
+               <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
                     <% relatedTours.forEach(relatedTour => { %>
                     <a href="/tours/<%= relatedTour.slug %>" class="group">
-                         <div class="card-fresh h-full overflow-hidden">
-                              <div class="img-hover-zoom aspect-video overflow-hidden">
+                         <div class="apple-card h-full overflow-hidden">
+                              <div class="img-container aspect-video">
                                    <img 
                                         src="<%= relatedTour.mainImage %>" 
                                         alt="<%= relatedTour.title %>" 
@@ -537,12 +816,24 @@
                                    >
                               </div>
                               <div class="p-6">
-                                   <div class="flex items-center justify-between text-sm text-gray-500 mb-2">
-                                        <span class="flex items-center"><i class="fas fa-clock mr-2 text-orange-400"></i><%= relatedTour.duration %> Days</span>
-                                        <span class="flex items-center"><i class="fas fa-map-marker-alt mr-2 text-orange-400"></i><%= relatedTour.startLocation %></span>
+                                   <div class="flex justify-between items-center mb-3 text-sm text-[#6e6e73]">
+                                        <span class="flex items-center">
+                                             <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                  <circle cx="12" cy="12" r="10"/>
+                                                  <polyline points="12 6 12 12 16 14"/>
+                                             </svg>
+                                             <%= relatedTour.duration %> Days
+                                        </span>
+                                        <span class="flex items-center">
+                                             <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                                                  <circle cx="12" cy="10" r="3"/>
+                                             </svg>
+                                             <%= relatedTour.startLocation %>
+                                        </span>
                                    </div>
-                                   <h3 class="text-xl font-semibold mb-2 group-hover:text-orange-500 transition-colors"><%= relatedTour.title %></h3>
-                                   <p class="text-gray-600 line-clamp-2"><%= relatedTour.description.substring(0, 100) %>...</p>
+                                   <h3 class="text-xl font-medium mb-2 group-hover:text-[#0071e3] transition-colors"><%= relatedTour.title %></h3>
+                                   <p class="text-[#6e6e73] line-clamp-2"><%= relatedTour.description.substring(0, 100) %>...</p>
                               </div>
                          </div>
                     </a>
@@ -553,8 +844,10 @@
      <% } %>
 
      <!-- Back-to-top Button -->
-     <button id="backToTop" class="fixed bottom-8 right-8 bg-orange-500 text-white p-4 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-orange-600 focus:outline-none z-50">
-          <i class="fas fa-arrow-up"></i>
+     <button id="backToTop" class="fixed bottom-8 right-8 bg-white shadow-lg text-[#0071e3] p-3 rounded-full opacity-0 invisible transition-all duration-300 border border-gray-200 focus:outline-none z-50 hover:shadow-xl">
+          <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+               <path d="M12 19V5M5 12l7-7 7 7"/>
+          </svg>
      </button>
      
      <%- include('../partials/footer') %>
@@ -563,14 +856,14 @@
           // Toggle collapse sections
           function toggleCollapse(element) {
                const content = element.nextElementSibling;
-               const icon = element.querySelector('svg') || element.querySelector('i');
+               const icon = element.querySelector('svg');
                
-               if (content.style.display === 'block' || getComputedStyle(content).display === 'block') {
-                    content.style.display = 'none';
-                    if (icon) icon.style.transform = 'rotate(0deg)';
-               } else {
-                    content.style.display = 'block';
+               if (content.classList.contains('hidden')) {
+                    content.classList.remove('hidden');
                     if (icon) icon.style.transform = 'rotate(180deg)';
+               } else {
+                    content.classList.add('hidden');
+                    if (icon) icon.style.transform = 'rotate(0deg)';
                }
           }
           
@@ -595,28 +888,25 @@
           });
           
           // Add active class to navigation links based on scroll position
-          const sections = document.querySelectorAll('section[id]');
+          const sections = document.querySelectorAll('section div[id]');
           const navLinks = document.querySelectorAll('.nav-link');
           
           window.addEventListener('scroll', () => {
                let current = '';
                
                sections.forEach(section => {
-                    const sectionTop = section.offsetTop;
-                    const sectionHeight = section.clientHeight;
+                    const sectionTop = section.getBoundingClientRect().top;
                     
-                    if (window.scrollY >= (sectionTop - 200)) {
+                    if (sectionTop <= 120) {
                          current = section.getAttribute('id');
                     }
                });
                
                navLinks.forEach(link => {
-                    link.classList.remove('text-orange-500', 'border-orange-500');
-                    link.classList.add('text-gray-600', 'border-transparent');
+                    link.classList.remove('active');
                     
-                    if (link.getAttribute('href').includes(current)) {
-                         link.classList.add('text-orange-500', 'border-orange-500');
-                         link.classList.remove('text-gray-600', 'border-transparent');
+                    if (link.getAttribute('href').substring(1) === current) {
+                         link.classList.add('active');
                     }
                });
           });
@@ -629,19 +919,32 @@
                const submitButton = this.querySelector('button[type="submit"]');
                const originalButtonText = submitButton.innerHTML;
                submitButton.disabled = true;
-               submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+               submitButton.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-5 w-5 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...';
                
                // Get form data
                const formData = new FormData(this);
                const formDataObject = Object.fromEntries(formData.entries());
                
+               // Format data to match backend schema
+               const bookingData = {
+                    tourId: formDataObject.tourId,
+                    tourName: formDataObject.tourName,
+                    firstName: formDataObject.firstName, 
+                    lastName: formDataObject.lastName,
+                    email: formDataObject.email,
+                    phone: formDataObject.phone,
+                    startDate: formDataObject.startDate,
+                    groupSize: formDataObject.groupSize,
+                    specialRequests: formDataObject.specialRequests
+               };
+               
                // Send Ajax request
-               fetch('/bookings', {
+               fetch('/tour-booking', {
                     method: 'POST',
                     headers: {
                          'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(formDataObject)
+                    body: JSON.stringify(bookingData)
                })
                .then(response => {
                     if (!response.ok) {
@@ -653,9 +956,9 @@
                     // Show success message
                     const statusDiv = document.getElementById('bookingFormStatus');
                     statusDiv.innerHTML = `
-                         <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded relative">
-                              <strong class="font-bold">Success!</strong>
-                              <span class="block sm:inline"> Your booking request has been sent. We'll contact you shortly.</span>
+                         <div class="bg-[#f2faf6] border border-[#d1e7dd] text-[#0a5b46] px-4 py-3 rounded-xl mb-4">
+                              <strong class="font-medium">Success!</strong>
+                              <span class="block mt-1"> ${data.message || 'Your booking request has been sent. We\'ll contact you shortly.'}</span>
                          </div>
                     `;
                     statusDiv.classList.remove('hidden');
@@ -674,9 +977,9 @@
                     // Show error message
                     const statusDiv = document.getElementById('bookingFormStatus');
                     statusDiv.innerHTML = `
-                         <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative">
-                              <strong class="font-bold">Error!</strong>
-                              <span class="block sm:inline"> There was a problem submitting your booking. Please try again or contact us directly.</span>
+                         <div class="bg-[#fdf5f5] border border-[#f8d7da] text-[#842029] px-4 py-3 rounded-xl mb-4">
+                              <strong class="font-medium">Error!</strong>
+                              <span class="block mt-1"> There was a problem submitting your booking. Please try again or contact us directly.</span>
                          </div>
                     `;
                     statusDiv.classList.remove('hidden');
@@ -690,6 +993,37 @@
                     
                     console.error('Error:', error);
                });
+          });
+
+          // Tour Summary Modal Functions
+          const tourSummaryModal = document.getElementById('tourSummaryModal');
+          const tourSummaryBtn = document.getElementById('tourSummaryBtn');
+          
+          function openTourSummaryModal() {
+               tourSummaryModal.classList.remove('opacity-0', 'pointer-events-none');
+               document.body.style.overflow = 'hidden';
+          }
+          
+          function closeTourSummaryModal() {
+               tourSummaryModal.classList.add('opacity-0', 'pointer-events-none');
+               document.body.style.overflow = '';
+          }
+          
+          // Event Listeners
+          tourSummaryBtn.addEventListener('click', openTourSummaryModal);
+          
+          // Close modal when clicking outside
+          tourSummaryModal.addEventListener('click', function(e) {
+               if (e.target === tourSummaryModal) {
+                    closeTourSummaryModal();
+               }
+          });
+          
+          // Close modal when pressing Escape key
+          document.addEventListener('keydown', function(e) {
+               if (e.key === 'Escape' && !tourSummaryModal.classList.contains('opacity-0')) {
+                    closeTourSummaryModal();
+               }
           });
      </script>
 </body>

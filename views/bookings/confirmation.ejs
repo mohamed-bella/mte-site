@@ -2,407 +2,83 @@
 <html lang="en">
 
 <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>Booking Confirmation - Morocco Tours</title>
-     <script src="https://cdn.tailwindcss.com"></script>
-     <!-- PDF Generation Dependencies -->
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-     
-     <!-- Custom Fonts -->
-     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-     
-     <!-- Tailwind Config -->
-     <script>
-          tailwind.config = {
-               theme: {
-                    extend: {
-                         fontFamily: {
-                              'sans': ['Poppins', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
-                              'heading': ['Montserrat', 'Helvetica', 'Arial', 'sans-serif']
-                         }
-                    }
-               }
-          }
-     </script>
+     <%- include('../partials/head', { 
+          title: 'Booking Confirmation | Morocco Travel Experts',
+          metaDescription: 'Your tour booking has been confirmed. We will contact you shortly with more details.',
+          metaKeywords: 'morocco tour booking, confirmation, travel booking'
+     }) %>
 </head>
 
-<body class="bg-gray-100">
-     <div class="min-h-screen py-8">
-          <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-               <!-- Success Header -->
-               <div class="text-center mb-4">
-                    <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-green-100">
-                         <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                         </svg>
-                    </div>
-                    <h2 class="mt-3 text-2xl font-extrabold text-gray-900">Booking Confirmed!</h2>
-                    <p class="mt-2 text-sm text-gray-500">Thank you for choosing Morocco Tours. Your booking has been confirmed.</p>
-               </div>
+<body class="bg-gray-50 font-sans text-gray-800">
+     <%- include('../partials/header') %>
 
-               <!-- Download Button -->
-               <div class="text-right mb-6">
-                    <button onclick="generatePDF()" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                         <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                         </svg>
-                         Download PDF
-                    </button>
-               </div>
-
-               <!-- Visible Booking Details Card -->
-               <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-                    <div class="px-4 py-5 sm:px-6 border-b">
-                         <h3 class="text-lg font-medium text-gray-900">Booking Information</h3>
-                         <p class="mt-1 text-sm text-gray-500">Reference ID: <%= booking._id %>
-                         </p>
+     <section class="py-16 md:py-24">
+          <div class="content-container max-w-3xl mx-auto px-4">
+               <div class="bg-white rounded-lg shadow-md p-8 border border-gray-100">
+                    <div class="text-center mb-8">
+                         <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                              <i class="fas fa-check text-2xl text-green-500"></i>
+                         </div>
+                         <h1 class="text-2xl md:text-3xl font-bold">Booking Confirmation</h1>
+                         <p class="text-gray-600 mt-2">Thank you for booking with Morocco Travel Experts!</p>
                     </div>
 
-                    <!-- Tour Details -->
-                    <div class="border-b border-gray-200">
-                         <div class="px-4 py-5 sm:px-6">
-                              <div class="flex items-center space-x-4">
-                                   <img src="<%= booking.tour.mainImage %>" alt="<%= booking.tour.title %>" class="h-24 w-24 object-cover rounded-lg">
+                    <div class="border-t border-gray-100 pt-6">
+                         <h2 class="text-xl font-semibold mb-4">Booking Details</h2>
+                         
+                         <div class="grid md:grid-cols-2 gap-6 mb-6">
+                              <div>
+                                   <h3 class="font-medium text-gray-700 mb-2">Tour Information</h3>
+                                   <p class="text-gray-800"><%= booking.tourName %></p>
+                                   <p class="text-gray-600 text-sm">Booking ID: <%= booking._id %></p>
+                                   <p class="text-gray-600 text-sm">Status: <span class="capitalize"><%= booking.status %></span></p>
+                              </div>
+                              
+                              <div>
+                                   <h3 class="font-medium text-gray-700 mb-2">Trip Details</h3>
+                                   <p class="text-gray-800">Start Date: <%= new Date(booking.bookingDetails.startDate).toLocaleDateString() %></p>
+                                   <p class="text-gray-800">Group Size: <%= booking.bookingDetails.groupSize %> people</p>
+                              </div>
+                         </div>
+                         
+                         <div class="border-t border-gray-100 pt-6 mb-6">
+                              <h3 class="font-medium text-gray-700 mb-2">Customer Information</h3>
+                              <p class="text-gray-800"><%= booking.customerInfo.firstName %> <%= booking.customerInfo.lastName %></p>
+                              <p class="text-gray-800"><%= booking.customerInfo.email %></p>
+                              <p class="text-gray-800"><%= booking.customerInfo.phone %></p>
+                         </div>
+                         
+                         <% if (booking.bookingDetails.specialRequests) { %>
+                         <div class="border-t border-gray-100 pt-6 mb-6">
+                              <h3 class="font-medium text-gray-700 mb-2">Special Requests</h3>
+                              <p class="text-gray-800"><%= booking.bookingDetails.specialRequests %></p>
+                         </div>
+                         <% } %>
+                         
+                         <div class="bg-blue-50 p-6 rounded-lg border border-blue-100 mt-8">
+                              <div class="flex items-start">
+                                   <div class="text-blue-500 mr-4 mt-1">
+                                        <i class="fas fa-info-circle text-xl"></i>
+                                   </div>
                                    <div>
-                                        <h4 class="text-lg font-medium text-gray-900">
-                                             <%= booking.tour.title %>
-                                        </h4>
-                                        <p class="text-sm text-gray-500">
-                                             <%= booking.tour.duration %> days • <%= booking.tour.startLocation %>
-                                        </p>
+                                        <h3 class="font-medium text-gray-800 mb-2">What Happens Next?</h3>
+                                        <p class="text-gray-700 mb-2">Our team will review your booking and contact you within 24 hours to confirm the details.</p>
+                                        <p class="text-gray-700">If you have any questions, please contact us at <a href="mailto:book@moroccotravelexperts.com" class="text-blue-600 hover:underline">book@moroccotravelexperts.com</a> or call <a href="tel:+212612345678" class="text-blue-600 hover:underline">+212 612 345 678</a>.</p>
                                    </div>
                               </div>
                          </div>
                     </div>
-
-                    <!-- Customer & Booking Details -->
-                    <div class="px-4 py-5 sm:p-6">
-                         <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-                              <div>
-                                   <dt class="text-sm font-medium text-gray-500">Full Name</dt>
-                                   <dd class="mt-1 text-sm text-gray-900">
-                                        <%= booking.firstName %>
-                                             <%= booking.lastName %>
-                                   </dd>
-                              </div>
-
-                              <div>
-                                   <dt class="text-sm font-medium text-gray-500">Email</dt>
-                                   <dd class="mt-1 text-sm text-gray-900">
-                                        <%= booking.email %>
-                                   </dd>
-                              </div>
-
-                              <div>
-                                   <dt class="text-sm font-medium text-gray-500">Tour Date</dt>
-                                   <dd class="mt-1 text-sm text-gray-900">
-                                        <%= new Date(booking.date).toLocaleDateString('en-US', { year: 'numeric' , month: 'long' , day: 'numeric' }) %>
-                                   </dd>
-                              </div>
-
-                              <div>
-                                   <dt class="text-sm font-medium text-gray-500">Group Size</dt>
-                                   <dd class="mt-1 text-sm text-gray-900">
-                                        <%= booking.groupSize %> people
-                                   </dd>
-                              </div>
-
-                              <div>
-                                   <dt class="text-sm font-medium text-gray-500">Special Requests</dt>
-                                   <dd class="mt-1 text-sm text-gray-900">
-                                        <%= booking.specialRequests || 'None' %>
-                                   </dd>
-                              </div>
-                         </dl>
-                    </div>
-               </div>
-
-               <!-- Next Steps -->
-               <div class="mt-8 bg-white shadow sm:rounded-lg">
-                    <div class="px-4 py-5 sm:p-6">
-                         <h3 class="text-lg font-medium text-gray-900 mb-4">Next Steps</h3>
-                         <div class="space-y-5">
-                              <div class="flex items-start">
-                                   <div class="flex-shrink-0">
-                                        <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                                        </svg>
-                                   </div>
-                                   <div class="ml-3">
-                                        <p class="text-sm text-gray-700">A confirmation email has been sent to <span class="font-medium">
-                                                  <%= booking.email %>
-                                             </span></p>
-                                   </div>
-                              </div>
-
-                              <div class="flex items-start">
-                                   <div class="flex-shrink-0">
-                                        <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                        </svg>
-                                   </div>
-                                   <div class="ml-3">
-                                        <p class="text-sm text-gray-700">Please review your itinerary and travel details</p>
-                                   </div>
-                              </div>
-
-                              <div class="flex items-start">
-                                   <div class="flex-shrink-0">
-                                        <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                   </div>
-                                   <div class="ml-3">
-                                        <p class="text-sm text-gray-700">Mark your calendar for <%= new Date(booking.date).toLocaleDateString('en-US', { year: 'numeric' , month: 'long' , day: 'numeric' }) %>
-                                        </p>
-                                   </div>
-                              </div>
-                         </div>
-                    </div>
-               </div>
-
-               <!-- Action Buttons -->
-               <div class="mt-8 flex justify-center space-x-4">
-                    <a href="/tours/<%= booking.tour.slug %>" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700">
-                         View Tour Details
-                    </a>
-                    <a href="/" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                         Return to Home
-                    </a>
-               </div>
-
-               <!-- Contact Support -->
-               <div class="mt-8 text-center">
-                    <p class="text-sm text-gray-500">
-                         Have questions? Contact us at
-                         <a href="mailto:support@morocctours.com" class="text-orange-600 hover:text-orange-500">support@morocctours.com</a>
-                    </p>
-               </div>
-          </div>
-     </div>
-
-     <!-- Hidden PDF Content -->
-     <div id="pdfContent" class="hidden">
-          <div class="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100 p-8">
-               <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
-                    <!-- Header with elegant border -->
-                    <div class="relative bg-stone-900 text-white px-8 py-12 text-center">
-                         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-400"></div>
-                         <img src="/images/logo.png" alt="Morocco Tours" class="h-12 mx-auto mb-6">
-                         <h1 class="text-3xl font-heading mb-2">Booking Confirmation</h1>
-                         <p class="text-stone-400 font-light">Reference ID: <%= booking._id %>
-                         </p>
-                    </div>
-
-                    <div class="p-8 space-y-8">
-                         <!-- Tour Details -->
-                         <section class="bg-stone-50 rounded-xl p-6 border border-stone-100">
-                              <h2 class="text-2xl font-heading text-stone-800 mb-6">Tour Details</h2>
-                              <div class="grid md:grid-cols-2 gap-6">
-                                   <div class="space-y-2">
-                                        <p class="text-sm font-medium text-stone-500">Tour Name</p>
-                                        <p class="text-lg text-stone-900">
-                                             <%= booking.tour.title %>
-                                        </p>
-                                   </div>
-                                   <div class="space-y-2">
-                                        <p class="text-sm font-medium text-stone-500">Duration</p>
-                                        <p class="text-lg text-stone-900">
-                                             <%= booking.tour.duration %> days
-                                        </p>
-                                   </div>
-                                   <div class="space-y-2">
-                                        <p class="text-sm font-medium text-stone-500">Start Location</p>
-                                        <p class="text-lg text-stone-900">
-                                             <%= booking.tour.startLocation %>
-                                        </p>
-                                   </div>
-                                   <div class="space-y-2">
-                                        <p class="text-sm font-medium text-stone-500">Accommodation</p>
-                                        <p class="text-lg text-stone-900">
-                                             <%= booking.tour.accommodation %>
-                                        </p>
-                                   </div>
-                              </div>
-                         </section>
-
-                         <!-- Customer Details -->
-                         <section class="bg-stone-50 rounded-xl p-6 border border-stone-100">
-                              <h2 class="text-2xl font-heading text-stone-800 mb-6">Customer Information</h2>
-                              <div class="grid md:grid-cols-2 gap-6">
-                                   <div class="space-y-2">
-                                        <p class="text-sm font-medium text-stone-500">Name</p>
-                                        <p class="text-lg text-stone-900">
-                                             <%= booking.firstName %>
-                                                  <%= booking.lastName %>
-                                        </p>
-                                   </div>
-                                   <div class="space-y-2">
-                                        <p class="text-sm font-medium text-stone-500">Email</p>
-                                        <p class="text-lg text-stone-900">
-                                             <%= booking.email %>
-                                        </p>
-                                   </div>
-                                   <div class="space-y-2">
-                                        <p class="text-sm font-medium text-stone-500">Tour Date</p>
-                                        <p class="text-lg text-stone-900">
-                                             <%= new Date(booking.date).toLocaleDateString('en-US', { year: 'numeric' , month: 'long' , day: 'numeric' }) %>
-                                        </p>
-                                   </div>
-                                   <div class="space-y-2">
-                                        <p class="text-sm font-medium text-stone-500">Group Size</p>
-                                        <p class="text-lg text-stone-900">
-                                             <%= booking.groupSize %> people
-                                        </p>
-                                   </div>
-                              </div>
-                         </section>
-
-                         <!-- Pricing Note -->
-                         <section class="bg-stone-50 rounded-xl p-6 border border-stone-100">
-                              <h2 class="text-2xl font-heading text-stone-800 mb-6">Pricing Information</h2>
-                              <div class="space-y-4">
-                                   <p class="text-lg text-stone-900">Our team will contact you shortly with personalized pricing details for your tour.</p>
-                                   <div class="bg-orange-50 border-l-4 border-orange-500 p-4">
-                                        <p class="text-orange-700">We offer flexible pricing based on:</p>
-                                        <ul class="mt-2 list-disc list-inside text-orange-600">
-                                             <li>Group size</li>
-                                             <li>Season of travel</li>
-                                             <li>Accommodation preferences</li>
-                                             <li>Additional services requested</li>
-                                        </ul>
-                                   </div>
-                              </div>
-                         </section>
-
-                         <!-- Footer -->
-                         <footer class="text-center pt-8 border-t border-stone-200 mt-12">
-                              <div class="space-y-4">
-                                   <p class="text-lg font-heading text-stone-800">Thank you for choosing Morocco Tours</p>
-                                   <p class="text-stone-500">For any inquiries, please contact us at support@morocctours.com</p>
-                                   <p class="text-sm text-stone-400">Generated on <%= new Date().toLocaleDateString('en-US', { year: 'numeric' , month: 'long' , day: 'numeric' , hour: '2-digit' , minute: '2-digit' }) %>
-                                   </p>
-                              </div>
-                         </footer>
+                    
+                    <div class="mt-8 text-center">
+                         <a href="/tours" class="inline-block px-6 py-3 bg-orange-500 text-white font-medium rounded-md hover:bg-orange-600 transition-colors">
+                              Explore More Tours
+                         </a>
                     </div>
                </div>
           </div>
-     </div>
-
-     <!-- JavaScript for PDF generation -->
-     <script>
-          window.jsPDF = window.jspdf.jsPDF;
-
-          async function generatePDF() {
-               // Show loading state
-               const button = event.target.closest('button');
-               const originalText = button.innerHTML;
-               button.disabled = true;
-               button.innerHTML = `
-                                    <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    Generating PDF...
-                                `;
-
-               try {
-                    const element = document.getElementById('pdfContent');
-                    element.classList.remove('hidden');
-
-                    // Create canvas from element
-                    const canvas = await html2canvas(element, {
-                         scale: 2, // Higher scale for better quality
-                         logging: false,
-                         useCORS: true,
-                         allowTaint: true,
-                         onclone: function (clonedDoc) {
-                              // Any modifications to the cloned document before rendering
-                              const clonedElement = clonedDoc.getElementById('pdfContent');
-                              clonedElement.style.width = '210mm'; // A4 width
-                         }
-                    });
-
-                    element.classList.add('hidden');
-
-                    // Configure PDF document
-                    const imgData = canvas.toDataURL('image/png');
-                    const pdf = new jsPDF({
-                         orientation: 'portrait',
-                         unit: 'mm',
-                         format: 'a4'
-                    });
-
-                    // Calculate dimensions
-                    const imgWidth = 210; // A4 width in mm
-                    const pageHeight = 295; // A4 height in mm
-                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-                    // Add pages if content is longer than one page
-                    let heightLeft = imgHeight;
-                    let position = 0;
-
-                    // First page
-                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-
-                    // Add additional pages if needed
-                    while (heightLeft >= 0) {
-                         position = heightLeft - imgHeight;
-                         pdf.addPage();
-                         pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                         heightLeft -= pageHeight;
-                    }
-
-                    // Save the PDF
-                    const bookingId = '<%= booking._id %>'.slice(-6); // Last 6 characters of booking ID
-                    const fileName = `Morocco-Tours-Booking-${bookingId}.pdf`;
-                    pdf.save(fileName);
-
-                    // Show success message
-                    showNotification('PDF downloaded successfully!', 'success');
-
-               } catch (error) {
-                    console.error('PDF generation error:', error);
-                    showNotification('Error generating PDF. Please try again.', 'error');
-               } finally {
-                    // Reset button state
-                    button.disabled = false;
-                    button.innerHTML = originalText;
-               }
-          }
-
-          // Notification helper function
-          function showNotification(message, type = 'success') {
-               const notification = document.createElement('div');
-               notification.className = `fixed top-4 right-4 z-50 p-4 rounded-md ${type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                    } transition-all duration-300 transform translate-y-0 opacity-100 shadow-lg`;
-
-               notification.innerHTML = `
-                                    <div class="flex items-center">
-                                        <svg class="h-5 w-5 ${type === 'success' ? 'text-green-400' : 'text-red-400'} mr-3" fill="currentColor" viewBox="0 0 20 20">
-                                            ${type === 'success'
-                         ? '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd">'
-                         : '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd">'
-                    }
-                                            </path>
-                                        </svg>
-                                        <p>${message}</p>
-                                    </div>
-                                `;
-
-               document.body.appendChild(notification);
-
-               // Remove notification after 3 seconds
-               setTimeout(() => {
-                    notification.classList.replace('opacity-100', 'opacity-0');
-                    notification.classList.replace('translate-y-0', '-translate-y-4');
-                    setTimeout(() => notification.remove(), 300);
-               }, 3000);
-          }
-     </script>
+     </section>
+     
+     <%- include('../partials/footer') %>
 </body>
 
 </html>

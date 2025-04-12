@@ -361,45 +361,54 @@ router.get('/tour-booking/:id', csrfProtection, async (req, res) => {
     }
 });
 
-router.post('/tour-booking', csrfProtection, async (req, res) => {
+router.post('/tour-booking', async (req, res) => {
     try {
-        const { tourId, fullName, email, phone, travelDate, adults, children, specialRequests } = req.body;
+        const { tourId, tourName, firstName, lastName, email, phone, startDate, groupSize, specialRequests } = req.body;
         
-        // Fetch the tour
-        const tour = await Tour.findById(tourId);
-          if (!tour) {
-               req.flash('error', 'Tour not found');
-               return res.redirect('/tours');
-          }
+        // Validate required fields
+        if (!firstName || !lastName || !email || !phone || !startDate || !groupSize) {
+            return res.status(400).json({
+                success: false,
+                message: 'Missing required fields'
+            });
+        }
 
-        // Create booking
-          const booking = new Booking({
+        // Create booking with nested structure matching our schema
+        const booking = new Booking({
             tour: tourId,
+            tourName: tourName,
             customerInfo: {
-                fullName,
+                firstName,
+                lastName,
                 email,
                 phone
             },
             bookingDetails: {
-                travelDate: new Date(travelDate),
-                adults: parseInt(adults),
-                children: parseInt(children),
+                startDate: new Date(startDate),
+                groupSize: parseInt(groupSize),
                 specialRequests
             },
             status: 'pending'
-          });
+        });
 
-          await booking.save();
+        // Save booking to database
+        await booking.save();
 
-        // Generate and send confirmation email
-        // await sendConfirmationEmail(booking, tour);
-        
-        // Redirect to confirmation page
-        res.redirect(`/booking/confirmation/${booking._id}`);
-     } catch (error) {
+        // Send email notification to admin (commented out for now)
+        // await sendBookingNotification(booking);
+
+        // Return success JSON response for Ajax
+        return res.status(200).json({
+            success: true,
+            message: 'Your booking request has been received! We will contact you shortly.',
+            bookingId: booking._id
+        });
+    } catch (error) {
         console.error('Error processing booking:', error);
-        req.flash('error', 'Error processing booking. Please try again.');
-        res.redirect(`/tour-booking/${req.body.tourId}`);
+        return res.status(500).json({
+            success: false,
+            message: 'Error processing booking. Please try again or contact us directly.'
+        });
     }
 });
 
