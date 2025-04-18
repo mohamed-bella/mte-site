@@ -1,0 +1,601 @@
+<%- include('../partials/head', { 
+    title: 'Search - Morocco Travel Experts',
+    metaDescription: 'Search across our catalog of tours, excursions, and travel insights to find your perfect Moroccan adventure.',
+    metaKeywords: 'morocco search, tour search, morocco travel search, excursion search', 
+    metaTitle: 'Search | Morocco Travel Experts',
+    ogType: 'website',
+    ogImage: 'https://moroccotravelexperts.com/images/search-cover.jpg',
+    ogImageAlt: 'Morocco Travel Search'
+}) %>
+
+<!-- Custom styles for animations -->
+<style>
+    /* Animation delay utility classes */
+    .animation-delay-150 {
+        animation-delay: 0.15s;
+    }
+    .animation-delay-300 {
+        animation-delay: 0.3s;
+    }
+    
+    /* Pulsing highlight for search suggestions */
+    @keyframes pulse-highlight {
+        0% { background-color: rgba(249, 115, 22, 0.05); }
+        50% { background-color: rgba(249, 115, 22, 0.1); }
+        100% { background-color: rgba(249, 115, 22, 0.05); }
+    }
+    .pulse-highlight {
+        animation: pulse-highlight 2s infinite;
+    }
+    
+    /* Custom focus styles */
+    #globalSearch:focus + #inputSpinner + #searchButton {
+        background-color: rgb(234, 88, 12);
+    }
+    
+    /* Border for loading spinners */
+    .border-3 {
+        border-width: 3px;
+    }
+    
+    /* Custom scrollbar for suggestions */
+    #suggestionsContainer::-webkit-scrollbar {
+        width: 6px;
+    }
+    #suggestionsContainer::-webkit-scrollbar-track {
+        background: #f5f5f7;
+        border-radius: 10px;
+    }
+    #suggestionsContainer::-webkit-scrollbar-thumb {
+        background: #d2d2d7;
+        border-radius: 10px;
+    }
+    #suggestionsContainer::-webkit-scrollbar-thumb:hover {
+        background: #86868b;
+    }
+</style>
+
+<body class="bg-[#f5f5f7]">
+    <%- include('../partials/header') %>
+
+    <!-- Search Hero Section - Apple Style -->
+    <section class="pt-12 pb-16 md:pt-20 md:pb-24 bg-gradient-to-br from-white to-[#f5f5f7]">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <h1 class="text-3xl md:text-5xl font-semibold text-[#1d1d1f] mb-4 tracking-tight">
+                    Find Your Perfect Moroccan Experience
+                </h1>
+                <p class="text-[#86868b] text-lg md:text-xl max-w-3xl mx-auto">
+                    Search across our tours, excursions, and travel insights to plan your dream adventure in Morocco.
+                </p>
+            </div>
+
+            <!-- Apple-style Search Form -->
+            <div class="max-w-3xl mx-auto relative">
+                <div class="relative group">
+                    <div class="absolute inset-0 bg-gradient-to-r from-orange-600/20 to-orange-500/20 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-500"></div>
+                    <div class="relative bg-white rounded-full shadow-sm border border-[#d2d2d7] overflow-hidden">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 pl-5">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#86868b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <input 
+                                type="text" 
+                                id="globalSearch"
+                                class="w-full px-4 py-4 text-[#1d1d1f] focus:outline-none text-lg"
+                                placeholder="Search tours, excursions, destinations..." 
+                                autocomplete="off"
+                            >
+                            <!-- Add loading spinner inside input field -->
+                            <div id="inputSpinner" class="hidden mr-3">
+                                <div class="w-5 h-5 rounded-full border-2 border-[#f5f5f7] border-t-orange-500 animate-spin"></div>
+                            </div>
+                            <button 
+                                id="searchButton"
+                                type="button" 
+                                class="flex-shrink-0 bg-orange-500 text-white font-medium text-sm px-6 py-4 rounded-full flex items-center justify-center hover:bg-orange-600 m-2 transition-colors"
+                            >
+                                <span>Search</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Add search suggestions dropdown -->
+                <div id="searchSuggestions" class="absolute z-10 w-full mt-2 origin-top-right bg-white rounded-xl shadow-lg ring-1 ring-black/5 divide-y divide-gray-100 hidden">
+                    <div class="py-2 px-3">
+                        <div class="text-xs font-medium text-[#86868b] uppercase tracking-wide mb-2 px-2">Suggestions</div>
+                        <div id="suggestionsContainer" class="max-h-60 overflow-y-auto">
+                            <!-- Suggestions will be populated here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-[#86868b] text-sm mt-4 text-center">
+                    Try searching for: <button type="button" class="text-orange-500 hover:underline search-suggestion">Desert Tours</button>, <button type="button" class="text-orange-500 hover:underline search-suggestion">Marrakech</button>, <button type="button" class="text-orange-500 hover:underline search-suggestion">Camel Trekking</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Results Section -->
+    <section class="py-12 md:py-16">
+        <div class="max-w-6xl mx-auto px-6">
+            <!-- Loading Indicator - Apple Style -->
+            <div id="searchLoading" class="hidden">
+                <div class="flex flex-col items-center justify-center py-16">
+                    <div class="w-20 h-20 relative">
+                        <div class="absolute inset-0 rounded-full border-3 border-[#f5f5f7] border-t-orange-500 animate-spin"></div>
+                        <div class="absolute inset-2 rounded-full border-3 border-[#f5f5f7] border-t-orange-400 animate-spin" style="animation-delay: 0.1s"></div>
+                        <div class="absolute inset-4 rounded-full border-3 border-[#f5f5f7] border-t-orange-300 animate-spin" style="animation-delay: 0.2s"></div>
+                    </div>
+                    <p class="mt-8 text-[#86868b] font-medium text-lg">Searching Morocco Travel Experts...</p>
+                    <p class="text-[#86868b] text-sm mt-2">Finding the best matches for you</p>
+                </div>
+            </div>
+
+            <!-- Search Results Count - Will be shown dynamically -->
+            <div id="searchResultsHeader" class="hidden mb-8">
+                <h2 class="text-2xl font-semibold text-[#1d1d1f]">Results for <span id="searchQuery" class="text-orange-500"></span></h2>
+                <p class="text-[#86868b] mt-2"><span id="resultCount">0</span> items found</p>
+            </div>
+
+            <!-- No Results View - Apple Style -->
+            <div id="noResults" class="hidden">
+                <div class="text-center py-16">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#f5f5f7] mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#86868b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-[#1d1d1f] mb-2">No Results Found</h3>
+                    <p class="text-[#86868b] mb-6 max-w-md mx-auto">We couldn't find anything matching your search. Try different keywords or browse our popular categories below.</p>
+                    
+                    <div class="flex flex-wrap justify-center gap-3 mt-8">
+                        <a href="/tours" class="px-5 py-2.5 rounded-full bg-white shadow-sm text-[#1d1d1f] font-medium text-sm hover:bg-[#f5f5f7] transition-colors">
+                            Browse All Tours
+                        </a>
+                        <a href="/excursions" class="px-5 py-2.5 rounded-full bg-white shadow-sm text-[#1d1d1f] font-medium text-sm hover:bg-[#f5f5f7] transition-colors">
+                            Discover Excursions
+                        </a>
+                        <a href="/blog" class="px-5 py-2.5 rounded-full bg-white shadow-sm text-[#1d1d1f] font-medium text-sm hover:bg-[#f5f5f7] transition-colors">
+                            Read Travel Blog
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Tabs - Apple Style -->
+            <div id="resultsTabs" class="hidden">
+                <div class="border-b border-[#d2d2d7] mb-8">
+                    <div class="flex space-x-8">
+                        <button type="button" id="allTab" class="tab-button py-3 border-b-2 border-orange-500 text-[#1d1d1f] font-medium">
+                            All
+                        </button>
+                        <button type="button" id="toursTab" class="tab-button py-3 border-b-2 border-transparent text-[#86868b] hover:text-[#1d1d1f]">
+                            Tours
+                        </button>
+                        <button type="button" id="excursionsTab" class="tab-button py-3 border-b-2 border-transparent text-[#86868b] hover:text-[#1d1d1f]">
+                            Excursions
+                        </button>
+                        <button type="button" id="blogsTab" class="tab-button py-3 border-b-2 border-transparent text-[#86868b] hover:text-[#1d1d1f]">
+                            Blog Posts
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Container -->
+            <div id="searchResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Results will be populated here by JavaScript -->
+            </div>
+
+            <!-- Initial State / Popular Searches -->
+            <div id="initialState" class="py-8">
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl font-semibold text-[#1d1d1f] mb-3">Popular Destinations</h2>
+                    <p class="text-[#86868b]">Explore our most visited locations across Morocco</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <a href="/search?q=Marrakech" class="group">
+                        <div class="relative rounded-2xl overflow-hidden bg-gray-100 aspect-[4/3]">
+                            <img src="https://i.postimg.cc/ryxZhLW2/images.jpg" alt="Marrakech" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                                <div class="p-6 text-white">
+                                    <h3 class="text-xl font-semibold mb-1">Marrakech</h3>
+                                    <p class="text-sm text-white/80">The Red City of Morocco</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="/search?q=Sahara" class="group">
+                        <div class="relative rounded-2xl overflow-hidden bg-gray-100 aspect-[4/3]">
+                            <img src="https://i.postimg.cc/PxXDjYJj/images.jpg" alt="Sahara Desert" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                                <div class="p-6 text-white">
+                                    <h3 class="text-xl font-semibold mb-1">Sahara Desert</h3>
+                                    <p class="text-sm text-white/80">Endless golden dunes</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="/search?q=Chefchaouen" class="group">
+                        <div class="relative rounded-2xl overflow-hidden bg-gray-100 aspect-[4/3]">
+                            <img src="https://i.postimg.cc/BZwKr8Gr/download.jpg" alt="Chefchaouen" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                                <div class="p-6 text-white">
+                                    <h3 class="text-xl font-semibold mb-1">Chefchaouen</h3>
+                                    <p class="text-sm text-white/80">The Blue Pearl of Morocco</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JavaScript for Search Functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('globalSearch');
+            const searchButton = document.getElementById('searchButton');
+            const searchResults = document.getElementById('searchResults');
+            const searchLoading = document.getElementById('searchLoading');
+            const searchResultsHeader = document.getElementById('searchResultsHeader');
+            const searchQuery = document.getElementById('searchQuery');
+            const resultCount = document.getElementById('resultCount');
+            const noResults = document.getElementById('noResults');
+            const initialState = document.getElementById('initialState');
+            const resultsTabs = document.getElementById('resultsTabs');
+            const allTab = document.getElementById('allTab');
+            const toursTab = document.getElementById('toursTab');
+            const excursionsTab = document.getElementById('excursionsTab');
+            const blogsTab = document.getElementById('blogsTab');
+            // New elements
+            const inputSpinner = document.getElementById('inputSpinner');
+            const searchSuggestions = document.getElementById('searchSuggestions');
+            const suggestionsContainer = document.getElementById('suggestionsContainer');
+            
+            // All result data
+            let allSearchResults = {
+                tours: [],
+                excursions: [],
+                blogs: []
+            };
+            
+            // Active tab
+            let activeTab = 'all';
+            
+            // Debounce function for search suggestions
+            function debounce(func, wait) {
+                let timeout;
+                return function(...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
+            }
+            
+            // Handle search suggestions as user types
+            searchInput.addEventListener('input', debounce(function(e) {
+                const searchTerm = e.target.value.trim();
+                
+                // Hide suggestions if input is empty
+                if (!searchTerm) {
+                    searchSuggestions.classList.add('hidden');
+                    return;
+                }
+                
+                // Show loading spinner in input
+                inputSpinner.classList.remove('hidden');
+                
+                // Make AJAX request to get suggestions
+                fetch(`/api/search/suggestions?q=${encodeURIComponent(searchTerm)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Hide spinner
+                        inputSpinner.classList.add('hidden');
+                        
+                        if (data.success && data.suggestions && data.suggestions.length > 0) {
+                            // Clear previous suggestions
+                            suggestionsContainer.innerHTML = '';
+                            
+                            // Add new suggestions
+                            data.suggestions.forEach(suggestion => {
+                                const suggestionItem = document.createElement('button');
+                                suggestionItem.className = 'w-full text-left px-3 py-2 text-sm hover:bg-[#f5f5f7] rounded-lg transition-colors cursor-pointer flex items-center';
+                                suggestionItem.innerHTML = `
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                    <span class="font-medium">${suggestion.text}</span>
+                                    <span class="ml-2 text-[#86868b] text-xs">${suggestion.type}</span>
+                                `;
+                                
+                                // Add click handler
+                                suggestionItem.addEventListener('click', function() {
+                                    searchInput.value = suggestion.text;
+                                    searchSuggestions.classList.add('hidden');
+                                    performSearch();
+                                });
+                                
+                                suggestionsContainer.appendChild(suggestionItem);
+                            });
+                            
+                            // Show suggestions dropdown
+                            searchSuggestions.classList.remove('hidden');
+                        } else {
+                            searchSuggestions.classList.add('hidden');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching suggestions:', error);
+                        inputSpinner.classList.add('hidden');
+                        searchSuggestions.classList.add('hidden');
+                    });
+            }, 300));
+            
+            // Close suggestions when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
+                    searchSuggestions.classList.add('hidden');
+                }
+            });
+            
+            // Close suggestions on escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    searchSuggestions.classList.add('hidden');
+                }
+            });
+            
+            // Handle search suggestions
+            document.querySelectorAll('.search-suggestion').forEach(button => {
+                button.addEventListener('click', function() {
+                    searchInput.value = this.textContent;
+                    performSearch();
+                });
+            });
+            
+            // Check for URL parameters (for direct links to search results)
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryParam = urlParams.get('q');
+            if (queryParam) {
+                searchInput.value = queryParam;
+                performSearch();
+            }
+            
+            // Search on enter key
+            searchInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    searchSuggestions.classList.add('hidden');
+                    performSearch();
+                }
+            });
+            
+            // Search button click
+            searchButton.addEventListener('click', function() {
+                searchSuggestions.classList.add('hidden');
+                performSearch();
+            });
+            
+            // Tab buttons
+            allTab.addEventListener('click', () => filterResults('all'));
+            toursTab.addEventListener('click', () => filterResults('tours'));
+            excursionsTab.addEventListener('click', () => filterResults('excursions'));
+            blogsTab.addEventListener('click', () => filterResults('blogs'));
+            
+            function performSearch() {
+                const searchTerm = searchInput.value.trim();
+                if (!searchTerm) return;
+                
+                // Hide suggestions
+                searchSuggestions.classList.add('hidden');
+                
+                // Show loading
+                searchLoading.classList.remove('hidden');
+                searchResults.innerHTML = '';
+                searchResultsHeader.classList.add('hidden');
+                noResults.classList.add('hidden');
+                initialState.classList.add('hidden');
+                resultsTabs.classList.add('hidden');
+                
+                // Update URL without reloading the page
+                const url = new URL(window.location);
+                url.searchParams.set('q', searchTerm);
+                window.history.pushState({}, '', url);
+                
+                // Make AJAX request
+                fetch(`/api/search?q=${encodeURIComponent(searchTerm)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Hide loading
+                        searchLoading.classList.add('hidden');
+                        
+                        // Store all results
+                        allSearchResults = data;
+                        
+                        // Update search query display
+                        searchQuery.textContent = `"${searchTerm}"`;
+                        
+                        // Calculate total results
+                        const totalResults = data.tours.length + data.excursions.length + data.blogs.length;
+                        resultCount.textContent = totalResults;
+                        
+                        if (totalResults > 0) {
+                            // Show header and tabs
+                            searchResultsHeader.classList.remove('hidden');
+                            resultsTabs.classList.remove('hidden');
+                            
+                            // Reset to "All" tab
+                            resetTabs();
+                            allTab.classList.remove('text-[#86868b]');
+                            allTab.classList.add('border-orange-500', 'text-[#1d1d1f]');
+                            activeTab = 'all';
+                            
+                            // Display all results
+                            displayResults(data.tours, data.excursions, data.blogs);
+                            
+                            // Scroll to results
+                            searchResultsHeader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        } else {
+                            // Show no results message
+                            noResults.classList.remove('hidden');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Search error:', error);
+                        searchLoading.classList.add('hidden');
+                        noResults.classList.remove('hidden');
+                        alert('An error occurred while searching. Please try again.');
+                    });
+            }
+            
+            function filterResults(tab) {
+                // Skip if already on this tab
+                if (activeTab === tab) return;
+                
+                // Update active tab
+                activeTab = tab;
+                resetTabs();
+                
+                // Highlight active tab
+                if (tab === 'all') {
+                    allTab.classList.add('border-orange-500', 'text-[#1d1d1f]');
+                    allTab.classList.remove('text-[#86868b]', 'border-transparent');
+                    displayResults(allSearchResults.tours, allSearchResults.excursions, allSearchResults.blogs);
+                } else if (tab === 'tours') {
+                    toursTab.classList.add('border-orange-500', 'text-[#1d1d1f]');
+                    toursTab.classList.remove('text-[#86868b]', 'border-transparent');
+                    displayResults(allSearchResults.tours, [], []);
+                } else if (tab === 'excursions') {
+                    excursionsTab.classList.add('border-orange-500', 'text-[#1d1d1f]');
+                    excursionsTab.classList.remove('text-[#86868b]', 'border-transparent');
+                    displayResults([], allSearchResults.excursions, []);
+                } else if (tab === 'blogs') {
+                    blogsTab.classList.add('border-orange-500', 'text-[#1d1d1f]');
+                    blogsTab.classList.remove('text-[#86868b]', 'border-transparent');
+                    displayResults([], [], allSearchResults.blogs);
+                }
+            }
+            
+            function resetTabs() {
+                // Reset all tabs
+                [allTab, toursTab, excursionsTab, blogsTab].forEach(tab => {
+                    tab.classList.remove('border-orange-500', 'text-[#1d1d1f]');
+                    tab.classList.add('text-[#86868b]', 'border-transparent');
+                });
+            }
+            
+            function displayResults(tours, excursions, blogs) {
+                // Clear previous results
+                searchResults.innerHTML = '';
+                
+                // Display tours
+                tours.forEach(tour => {
+                    searchResults.innerHTML += createTourCard(tour);
+                });
+                
+                // Display excursions
+                excursions.forEach(excursion => {
+                    searchResults.innerHTML += createExcursionCard(excursion);
+                });
+                
+                // Display blogs
+                blogs.forEach(blog => {
+                    searchResults.innerHTML += createBlogCard(blog);
+                });
+            }
+            
+            function createTourCard(tour) {
+                return `
+                    <a href="/tours/${tour.slug}" class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition duration-300">
+                        <div class="relative h-52 overflow-hidden">
+                            <img src="${tour.mainImage}" alt="${tour.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-3 left-3 bg-white rounded-full px-3 py-1 text-xs font-medium text-[#1d1d1f]">
+                                Tour
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/70 to-transparent"></div>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-lg font-semibold text-[#1d1d1f] mb-2 line-clamp-1">${tour.title}</h3>
+                            <p class="text-[#86868b] text-sm mb-3 line-clamp-2">${tour.description.substring(0, 100)}...</p>
+                            <div class="flex items-center justify-between pt-3 border-t border-[#f5f5f7]">
+                                <div class="flex items-center space-x-1 text-[#86868b] text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span>${tour.duration} days</span>
+                                </div>
+                                <div class="text-orange-500 font-semibold">Details</div>
+                            </div>
+                        </div>
+                    </a>
+                `;
+            }
+            
+            function createExcursionCard(excursion) {
+                return `
+                    <a href="/excursions/${excursion.slug}" class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition duration-300">
+                        <div class="relative h-52 overflow-hidden">
+                            <img src="${excursion.mainImage}" alt="${excursion.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-3 left-3 bg-white rounded-full px-3 py-1 text-xs font-medium text-[#1d1d1f]">
+                                Excursion
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/70 to-transparent"></div>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-lg font-semibold text-[#1d1d1f] mb-2 line-clamp-1">${excursion.title}</h3>
+                            <p class="text-[#86868b] text-sm mb-3 line-clamp-2">${excursion.description.substring(0, 100)}...</p>
+                            <div class="flex items-center justify-between pt-3 border-t border-[#f5f5f7]">
+                                <div class="flex items-center space-x-1 text-[#86868b] text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    <span>${excursion.location}</span>
+                                </div>
+                                <div class="text-orange-500 font-semibold">Details</div>
+                            </div>
+                        </div>
+                    </a>
+                `;
+            }
+            
+            function createBlogCard(blog) {
+                return `
+                    <a href="/blog/${blog.slug}" class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition duration-300">
+                        <div class="relative h-52 overflow-hidden">
+                            <img src="${blog.featuredImage}" alt="${blog.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-3 left-3 bg-white rounded-full px-3 py-1 text-xs font-medium text-[#1d1d1f]">
+                                Blog
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/70 to-transparent"></div>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-lg font-semibold text-[#1d1d1f] mb-2 line-clamp-1">${blog.title}</h3>
+                            <p class="text-[#86868b] text-sm mb-3 line-clamp-2">${blog.summary}</p>
+                            <div class="flex items-center justify-between pt-3 border-t border-[#f5f5f7]">
+                                <div class="flex items-center space-x-1 text-[#86868b] text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                    </svg>
+                                    <span>${blog.readTime} min read</span>
+                                </div>
+                                <div class="text-orange-500 font-semibold">Read More</div>
+                            </div>
+                        </div>
+                    </a>
+                `;
+            }
+        });
+    </script>
+
+    <%- include('../partials/footer') %>
+</body>
+</html> 

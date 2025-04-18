@@ -1,0 +1,434 @@
+<%- include('../partials/admin/header') %>
+<%- include('../partials/admin/sidebar') %>
+
+<div class="md:pl-64 flex flex-col flex-1">
+    <main class="flex-1 bg-gray-50">
+        <div class="py-6">
+            <!-- Page Header -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                <div class="flex items-center justify-between">
+                    <h1 class="text-2xl font-medium text-gray-900"><%= tour ? 'Edit Tour' : 'Add New Tour' %></h1>
+                    <div>
+                        <a href="/admin/tours" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                            Cancel
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Guidelines -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mt-4">
+                <div class="bg-blue-50 p-4 rounded-md shadow-sm border border-blue-100">
+                    <h2 class="text-lg font-medium text-blue-800 mb-2">Form Instructions</h2>
+                    <ul class="text-sm text-blue-700 space-y-1 list-disc pl-5">
+                        <li><strong>Required fields:</strong> Tour title, description, price, duration, group size, starting location, and accommodation.</li>
+                        <li><strong>Images:</strong> At least one tour image and one map image are required for new tours.</li>
+                        <li><strong>Itinerary:</strong> Click "Add Day" to create itinerary entries with title, description, and optional highlights.</li>
+                        <li><strong>Form submission:</strong> The form submits via AJAX - you'll see a success notification when completed.</li>
+                        <li><strong>Troubleshooting:</strong> If you encounter errors, check browser console (F12) for detailed information.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Form Container -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                <!-- Form error messages container -->
+                <div id="formErrorContainer" class="mb-4" style="display: none;">
+                    <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-red-800">Please fix the following errors:</h3>
+                                <div id="formErrorList" class="mt-2 text-sm text-red-700 space-y-1 list-disc list-inside">
+                                    <!-- Error messages will appear here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form id="tourForm" action="<%= tour ? `/admin/tours/${tour._id}/edit` : '/admin/tours/new' %>" method="POST" enctype="multipart/form-data" class="space-y-6 mt-6" data-mode="<%= tour ? 'edit' : 'create' %>">
+                    
+                    <!-- Form Sections -->
+                    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                        
+                        <!-- Left Column - Tour Details -->
+                        <div class="space-y-6 lg:col-span-2">
+                            <!-- Basic Info Card -->
+                            <div class="bg-white shadow-sm rounded-xl overflow-hidden">
+                                <div class="px-6 py-5 border-b border-gray-200">
+                                    <h3 class="text-lg font-medium text-gray-900">Basic Information</h3>
+                                </div>
+                                <div class="px-6 py-5 space-y-4">
+                                    <!-- Tour Title -->
+                                    <div>
+                                        <label for="title" class="block text-sm font-medium text-gray-700">Tour Title</label>
+                                        <input type="text" name="title" id="title" required 
+                                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                            value="<%= tour ? tour.title : '' %>">
+                                    </div>
+                                    
+                                    <!-- Tour Description -->
+                                    <div>
+                                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                                        <textarea name="description" id="description" rows="4" required
+                                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"><%= tour ? tour.description : '' %></textarea>
+                                    </div>
+                                    
+                                    <!-- Price and Duration Row -->
+                                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                                        <div>
+                                            <label for="price" class="block text-sm font-medium text-gray-700">Price ($)</label>
+                                            <input type="number" name="price" id="price" required min="0" step="0.01"
+                                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                                value="<%= tour ? tour.price : '' %>">
+                                        </div>
+                                        <div>
+                                            <label for="duration" class="block text-sm font-medium text-gray-700">Duration (days)</label>
+                                            <input type="number" name="duration" id="duration" required min="1"
+                                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                                value="<%= tour ? tour.duration : '' %>">
+                                        </div>
+                                        <div>
+                                            <label for="groupSize" class="block text-sm font-medium text-gray-700">Group Size</label>
+                                            <input type="number" name="groupSize" id="groupSize" required min="1"
+                                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                                value="<%= tour ? tour.groupSize : '15' %>">
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Location and Accommodation Row -->
+                                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                        <div>
+                                            <label for="startLocation" class="block text-sm font-medium text-gray-700">Starting Location</label>
+                                            <input type="text" name="startLocation" id="startLocation" required
+                                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                                value="<%= tour ? tour.startLocation : '' %>">
+                                        </div>
+                                        <div>
+                                            <label for="accommodation" class="block text-sm font-medium text-gray-700">Accommodation</label>
+                                            <input type="text" name="accommodation" id="accommodation" required
+                                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                                value="<%= tour ? tour.accommodation : '' %>">
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Featured Toggle -->
+                                    <div class="flex items-center">
+                                        <input type="checkbox" name="featured" id="featured" 
+                                            class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                            <%= tour && tour.featured ? 'checked' : '' %>>
+                                        <label for="featured" class="ml-2 block text-sm text-gray-700">
+                                            Feature this tour on homepage
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Itinerary Section -->
+                            <div class="bg-white shadow-sm rounded-xl overflow-hidden">
+                                <div class="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
+                                    <h3 class="text-lg font-medium text-gray-900">Itinerary</h3>
+                                    <button type="button" id="addItineraryDay" class="inline-flex items-center px-3 py-1 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        <svg class="-ml-1 mr-1 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                        </svg>
+                                        Add Day
+                                    </button>
+                                </div>
+                                <div class="px-6 py-5">
+                                    <div id="itineraryContainer" class="space-y-4">
+                                        <% if (tour && tour.itinerary && tour.itinerary.length > 0) { %>
+                                            <% tour.itinerary.forEach((day, index) => { %>
+                                                <div class="itinerary-day bg-gray-50 p-5 rounded-lg border border-gray-200">
+                                                    <div class="flex justify-between items-center mb-4">
+                                                        <h4 class="text-md font-medium text-gray-900">Day <%= day.day %></h4>
+                                                        <button type="button" class="remove-day text-sm text-red-600 hover:text-red-800">
+                                                            Remove
+                                                        </button>
+                                                    </div>
+                                                    <div class="space-y-4">
+                                                        <input type="hidden" name="itinerary[<%= index %>][day]" value="<%= day.day %>">
+                                                        
+                                                        <div>
+                                                            <label class="block text-sm font-medium text-gray-700">Title</label>
+                                                            <input type="text" name="itinerary[<%= index %>][title]" value="<%= day.title %>" required
+                                                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                                        </div>
+                                                        
+                                                        <div>
+                                                            <label class="block text-sm font-medium text-gray-700">Description</label>
+                                                            <textarea name="itinerary[<%= index %>][description]" rows="3" required
+                                                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"><%= day.description %></textarea>
+                                                        </div>
+                                                        
+                                                        <div>
+                                                            <label class="block text-sm font-medium text-gray-700">Distance</label>
+                                                            <input type="text" name="itinerary[<%= index %>][distance]" value="<%= day.distance || '' %>"
+                                                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                                        </div>
+                                                        
+                                                        <div class="highlights-container">
+                                                            <div class="flex justify-between items-center">
+                                                                <label class="block text-sm font-medium text-gray-700">Highlights</label>
+                                                                <button type="button" class="add-highlight text-xs text-indigo-600 hover:text-indigo-800 flex items-center">
+                                                                    <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                                                    </svg>
+                                                                    Add Highlight
+                                                                </button>
+                                                            </div>
+                                                            <div class="highlights-list space-y-2 mt-2">
+                                                                <% if (day.highlights && day.highlights.length > 0) { %>
+                                                                    <% day.highlights.forEach((highlight, hIndex) => { %>
+                                                                        <div class="highlight-item flex items-center">
+                                                                            <input type="text" name="itinerary[<%= index %>][highlights][]" value="<%= highlight %>"
+                                                                                class="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                                                            <button type="button" class="remove-highlight ml-2 text-red-500 hover:text-red-700">
+                                                                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                                                </svg>
+                                                                            </button>
+                                                                        </div>
+                                                                    <% }); %>
+                                                                <% } else { %>
+                                                                    <div class="highlight-item flex items-center">
+                                                                        <input type="text" name="itinerary[<%= index %>][highlights][]"
+                                                                            class="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                                                        <button type="button" class="remove-highlight ml-2 text-red-500 hover:text-red-700">
+                                                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                                            </svg>
+                                                                        </button>
+                                                                    </div>
+                                                                <% } %>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <% }); %>
+                                        <% } %>
+                                    </div>
+                                    
+                                    <!-- Empty state for itinerary -->
+                                    <% if (!tour || !tour.itinerary || tour.itinerary.length === 0) { %>
+                                        <div id="emptyItinerary" class="text-center py-8">
+                                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17 21v-8H7v8M7 3v5h8" />
+                                            </svg>
+                                            <h3 class="mt-2 text-sm font-medium text-gray-900">No itinerary days</h3>
+                                            <p class="mt-1 text-sm text-gray-500">Get started by adding your first itinerary day.</p>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                            
+                            <!-- Includes/Excludes Section -->
+                            <div class="bg-white shadow-sm rounded-xl overflow-hidden">
+                                <div class="px-6 py-5 border-b border-gray-200">
+                                    <h3 class="text-lg font-medium text-gray-900">What's Included & Excluded</h3>
+                                </div>
+                                <div class="px-6 py-5 grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                    <!-- Includes Section -->
+                                    <div>
+                                        <div class="flex justify-between items-center mb-4">
+                                            <h4 class="font-medium text-gray-900">Included</h4>
+                                            <button type="button" id="addInclude" class="inline-flex items-center text-xs text-indigo-600 hover:text-indigo-800">
+                                                <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                                </svg>
+                                                Add Item
+                                            </button>
+                                        </div>
+                                        <div id="includesContainer" class="space-y-2">
+                                            <% if (tour && tour.includes && tour.includes.length > 0) { %>
+                                                <% tour.includes.forEach((item, index) => { %>
+                                                    <div class="include-item flex items-center">
+                                                        <input type="text" name="includes[]" value="<%= item %>" 
+                                                            class="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                                        <button type="button" class="remove-include ml-2 text-red-500 hover:text-red-700">
+                                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                <% }); %>
+                                            <% } else { %>
+                                                <div class="include-item flex items-center">
+                                                    <input type="text" name="includes[]" placeholder="e.g. Accommodation"
+                                                        class="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                                    <button type="button" class="remove-include ml-2 text-red-500 hover:text-red-700">
+                                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Excludes Section -->
+                                    <div>
+                                        <div class="flex justify-between items-center mb-4">
+                                            <h4 class="font-medium text-gray-900">Excluded</h4>
+                                            <button type="button" id="addExclude" class="inline-flex items-center text-xs text-indigo-600 hover:text-indigo-800">
+                                                <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                                </svg>
+                                                Add Item
+                                            </button>
+                                        </div>
+                                        <div id="excludesContainer" class="space-y-2">
+                                            <% if (tour && tour.excludes && tour.excludes.length > 0) { %>
+                                                <% tour.excludes.forEach((item, index) => { %>
+                                                    <div class="exclude-item flex items-center">
+                                                        <input type="text" name="excludes[]" value="<%= item %>" 
+                                                            class="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                                        <button type="button" class="remove-exclude ml-2 text-red-500 hover:text-red-700">
+                                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                <% }); %>
+                                            <% } else { %>
+                                                <div class="exclude-item flex items-center">
+                                                    <input type="text" name="excludes[]" placeholder="e.g. International flights"
+                                                        class="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                                    <button type="button" class="remove-exclude ml-2 text-red-500 hover:text-red-700">
+                                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column - Images Upload -->
+                        <div class="space-y-6">
+                            <!-- Main Image Upload Card -->
+                            <div class="bg-white shadow-sm rounded-xl overflow-hidden">
+                                <div class="px-6 py-5 border-b border-gray-200">
+                                    <h3 class="text-lg font-medium text-gray-900">Tour Images</h3>
+                                </div>
+                                <div class="px-6 py-5 space-y-4">
+                                    <!-- Main Image Preview -->
+                                    <div class="text-center">
+                                        <div class="aspect-w-16 aspect-h-9 rounded-lg bg-gray-100 overflow-hidden">
+                                            <% if (tour && tour.mainImage) { %>
+                                                <img id="mainImagePreview" src="<%= tour.mainImage %>" alt="Main tour image" class="object-cover">
+                                            <% } else { %>
+                                                <div id="mainImagePreview" class="flex flex-col items-center justify-center h-full">
+                                                    <svg class="h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                    </svg>
+                                                    <p class="mt-2 text-sm text-gray-500">No image selected</p>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Upload Button -->
+                                    <div class="flex justify-center">
+                                        <input type="file" id="tourImages" name="images" multiple accept="image/*" class="hidden">
+                                        <button type="button" id="uploadImagesBtn" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                            <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                            </svg>
+                                            Upload Images
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Selected Images Preview -->
+                                    <div id="imagesPreview" class="mt-4 grid grid-cols-2 gap-2">
+                                        <% if (tour && tour.images && tour.images.length > 0) { %>
+                                            <% tour.images.forEach((image, index) => { %>
+                                                <div class="relative aspect-w-1 aspect-h-1 rounded-md overflow-hidden bg-gray-100">
+                                                    <img src="<%= image %>" alt="Tour image <%= index + 1 %>" class="object-cover">
+                                                    <input type="hidden" name="existingImages" value="<%= image %>">
+                                                    <button type="button" class="remove-image absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 shadow-sm" data-index="<%= index %>">
+                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            <% }); %>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Map Image Upload Card -->
+                            <div class="bg-white shadow-sm rounded-xl overflow-hidden">
+                                <div class="px-6 py-5 border-b border-gray-200">
+                                    <h3 class="text-lg font-medium text-gray-900">Tour Map</h3>
+                                </div>
+                                <div class="px-6 py-5 space-y-4">
+                                    <!-- Map Image Preview -->
+                                    <div class="text-center">
+                                        <div class="aspect-w-16 aspect-h-9 rounded-lg bg-gray-100 overflow-hidden">
+                                            <% if (tour && tour.mapImage) { %>
+                                                <img id="mapImagePreview" src="<%= tour.mapImage %>" alt="Tour map" class="object-cover">
+                                            <% } else { %>
+                                                <div id="mapImagePreview" class="flex flex-col items-center justify-center h-full">
+                                                    <svg class="h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                                                    </svg>
+                                                    <p class="mt-2 text-sm text-gray-500">No map selected</p>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Upload Button -->
+                                    <div class="flex justify-center">
+                                        <input type="file" id="mapImage" name="mapImage" accept="image/*" class="hidden">
+                                        <button type="button" id="uploadMapBtn" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                            <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                            </svg>
+                                            Upload Map
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Tour Status Card -->
+                            <div class="bg-white shadow-sm rounded-xl overflow-hidden">
+                                <div class="px-6 py-5 border-b border-gray-200">
+                                    <h3 class="text-lg font-medium text-gray-900">Status</h3>
+                                </div>
+                                <div class="px-6 py-5">
+                                    <div class="flex flex-col space-y-3">
+                                        <button type="submit" id="saveBtn" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                            <%= tour ? 'Update Tour' : 'Create Tour' %>
+                                        </button>
+                                        <a href="/admin/tours" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                            Cancel
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- JavaScript for form functionality -->
+<script src="/js/tour-form.js"></script>
+
+<!-- Import the custom notification module -->
+<script type="module" src="/js/notifications.js"></script>
+
+<%- include('../partials/admin/footer') %> 

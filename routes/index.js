@@ -16,6 +16,7 @@ const Blog = require('../models/Blog');
 const homeController = require('../controllers/homeController');
 const { csrfProtection } = require('../middleware/security');
 const axios = require('axios');
+const Excursion = require('../models/Excursion');
 
 dotenv.config();
 
@@ -40,6 +41,216 @@ router.get('/', homeController.getHomePage);
 router.get('/about', homeController.getAboutPage);
 router.get('/contact', homeController.getContactPage);
 router.post('/contact', homeController.submitContactForm);
+
+// Search route - Apple-style search page
+router.get('/search', async (req, res) => {
+    try {
+        // If query parameter is present, we'll pre-populate the search field
+        const searchQuery = req.query.q || '';
+        
+        res.render('pages/search', {
+            title: searchQuery ? `Search results for "${searchQuery}" - Morocco Travel Experts` : 'Search - Morocco Travel Experts',
+            metaDescription: 'Search across our catalog of tours, excursions, and travel insights to find your perfect Moroccan adventure.',
+            searchQuery
+        });
+    } catch (error) {
+        console.error('Error rendering search page:', error);
+        res.status(500).render('error', {
+            title: 'Error',
+            message: 'An error occurred while loading the search page. Please try again.'
+        });
+    }
+});
+
+// Search API endpoint for AJAX requests
+router.get('/api/search', async (req, res) => {
+    try {
+        const query = req.query.q;
+        
+        if (!query || query.trim() === '') {
+            return res.status(400).json({
+                success: false,
+                message: 'Search query is required',
+                tours: [],
+                excursions: [],
+                blogs: []
+            });
+        }
+        
+        // Create regex for case-insensitive search
+        const searchRegex = new RegExp(query, 'i');
+        
+        // Perform searches in parallel for better performance
+        const [tours, excursions, blogs] = await Promise.all([
+            // Search tours
+            Tour.find({
+                $or: [
+                    { title: searchRegex },
+                    { description: searchRegex },
+                    { startLocation: searchRegex }
+                ]
+            }).limit(20),
+            
+            // Search excursions
+            Excursion.find({
+                $or: [
+                    { title: searchRegex },
+                    { description: searchRegex },
+                    { location: searchRegex },
+                    { activities: searchRegex }
+                ]
+            }).limit(20),
+            
+            // Search blog posts
+            Blog.find({
+                isPublished: true,
+                $or: [
+                    { title: searchRegex },
+                    { content: searchRegex },
+                    { summary: searchRegex },
+                    { tags: searchRegex },
+                    { category: searchRegex }
+                ]
+            }).limit(20)
+        ]);
+        
+        // Return combined search results
+        return res.json({
+            success: true,
+            tours,
+            excursions,
+            blogs
+        });
+    } catch (error) {
+        console.error('Search error:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'An error occurred while searching',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Server error'
+        });
+    }
+});
+
+// API endpoint for search suggestions
+router.get('/api/search/suggestions', async (req, res) => {
+    try {
+        const query = req.query.q;
+        
+        if (!query || query.trim() === '') {
+            return res.status(400).json({
+                success: false,
+                message: 'Search query is required',
+                suggestions: []
+            });
+        }
+        
+        // Create regex for case-insensitive search (starts with the query)
+        const searchRegex = new RegExp(`^${query}`, 'i');
+        const containsRegex = new RegExp(query, 'i');
+        
+        // Get limited results from each collection for suggestions
+        const [tours, excursions, blogs, cities] = await Promise.all([
+            // Tour suggestions
+            Tour.find({
+                $or: [
+                    { title: containsRegex },
+                    { startLocation: containsRegex }
+                ]
+            })
+            .select('title startLocation')
+            .limit(3),
+            
+            // Excursion suggestions
+            Excursion.find({
+                $or: [
+                    { title: containsRegex },
+                    { location: containsRegex }
+                ]
+            })
+            .select('title location')
+            .limit(3),
+            
+            // Blog suggestions
+            Blog.find({
+                isPublished: true,
+                $or: [
+                    { title: containsRegex },
+                    { tags: containsRegex },
+                    { category: containsRegex }
+                ]
+            })
+            .select('title')
+            .limit(2),
+            
+            // City suggestions
+            StartingCity.find({ city: containsRegex })
+            .select('city')
+            .limit(2)
+        ]);
+        
+        // Format suggestions
+        const suggestions = [
+            // Tour suggestions
+            ...tours.map(tour => ({
+                text: tour.title,
+                type: 'Tour',
+                id: tour._id
+            })),
+            
+            // Excursion suggestions
+            ...excursions.map(excursion => ({
+                text: excursion.title,
+                type: 'Excursion',
+                id: excursion._id
+            })),
+            
+            // Blog suggestions
+            ...blogs.map(blog => ({
+                text: blog.title,
+                type: 'Blog',
+                id: blog._id
+            })),
+            
+            // City suggestions
+            ...cities.map(city => ({
+                text: city.city,
+                type: 'Destination',
+                id: city._id
+            }))
+        ];
+        
+        // Add common search terms if we don't have enough suggestions
+        if (suggestions.length < 3 && query.length < 10) {
+            const commonTerms = [
+                { text: 'Desert Tours', type: 'Tour' },
+                { text: 'Marrakech', type: 'Destination' },
+                { text: 'Camel Trekking', type: 'Excursion' },
+                { text: 'Sahara Desert', type: 'Destination' },
+                { text: 'Moroccan Food', type: 'Blog' },
+                { text: 'Chefchaouen', type: 'Destination' }
+            ].filter(term => 
+                term.text.toLowerCase().includes(query.toLowerCase()) &&
+                !suggestions.some(s => s.text === term.text)
+            ).slice(0, 5);
+            
+            suggestions.push(...commonTerms);
+        }
+        
+        // Return suggestions (max 8)
+        return res.json({
+            success: true,
+            suggestions: suggestions.slice(0, 8)
+        });
+    } catch (error) {
+        console.error('Search suggestion error:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'An error occurred while fetching search suggestions',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Server error',
+            suggestions: []
+        });
+    }
+});
 
 // Destination routes
 router.get('/destinations/marrakech', async (req, res) => {

@@ -24,12 +24,14 @@
     x-data="{ 
         lastScrollTop: 0,
         showNavbar: true,
-        scrollPosition: 0
+        scrollPosition: 0,
+        showProductMenu: false
     }" 
     @scroll.window="
         scrollPosition = window.pageYOffset;
         if(scrollPosition > lastScrollTop + 50) {
             showNavbar = false;
+            showProductMenu = false;
         } else if(scrollPosition < lastScrollTop - 10) {
             showNavbar = true;
         }
@@ -37,89 +39,176 @@
     "
     :class="{ 
         'transform -translate-y-full': !showNavbar && scrollPosition > 100,
-        'backdrop-blur-md bg-white/90 shadow-sm': scrollPosition > 50,
+        'backdrop-filter backdrop-blur-xl bg-white/80 shadow-sm': scrollPosition > 50,
         'bg-transparent': scrollPosition <= 50
     }"
-    class="fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-out">
+    class="fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out">
     
-    <div class="max-w-[1120px] mx-auto px-6">
-        <div class="flex justify-between items-center h-16">
-            <!-- Mobile: Hamburger and Logo -->
+    <div class="max-w-[1200px] mx-auto px-6">
+        <div class="flex justify-between items-center h-[60px]">
+            <!-- Left Section: Logo and Mobile Menu Button -->
             <div class="flex items-center">
-                <!-- Hamburger Toggle with Apple-style animation -->
+                <!-- Mobile: Hamburger with Apple-style animation -->
                 <button 
-                    @click="$store.sidebar.open()" 
-                    class="p-2 lg:hidden text-[#1d1d1f] hover:text-orange-500 transition-colors duration-300">
+                    @click="$store.sidebar.open()"
+                    aria-label="Menu" 
+                    class="p-2 mr-2 lg:hidden focus:outline-none text-[#1d1d1f] hover:text-orange-500 transition-colors duration-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24">
                         <path d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
                 
-                <!-- Logo with subtle hover effect -->
-                <a href="/" class="ml-2 lg:ml-0 transition-transform duration-300 hover:scale-105">
-                    <img src="<%= settings?.logo?.url || '/images/logo.png' %>" alt="<%= settings?.siteTitle || 'Morocco Travel Experts' %>" class="h-10 w-auto object-contain">
+                <!-- Logo with Apple-style hover effect -->
+                <a href="/" class="transition-transform duration-300 hover:opacity-80">
+                    <img src="<%= settings?.logo?.url || '/images/logo.png' %>" alt="<%= settings?.siteTitle || 'Morocco Travel Experts' %>" class="h-9 w-auto object-contain">
                 </a>
             </div>
             
-            <!-- Desktop: Apple-style Navigation -->
-            <nav class="hidden lg:flex items-center space-x-8">
-                <a href="/" class="font-medium text-[#1d1d1f] hover:text-orange-500 transition-colors duration-300 relative group py-1">
-                    <%= locals.commonTranslations?.home || 'Home' %>
-                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
-                </a>
-                <a href="/tours" class="font-medium text-[#1d1d1f] hover:text-orange-500 transition-colors duration-300 relative group py-1">
-                    <%= locals.commonTranslations?.tours || 'Tours' %>
-                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
-                </a>
-                <a href="/excursions" class="font-medium text-[#1d1d1f] hover:text-orange-500 transition-colors duration-300 relative group py-1">
-                    <%= locals.commonTranslations?.excursions || 'Excursions' %>
-                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
-                </a>
-                <a href="/blog" class="font-medium text-[#1d1d1f] hover:text-orange-500 transition-colors duration-300 relative group py-1">
-                    <%= locals.commonTranslations?.blog || 'Blog' %>
-                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
-                </a>
-                <a href="/about" class="font-medium text-[#1d1d1f] hover:text-orange-500 transition-colors duration-300 relative group py-1">
-                    <%= locals.commonTranslations?.about || 'About' %>
-                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
-                </a>
-                <a href="/contact" class="font-medium text-[#1d1d1f] hover:text-orange-500 transition-colors duration-300 relative group py-1">
-                    <%= locals.commonTranslations?.contact || 'Contact' %>
-                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
-                </a>
+            <!-- Center: Apple-style Navigation Links -->
+            <nav class="hidden lg:flex items-center lg:mx-auto">
+                <div class="flex items-center bg-[#f5f5f7] rounded-full px-2 py-0.5 space-x-1">
+                    <a href="/" class="text-sm font-medium text-[#1d1d1f] hover:text-orange-500 transition-colors duration-200 px-4 py-2 rounded-full hover:bg-white/80" 
+                       :class="{'bg-white text-orange-500': window.location.pathname === '/'}">
+                        <%= locals.commonTranslations?.home || 'Home' %>
+                    </a>
+                    <a href="/tours" class="text-sm font-medium text-[#1d1d1f] hover:text-orange-500 transition-colors duration-200 px-4 py-2 rounded-full hover:bg-white/80"
+                       :class="{'bg-white text-orange-500': window.location.pathname.includes('/tours')}">
+                        <%= locals.commonTranslations?.tours || 'Tours' %>
+                    </a>
+                    <a href="/excursions" class="text-sm font-medium text-[#1d1d1f] hover:text-orange-500 transition-colors duration-200 px-4 py-2 rounded-full hover:bg-white/80"
+                       :class="{'bg-white text-orange-500': window.location.pathname.includes('/excursions')}">
+                        <%= locals.commonTranslations?.excursions || 'Excursions' %>
+                    </a>
+                    <a href="/blog" class="text-sm font-medium text-[#1d1d1f] hover:text-orange-500 transition-colors duration-200 px-4 py-2 rounded-full hover:bg-white/80"
+                       :class="{'bg-white text-orange-500': window.location.pathname.includes('/blog')}">
+                        <%= locals.commonTranslations?.blog || 'Blog' %>
+                    </a>
+                    <a href="/about" class="text-sm font-medium text-[#1d1d1f] hover:text-orange-500 transition-colors duration-200 px-4 py-2 rounded-full hover:bg-white/80"
+                       :class="{'bg-white text-orange-500': window.location.pathname === '/about'}">
+                        <%= locals.commonTranslations?.about || 'About' %>
+                    </a>
+                </div>
             </nav>
             
-            <!-- Translation and Contact Button (visible on all screens) -->
-            <div class="flex items-center space-x-5">
+            <!-- Right Section: Actions -->
+            <div class="flex items-center space-x-4">
                 <!-- Translation Widget -->
-                <div class="gtranslate_wrapper"></div>
+                <div class="relative" x-data="{ open: false }">
+                    <button 
+                        @click="open = !open" 
+                        @click.away="open = false"
+                        class="flex items-center justify-center h-8 w-8 bg-[#f5f5f7] text-[#1d1d1f] hover:bg-[#e8e8ed] rounded-full transition-all duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                        </svg>
+                    </button>
+                    
+                    <!-- Apple-style Dropdown Menu -->
+                    <div 
+                        x-show="open" 
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 translate-y-1"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 translate-y-1"
+                        class="absolute right-0 mt-2 w-48 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl ring-1 ring-black/5 z-50 overflow-hidden"
+                        style="display: none;">
+                        
+                        <div class="py-2 border-b border-[#f5f5f7]">
+                            <p class="px-4 py-1 text-xs font-medium text-[#86868b] uppercase tracking-wide">Select Language</p>
+                        </div>
+                        
+                        <div class="max-h-64 overflow-y-auto py-2 space-y-0.5">
+                            <a href="#" onclick="doGTranslate('en|en');return false;" class="flex items-center px-4 py-2 text-sm text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors rounded-lg mx-1">
+                                <span class="flag-icon w-5 h-5 mr-3 flex-shrink-0 rounded-full overflow-hidden flex items-center justify-center">🇺🇸</span>
+                                <span class="font-medium">English</span>
+                            </a>
+                            <a href="#" onclick="doGTranslate('en|fr');return false;" class="flex items-center px-4 py-2 text-sm text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors rounded-lg mx-1">
+                                <span class="flag-icon w-5 h-5 mr-3 flex-shrink-0 rounded-full overflow-hidden flex items-center justify-center">🇫🇷</span>
+                                <span class="font-medium">Français</span>
+                            </a>
+                            <a href="#" onclick="doGTranslate('en|es');return false;" class="flex items-center px-4 py-2 text-sm text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors rounded-lg mx-1">
+                                <span class="flag-icon w-5 h-5 mr-3 flex-shrink-0 rounded-full overflow-hidden flex items-center justify-center">🇪🇸</span>
+                                <span class="font-medium">Español</span>
+                            </a>
+                            <a href="#" onclick="doGTranslate('en|de');return false;" class="flex items-center px-4 py-2 text-sm text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors rounded-lg mx-1">
+                                <span class="flag-icon w-5 h-5 mr-3 flex-shrink-0 rounded-full overflow-hidden flex items-center justify-center">🇩🇪</span>
+                                <span class="font-medium">Deutsch</span>
+                            </a>
+                            <a href="#" onclick="doGTranslate('en|it');return false;" class="flex items-center px-4 py-2 text-sm text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors rounded-lg mx-1">
+                                <span class="flag-icon w-5 h-5 mr-3 flex-shrink-0 rounded-full overflow-hidden flex items-center justify-center">🇮🇹</span>
+                                <span class="font-medium">Italiano</span>
+                            </a>
+                            <a href="#" onclick="doGTranslate('en|pt');return false;" class="flex items-center px-4 py-2 text-sm text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors rounded-lg mx-1">
+                                <span class="flag-icon w-5 h-5 mr-3 flex-shrink-0 rounded-full overflow-hidden flex items-center justify-center">🇵🇹</span>
+                                <span class="font-medium">Português</span>
+                            </a>
+                            <a href="#" onclick="doGTranslate('en|ar');return false;" class="flex items-center px-4 py-2 text-sm text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors rounded-lg mx-1">
+                                <span class="flag-icon w-5 h-5 mr-3 flex-shrink-0 rounded-full overflow-hidden flex items-center justify-center">🇲🇦</span>
+                                <span class="font-medium">العربية</span>
+                            </a>
+                            <a href="#" onclick="doGTranslate('en|zh-CN');return false;" class="flex items-center px-4 py-2 text-sm text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors rounded-lg mx-1">
+                                <span class="flag-icon w-5 h-5 mr-3 flex-shrink-0 rounded-full overflow-hidden flex items-center justify-center">🇨🇳</span>
+                                <span class="font-medium">中文</span>
+                            </a>
+                            <a href="#" onclick="doGTranslate('en|ja');return false;" class="flex items-center px-4 py-2 text-sm text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors rounded-lg mx-1">
+                                <span class="flag-icon w-5 h-5 mr-3 flex-shrink-0 rounded-full overflow-hidden flex items-center justify-center">🇯🇵</span>
+                                <span class="font-medium">日本語</span>
+                            </a>
+                            <a href="#" onclick="doGTranslate('en|nl');return false;" class="flex items-center px-4 py-2 text-sm text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors rounded-lg mx-1">
+                                <span class="flag-icon w-5 h-5 mr-3 flex-shrink-0 rounded-full overflow-hidden flex items-center justify-center">🇳🇱</span>
+                                <span class="font-medium">Nederlands</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 
-                <!-- Contact Button - Apple-style -->
-                <a href="/contact" class="flex items-center justify-center h-10 w-10 bg-orange-500 hover:bg-orange-600 text-white rounded-full transition-all duration-300 hover:scale-105 shadow-sm">
-                    <i class="fas fa-envelope text-sm"></i>
+                <!-- Search Button - Apple Style -->
+                <button 
+                    @click="window.location.href='/search'" 
+                    class="hidden md:flex items-center justify-center h-8 w-8 bg-[#f5f5f7] text-[#1d1d1f] hover:bg-[#e8e8ed] rounded-full transition-all duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
+                
+                <!-- Contact Button - Apple Style -->
+                <a href="/contact" class="flex items-center justify-center h-8 w-8 bg-[#f5f5f7] text-[#1d1d1f] hover:bg-[#e8e8ed] rounded-full transition-all duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                </a>
+                
+                <!-- Book Now Button - Apple Style -->
+                <a href="/tours" class="hidden md:flex items-center px-5 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-full text-sm transition-all duration-200">
+                    <span class="font-medium">Book Now</span>
                 </a>
                 
                 <% if (locals.user && locals.user.isAdmin) { %>
-                <!-- Admin Link - Apple-style -->
-                <a href="/admin/dashboard" class="hidden md:flex items-center px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-[#1d1d1f] rounded-full text-sm transition-all duration-300 hover:shadow-md">
-                    <i class="fas fa-user-shield mr-2 text-orange-500"></i>
-                    Admin
+                <!-- Admin Button - Apple Style -->
+                <a href="/admin/dashboard" class="hidden md:flex items-center px-4 py-1.5 bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] rounded-full text-sm transition-all duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span>Admin</span>
                 </a>
                 <% } %>
             </div>
         </div>
     </div>
     
-    <!-- Apple-style divider that appears on scroll -->
+    <!-- Apple-style subtle divider -->
     <div 
         x-show="scrollPosition > 50" 
         x-transition:enter="transition-opacity duration-300" 
         x-transition:enter-start="opacity-0" 
         x-transition:enter-end="opacity-100"
-        class="h-px w-full bg-gray-200"></div>
+        class="h-[0.5px] w-full bg-[#d2d2d7]"></div>
 </header>
 
-<!-- Sidebar Navigation Overlay - Apple-style blur -->
+<!-- Sidebar - Apple Style -->
 <div 
     x-show="$store.sidebar.isOpen" 
     x-transition:enter="transition-opacity ease-out duration-300"
@@ -129,11 +218,10 @@
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
     @click="$store.sidebar.close()"
-    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+    class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
     style="display: none;">
 </div>
 
-<!-- Sidebar Navigation - Apple-style clean design -->
 <div 
     x-show="$store.sidebar.isOpen" 
     x-transition:enter="transition ease-out duration-300"
@@ -142,73 +230,166 @@
     x-transition:leave="transition ease-in duration-200"
     x-transition:leave-start="translate-x-0"
     x-transition:leave-end="-translate-x-full"
-    class="fixed top-0 left-0 h-full w-72 bg-white z-50 overflow-y-auto shadow-xl transform"
+    class="fixed top-0 left-0 h-full w-80 bg-white z-50 overflow-y-auto shadow-lg"
     style="display: none;">
     
     <!-- Sidebar Header -->
-    <div class="flex items-center justify-between p-5 border-b border-gray-100">
+    <div class="flex items-center justify-between p-5">
         <a href="/">
-            <img src="<%= settings?.logo?.url || '/images/logo.png' %>" alt="<%= settings?.siteTitle || 'Morocco Travel Experts' %>" class="h-10 w-auto">
+            <img src="<%= settings?.logo?.url || '/images/logo.png' %>" alt="<%= settings?.siteTitle || 'Morocco Travel Experts' %>" class="h-8 w-auto">
         </a>
-        <button @click="$store.sidebar.close()" class="text-gray-400 hover:text-gray-700 transition-colors duration-300">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24">
+        <button @click="$store.sidebar.close()" class="p-1 bg-[#f5f5f7] rounded-full text-[#1d1d1f] hover:bg-[#e8e8ed] transition-colors duration-200">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24">
                 <path d="M6 18L18 6M6 6l12 12"></path>
             </svg>
         </button>
     </div>
     
-    <!-- Sidebar Links - Apple-style clean menu -->
-    <nav class="py-6">
-        <a href="/" class="flex items-center px-6 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
-            <i class="fas fa-home w-7 text-orange-500"></i>
-            <span class="font-medium"><%= locals.commonTranslations?.home || 'Home' %></span>
+    <div class="px-5 py-4">
+        <a href="/tours" class="flex items-center justify-center px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-full text-sm w-full mb-5 transition-all duration-200">
+            <span class="font-medium">Book Now</span>
         </a>
-        <a href="/tours" class="flex items-center px-6 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
-            <i class="fas fa-route w-7 text-orange-500"></i>
-            <span class="font-medium"><%= locals.commonTranslations?.tours || 'Tours' %></span>
+    </div>
+    
+    <!-- Apple-style divider -->
+    <div class="h-[0.5px] w-full bg-[#d2d2d7]"></div>
+    
+    <!-- Sidebar Links - Apple Style -->
+    <nav class="py-4">
+        <a href="/" class="flex items-center px-7 py-3.5 text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors duration-200 justify-between"
+           :class="{'text-orange-500': window.location.pathname === '/'}">
+            <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span class="font-medium"><%= locals.commonTranslations?.home || 'Home' %></span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#86868b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
+            </svg>
         </a>
-        <a href="/excursions" class="flex items-center px-6 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
-            <i class="fas fa-hiking w-7 text-orange-500"></i>
-            <span class="font-medium"><%= locals.commonTranslations?.excursions || 'Excursions' %></span>
+        
+        <a href="/tours" class="flex items-center px-7 py-3.5 text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors duration-200 justify-between"
+           :class="{'text-orange-500': window.location.pathname.includes('/tours')}">
+            <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                </svg>
+                <span class="font-medium"><%= locals.commonTranslations?.tours || 'Tours' %></span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#86868b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
+            </svg>
         </a>
-        <a href="/blog" class="flex items-center px-6 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
-            <i class="fas fa-blog w-7 text-orange-500"></i>
-            <span class="font-medium"><%= locals.commonTranslations?.blog || 'Blog' %></span>
+        
+        <a href="/excursions" class="flex items-center px-7 py-3.5 text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors duration-200 justify-between"
+           :class="{'text-orange-500': window.location.pathname.includes('/excursions')}">
+            <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                </svg>
+                <span class="font-medium"><%= locals.commonTranslations?.excursions || 'Excursions' %></span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#86868b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
+            </svg>
         </a>
-        <a href="/about" class="flex items-center px-6 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
-            <i class="fas fa-info-circle w-7 text-orange-500"></i>
-            <span class="font-medium"><%= locals.commonTranslations?.about || 'About' %></span>
+        
+        <a href="/blog" class="flex items-center px-7 py-3.5 text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors duration-200 justify-between"
+           :class="{'text-orange-500': window.location.pathname.includes('/blog')}">
+            <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                </svg>
+                <span class="font-medium"><%= locals.commonTranslations?.blog || 'Blog' %></span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#86868b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
+            </svg>
         </a>
-        <a href="/contact" class="flex items-center px-6 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
-            <i class="fas fa-envelope w-7 text-orange-500"></i>
-            <span class="font-medium"><%= locals.commonTranslations?.contact || 'Contact' %></span>
+        
+        <a href="/about" class="flex items-center px-7 py-3.5 text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors duration-200 justify-between"
+           :class="{'text-orange-500': window.location.pathname === '/about'}">
+            <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="font-medium"><%= locals.commonTranslations?.about || 'About' %></span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#86868b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
+            </svg>
+        </a>
+        
+        <a href="/contact" class="flex items-center px-7 py-3.5 text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors duration-200 justify-between"
+           :class="{'text-orange-500': window.location.pathname === '/contact'}">
+            <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span class="font-medium"><%= locals.commonTranslations?.contact || 'Contact' %></span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#86868b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
+            </svg>
         </a>
         
         <% if (locals.user && locals.user.isAdmin) { %>
-        <!-- Admin Links in Sidebar -->
-        <div class="mt-6 pt-6 border-t border-gray-100 mx-6">
-            <h3 class="px-4 py-2 text-sm font-semibold text-gray-500 uppercase tracking-wide">Admin</h3>
-            <a href="/admin/dashboard" class="flex items-center px-4 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
-                <i class="fas fa-tachometer-alt w-7 text-orange-500"></i>
+        <!-- Admin Links in Sidebar - Apple Style -->
+        <div class="mt-4 pt-4 px-7">
+            <div class="h-[0.5px] w-full bg-[#d2d2d7] mb-4"></div>
+            <h3 class="text-sm font-semibold text-[#86868b] mb-2">Admin</h3>
+            
+            <a href="/admin/dashboard" class="flex items-center py-3 text-[#1d1d1f] hover:text-orange-500 transition-colors duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
                 <span class="font-medium">Dashboard</span>
             </a>
-            <a href="/admin/tours" class="flex items-center px-4 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
-                <i class="fas fa-route w-7 text-orange-500"></i>
+            
+            <a href="/admin/tours" class="flex items-center py-3 text-[#1d1d1f] hover:text-orange-500 transition-colors duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                </svg>
                 <span class="font-medium">Tours</span>
             </a>
-            <a href="/admin/bookings" class="flex items-center px-4 py-3 text-[#1d1d1f] hover:bg-orange-50 transition-colors duration-200">
-                <i class="fas fa-calendar-check w-7 text-orange-500"></i>
+            
+            <a href="/admin/bookings" class="flex items-center py-3 text-[#1d1d1f] hover:text-orange-500 transition-colors duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
                 <span class="font-medium">Bookings</span>
             </a>
         </div>
         <% } %>
     </nav>
+    
+    <!-- Contact Information - Apple Style -->
+    <div class="absolute bottom-0 left-0 right-0 bg-white border-t border-[#d2d2d7] py-5 px-7">
+        <div class="flex items-center text-[#1d1d1f]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+            </svg>
+            <a href="tel:<%= settings?.phone || '+212612210183' %>" class="text-sm hover:text-orange-500 transition-colors duration-200">
+                <%= settings?.phone || '+212 612 210 183' %>
+            </a>
+        </div>
+        <div class="flex items-center text-[#1d1d1f] mt-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <a href="mailto:<%= settings?.email || 'book@moroccotravelexperts.com' %>" class="text-sm hover:text-orange-500 transition-colors duration-200">
+                <%= settings?.email || 'book@moroccotravelexperts.com' %>
+            </a>
+        </div>
+    </div>
 </div>
 
 <!-- Spacer for Fixed Header -->
-<div class="h-16"></div>
+<div class="h-[60px]"></div>
 
-<!-- Back to Top Button - Apple-style with smooth transition -->
+<!-- Back to Top Button - Apple-style -->
 <button 
     id="backToTopBtn"
     x-data="{ showButton: false }"
@@ -221,9 +402,9 @@
     x-transition:leave="transition-all duration-300"
     x-transition:leave-start="opacity-100 translate-y-0" 
     x-transition:leave-end="opacity-0 translate-y-4"
-    class="fixed bottom-6 right-6 bg-orange-500 hover:bg-orange-600 text-white rounded-full p-3 shadow-lg transition-all duration-300 hover:shadow-xl z-40"
+    class="fixed bottom-6 right-6 bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] rounded-full p-3 shadow-md transition-all duration-200 hover:shadow-lg z-40"
     style="display: none;">
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24">
         <path d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
     </svg>
 </button>

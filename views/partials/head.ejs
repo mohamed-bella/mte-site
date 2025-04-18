@@ -123,295 +123,44 @@
      <!-- Flag Icons for language selector -->
      <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css">
 
+     <!-- Custom GTranslate Implementation -->
+     <script type="text/javascript">
+     function doGTranslate(lang_pair) {
+          if (lang_pair.value) lang_pair = lang_pair.value;
+          if (lang_pair == '') return;
+          var lang = lang_pair.split('|')[1];
+          // Create a cookie
+          var now = new Date();
+          var expTime = now.getTime() + 1000 * 3600 * 24 * 365;
+          now.setTime(expTime);
+          document.cookie = 'googtrans=/'+lang_pair.split('|')[0]+'/'+lang_pair.split('|')[1]+'; expires='+now.toGMTString()+'; path=/';
+          document.cookie = 'googtrans=/'+lang_pair.split('|')[0]+'/'+lang_pair.split('|')[1]+'; expires='+now.toGMTString()+'; path=/'+location.hostname;
+          
+          // Force reload to apply translation
+          location.reload();
+     }
+     </script>
+     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+     <script type="text/javascript">
+     function googleTranslateElementInit() {
+          new google.translate.TranslateElement({
+               pageLanguage: 'en',
+               includedLanguages: 'ar,de,en,es,fr,it,ja,nl,pt,zh-CN',
+               layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+               autoDisplay: false
+          }, 'google_translate_element');
+     }
+     </script>
+     
+     <!-- Hidden element required by Google Translate -->
+     <div id="google_translate_element" style="display:none;"></div>
+
      <!-- AOS for scroll animations -->
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
 
      <!-- Custom Fonts with display swap and preload -->
      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap">
      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-
-     <!-- GTranslate Widget Script -->
-     <script>window.gtranslateSettings = {
-          "default_language":"en",
-          "native_language_names":true,
-          "detect_browser_language":true,
-          "languages":["en","fr","it","es","zh-CN","de","ja","nl","pl"],
-          "wrapper_selector":".gtranslate_wrapper",
-          "flag_style":"3d",
-          "flag_size":24,
-          "dropdown_style":"flags",
-          "alt_flags":{"en":"usa"},
-          "switcher_horizontal_position":"inline",
-          "switcher_text_color":"#4B5563",
-          "switcher_arrow_color":"#EA580C",
-          "switcher_border_color":"rgba(234, 88, 12, 0.2)",
-          "switcher_background_color":"#fff",
-          "switcher_background_shadow_color":"rgba(0, 0, 0, 0.1)",
-          "switcher_background_hover_color":"rgba(234, 88, 12, 0.1)",
-          "dropdown_text_color":"#4B5563",
-          "dropdown_hover_color":"rgba(234, 88, 12, 0.1)",
-          "dropdown_background_color":"#fff",
-          "url_structure":"none",
-          "widget_look":"dropdown_with_flags",
-          "show_language_codes":true
-     }</script>
-     <script src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
-
-     <!-- Critical CSS -->
-     <style>
-          :root {
-               --primary-color: #2563eb;
-               --secondary-color: #0f172a;
-               --accent-color: #ff6b00;
-               --bg-blur: 10px;
-               --transition-normal: 0.3s ease;
-               --transition-slow: 0.5s ease;
-               --shadow-sm: 0 1px 2px rgba(0,0,0,0.1);
-               --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-               --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-               --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
-               --border-radius-sm: 0.25rem;
-               --border-radius-md: 0.5rem;
-               --border-radius-lg: 0.75rem;
-               --border-radius-xl: 1rem;
-               --border-radius-full: 9999px;
-          }
-
-          /* Apply heading font to all headings */
-          h1, h2, h3, h4, h5, h6 {
-               font-family: 'Montserrat', sans-serif;
-               letter-spacing: -0.025em;
-          }
-
-          /* Apply body font to all text content */
-          body {
-               font-family: 'Poppins', sans-serif;
-               overflow-x: hidden;
-               scroll-behavior: smooth;
-          }
-
-          /* Glass effects */
-          .glass {
-               background: rgba(255, 255, 255, 0.8);
-               backdrop-filter: blur(var(--bg-blur));
-               -webkit-backdrop-filter: blur(var(--bg-blur));
-               border: 1px solid rgba(255, 255, 255, 0.18);
-               box-shadow: var(--shadow-md);
-          }
-          
-          .glass-dark {
-               background: rgba(15, 23, 42, 0.8);
-               backdrop-filter: blur(var(--bg-blur));
-               -webkit-backdrop-filter: blur(var(--bg-blur));
-               border: 1px solid rgba(255, 255, 255, 0.08);
-               box-shadow: var(--shadow-md);
-          }
-
-          /* Enhanced buttons */
-          .btn-primary {
-               background-image: linear-gradient(135deg, #ff6b00, #ea580c);
-               color: white;
-               padding: 0.75rem 1.5rem;
-               border-radius: var(--border-radius-full);
-               font-weight: 600;
-               transition: transform var(--transition-normal), box-shadow var(--transition-normal);
-               box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);
-          }
-          
-          .btn-primary:hover {
-               transform: translateY(-2px);
-               box-shadow: 0 6px 20px rgba(234, 88, 12, 0.5);
-          }
-          
-          .btn-primary:active {
-               transform: translateY(1px);
-          }
-
-          /* Card styling */
-          .card {
-               background: white;
-               border-radius: var(--border-radius-lg);
-               overflow: hidden;
-               transition: transform var(--transition-normal), box-shadow var(--transition-normal);
-               box-shadow: var(--shadow-md);
-          }
-          
-          .card:hover {
-               transform: translateY(-5px);
-               box-shadow: var(--shadow-xl);
-          }
-
-          /* Custom scrollbar for browsers that support it */
-          ::-webkit-scrollbar {
-               width: 8px;
-               height: 8px;
-          }
-
-          ::-webkit-scrollbar-track {
-               background: #f1f1f1;
-               border-radius: 4px;
-          }
-
-          ::-webkit-scrollbar-thumb {
-               background: #ea580c;
-               border-radius: 4px;
-          }
-
-          ::-webkit-scrollbar-thumb:hover {
-               background: #c2410c;
-          }
-
-          /* Animate headings */
-          .animate-gradient-text {
-               background-image: linear-gradient(90deg, #ea580c, #ff6b00, #ea580c);
-               background-size: 200% auto;
-               color: transparent;
-               -webkit-background-clip: text;
-               background-clip: text;
-               animation: gradient-animation 6s linear infinite;
-          }
-          
-          @keyframes gradient-animation {
-               0% { background-position: 0% center; }
-               100% { background-position: 200% center; }
-          }
-          
-          /* Loading dots animation */
-          .loading-dots::after {
-               content: '';
-               animation: loading-dots 1.5s infinite;
-          }
-          
-          @keyframes loading-dots {
-               0% { content: '.'; }
-               33% { content: '..'; }
-               66% { content: '...'; }
-          }
-          
-          /* Enhanced focus styles */
-          *:focus-visible {
-               outline: 2px solid #ea580c;
-               outline-offset: 2px;
-          }
-          
-          /* Mobile menu animations */
-          @keyframes fadeIn {
-               from { opacity: 0; transform: translateY(-10px); }
-               to { opacity: 1; transform: translateY(0); }
-          }
-          
-          .fade-in {
-               animation: fadeIn 0.3s ease forwards;
-          }
-          
-          /* GTranslate Widget Custom Styling */
-          .gtranslate_wrapper {
-               position: relative;
-               margin-right: 0.5rem;
-               z-index: 1000;
-          }
-          
-          /* Dropdown with Flags styling */
-          .gt_float_switcher {
-               font-family: 'Poppins', sans-serif !important;
-          }
-          
-          div.gt_float_switcher {
-               box-shadow: var(--shadow-md) !important;
-               border-radius: var(--border-radius-md) !important;
-               border: 1px solid rgba(234, 88, 12, 0.1) !important;
-          }
-          
-          div.gt_float_switcher .gt_selected {
-               color: #4B5563 !important;
-               font-weight: 500 !important;
-               background: white !important;
-               border-radius: var(--border-radius-md) !important; 
-          }
-          
-          div.gt_float_switcher .gt_selected a {
-               color: #4B5563 !important;
-               padding: 5px 8px !important;
-          }
-          
-          div.gt_float_switcher .gt_selected a:hover {
-               color: #EA580C !important;
-          }
-          
-          div.gt_float_switcher .gt_selected:after {
-               border-top-color: #EA580C !important;
-               opacity: 0.8 !important;
-          }
-          
-          /* Dropdown menu styling */
-          div.gt_float_switcher .gt_options {
-               border-radius: var(--border-radius-md) !important;
-               border: 1px solid rgba(234, 88, 12, 0.2) !important;
-               box-shadow: var(--shadow-lg) !important;
-               top: 100% !important;
-               margin-top: 5px !important;
-               max-height: 400px !important;
-               overflow-y: auto !important;
-          }
-          
-          div.gt_float_switcher .gt_options a {
-               color: #4B5563 !important;
-               padding: 5px 8px !important;
-          }
-          
-          div.gt_float_switcher .gt_options a:hover,
-          div.gt_float_switcher .gt_options a.gt_current {
-               background-color: rgba(234, 88, 12, 0.1) !important;
-               color: #EA580C !important;
-          }
-          
-          /* Language codes styling */
-          .gt_float_switcher span span {
-               opacity: 0.6;
-               font-size: 0.85em;
-               margin-left: 3px;
-          }
-          
-          /* Ensure the dropdown appears below language selector */
-          .gt_float_switcher {
-               position: relative !important;
-               z-index: 100;
-          }
-          
-          /* Fix dropdown positioning */
-          .gt_float_switcher .gt_options {
-               position: absolute !important;
-               top: 100% !important;
-               left: 0 !important;
-               margin-top: 5px;
-               max-height: 300px;
-               overflow-y: auto;
-               border-radius: 0.5rem;
-               box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-               z-index: 1000;
-          }
-
-          /* Ensure proper styling for the dropdown */
-          .gt_float_switcher .gt_options .gt_option {
-               padding: 8px 12px;
-          }
-
-          /* Ensure mobile view is properly displayed */
-          @media (max-width: 768px) {
-               .gtranslate_wrapper .gt_float_switcher {
-                    width: 100%;
-               }
-               
-               .sidebar .gtranslate_wrapper {
-                    width: 100%;
-               }
-          }
-
-          /* Fix width issues */
-          .gtranslate_wrapper {
-               min-width: 120px;
-          }
-     </style>
 
      <!-- Tailwind Config -->
      <script>
@@ -680,6 +429,186 @@
 
      <!-- TripAdvisor Widget Script -->
      <script async src="https://www.jscache.com/wejs?wtype=cdsratingsonlynarrow&uniq=838&locationId=17387732&lang=en_US&border=true&display_version=2" data-loadtrk onload="this.loadtrk=true"></script>
+
+     <!-- Critical CSS -->
+     <style>
+          :root {
+               --primary-color: #2563eb;
+               --secondary-color: #0f172a;
+               --accent-color: #ff6b00;
+               --bg-blur: 10px;
+               --transition-normal: 0.3s ease;
+               --transition-slow: 0.5s ease;
+               --shadow-sm: 0 1px 2px rgba(0,0,0,0.1);
+               --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+               --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+               --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+               --border-radius-sm: 0.25rem;
+               --border-radius-md: 0.5rem;
+               --border-radius-lg: 0.75rem;
+               --border-radius-xl: 1rem;
+               --border-radius-full: 9999px;
+          }
+
+          /* Apply heading font to all headings */
+          h1, h2, h3, h4, h5, h6 {
+               font-family: 'Montserrat', sans-serif;
+               letter-spacing: -0.025em;
+          }
+
+          /* Apply body font to all text content */
+          body {
+               font-family: 'Poppins', sans-serif;
+               overflow-x: hidden;
+               scroll-behavior: smooth;
+          }
+
+          /* Glass effects */
+          .glass {
+               background: rgba(255, 255, 255, 0.8);
+               backdrop-filter: blur(var(--bg-blur));
+               -webkit-backdrop-filter: blur(var(--bg-blur));
+               border: 1px solid rgba(255, 255, 255, 0.18);
+               box-shadow: var(--shadow-md);
+          }
+          
+          .glass-dark {
+               background: rgba(15, 23, 42, 0.8);
+               backdrop-filter: blur(var(--bg-blur));
+               -webkit-backdrop-filter: blur(var(--bg-blur));
+               border: 1px solid rgba(255, 255, 255, 0.08);
+               box-shadow: var(--shadow-md);
+          }
+
+          /* Enhanced buttons */
+          .btn-primary {
+               background-image: linear-gradient(135deg, #ff6b00, #ea580c);
+               color: white;
+               padding: 0.75rem 1.5rem;
+               border-radius: var(--border-radius-full);
+               font-weight: 600;
+               transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+               box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);
+          }
+          
+          .btn-primary:hover {
+               transform: translateY(-2px);
+               box-shadow: 0 6px 20px rgba(234, 88, 12, 0.5);
+          }
+          
+          .btn-primary:active {
+               transform: translateY(1px);
+          }
+
+          /* Card styling */
+          .card {
+               background: white;
+               border-radius: var(--border-radius-lg);
+               overflow: hidden;
+               transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+               box-shadow: var(--shadow-md);
+          }
+          
+          .card:hover {
+               transform: translateY(-5px);
+               box-shadow: var(--shadow-xl);
+          }
+
+          /* Custom scrollbar for browsers that support it */
+          ::-webkit-scrollbar {
+               width: 8px;
+               height: 8px;
+          }
+
+          ::-webkit-scrollbar-track {
+               background: #f1f1f1;
+               border-radius: 4px;
+          }
+
+          ::-webkit-scrollbar-thumb {
+               background: #ea580c;
+               border-radius: 4px;
+          }
+
+          ::-webkit-scrollbar-thumb:hover {
+               background: #c2410c;
+          }
+
+          /* Animate headings */
+          .animate-gradient-text {
+               background-image: linear-gradient(90deg, #ea580c, #ff6b00, #ea580c);
+               background-size: 200% auto;
+               color: transparent;
+               -webkit-background-clip: text;
+               background-clip: text;
+               animation: gradient-animation 6s linear infinite;
+          }
+          
+          @keyframes gradient-animation {
+               0% { background-position: 0% center; }
+               100% { background-position: 200% center; }
+          }
+          
+          /* Loading dots animation */
+          .loading-dots::after {
+               content: '';
+               animation: loading-dots 1.5s infinite;
+          }
+          
+          @keyframes loading-dots {
+               0% { content: '.'; }
+               33% { content: '..'; }
+               66% { content: '...'; }
+          }
+          
+          /* Enhanced focus styles */
+          *:focus-visible {
+               outline: 2px solid #ea580c;
+               outline-offset: 2px;
+          }
+          
+          /* Mobile menu animations */
+          @keyframes fadeIn {
+               from { opacity: 0; transform: translateY(-10px); }
+               to { opacity: 1; transform: translateY(0); }
+          }
+          
+          .fade-in {
+               animation: fadeIn 0.3s ease forwards;
+          }
+     </style>
+
+     <!-- Google Translate Script -->
+     <script type="text/javascript">
+          function googleTranslateElementInit() {
+               new google.translate.TranslateElement({
+                    pageLanguage: 'en',
+                    autoDisplay: false,
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+               }, 'google_translate_element');
+          }
+
+          function doGTranslate(lang_pair) {
+               if (lang_pair.value) lang_pair = lang_pair.value;
+               if (lang_pair == '') return;
+               var lang = lang_pair.split('|')[1];
+               
+               // Create cookie with chosen language
+               var cookieDate = new Date();
+               cookieDate.setTime(cookieDate.getTime() + 7*24*60*60*1000);
+               document.cookie = 'googtrans=/auto/' + lang + '; expires=' + cookieDate.toGMTString() + '; domain=.' + location.hostname.replace(/^www\./i, '') + '; path=/';
+               document.cookie = 'googtrans=/auto/' + lang + '; expires=' + cookieDate.toGMTString() + '; path=/';
+               
+               // Reload page to apply the language
+               location.reload();
+          }
+     </script>
+     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+
+     <!-- Hidden element required by Google Translate -->
+     <div id="google_translate_element" style="display:none;"></div>
+
+     <!-- Tailwind Config -->
 </head>
 
 <body class="bg-gray-50" itemscope itemtype="https://schema.org/WebPage">
