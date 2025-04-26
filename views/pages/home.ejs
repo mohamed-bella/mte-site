@@ -108,7 +108,7 @@
                 
                 <!-- Main headline with Apple typography style -->
                 <h1 class="text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tight text-[#1d1d1f] mb-6 max-w-[800px] leading-[1.1] opacity-0 animate-fade-in-up animate-delay-200">
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-600">Authentic Journeys</span> 
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-800 to-orange-600">Authentic Journeys</span> 
                     <span class="inline-block">Through Morocco</span>
                 </h1>
                 
@@ -119,7 +119,7 @@
                 
                 <!-- CTA section with Apple-style buttons -->
                 <div class="flex flex-col sm:flex-row items-center gap-4 opacity-0 animate-fade-in-up animate-delay-400">
-                    <a href="/tours" class="apple-button min-w-[180px] py-4 px-8 bg-orange-500 hover:bg-orange-600 text-white text-lg font-medium rounded-full shadow-sm">
+                    <a href="/tours" class="apple-button min-w-[180px] py-4 px-8 bg-orange-800 hover:bg-orange-900 text-white text-lg font-medium rounded-full shadow-sm">
                         View Morocco Tours
                     </a>
                     <a href="/excursions" class="apple-button min-w-[180px] py-4 px-8 bg-white border border-[#d2d2d7] text-[#1d1d1f] text-lg font-medium rounded-full shadow-sm hover:bg-[#f5f5f7]">
@@ -133,7 +133,7 @@
                 <div class="hidden md:flex flex-col items-center mt-16 opacity-0 animate-fade-in-up" style="animation-delay: 0.6s">
                     <span class="text-[#86868b] text-sm mb-2">Scroll to discover</span>
                     <div class="w-6 h-10 border-2 border-[#d2d2d7] rounded-full flex items-start justify-center p-1">
-                        <div class="w-1.5 h-3 bg-orange-500 rounded-full animate-bounce"></div>
+                        <div class="w-1.5 h-3 bg-orange-800 rounded-full animate-bounce"></div>
                     </div>
                 </div>
             </div>
@@ -142,9 +142,13 @@
             <div class="mt-16 max-w-5xl mx-auto opacity-0 animate-fade-in-up" style="animation-delay: 0.5s">
                 <div class="relative rounded-2xl overflow-hidden shadow-2xl">
                     <img 
-                        src="/images/moroccotravelexperts.com-home.jpg" 
+                        src="/images/moroccotravelexperts.com-home.webp" 
                         alt="Morocco landscape" 
                         class="w-full h-auto object-cover"
+                        width="1200" 
+                        height="675"
+                        loading="eager"
+                        fetchpriority="high"
                         onerror="this.src='/images/moroccotravelexperts.com-home.jpg'; this.onerror=null;"
                     >
                     <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent mix-blend-multiply"></div>
@@ -171,27 +175,27 @@
             
             <!-- Starting Cities Filter Tags - Apple Style -->
             <div class="flex flex-wrap justify-center gap-3 mb-14">
-                <a href="/tours" class="glass-effect py-2.5 px-5 rounded-full text-[#1d1d1f] font-medium text-sm hover:bg-orange-500 hover:text-white transition-colors duration-300 border border-transparent hover:border-orange-600">
+                <a href="/tours" class="glass-effect py-2.5 px-5 rounded-full text-[#1d1d1f] font-medium text-sm hover:bg-orange-800 hover:text-white transition-colors duration-300 border border-transparent hover:border-orange-600">
                     <i class="fas fa-globe-africa mr-2"></i>All Cities
                 </a>
                 <a href="/tours?city=Marrakech" class="py-2.5 px-5 rounded-full bg-white border border-[#d2d2d7] text-[#1d1d1f] font-medium text-sm hover:bg-[#f5f5f7] transition-colors">
-                    <i class="fas fa-map-marker-alt mr-2 text-orange-500"></i>Marrakech
+                    <i class="fas fa-map-marker-alt mr-2 text-orange-800"></i>Marrakech
                     <span class="inline-flex items-center justify-center ml-2 w-5 h-5 text-xs bg-[#f5f5f7] rounded-full"><%= tours.filter(tour => tour.startLocation === 'Marrakech').length || '0' %></span>
                 </a>
                 <a href="/tours?city=Casablanca" class="py-2.5 px-5 rounded-full bg-white border border-[#d2d2d7] text-[#1d1d1f] font-medium text-sm hover:bg-[#f5f5f7] transition-colors">
-                    <i class="fas fa-map-marker-alt mr-2 text-orange-500"></i>Casablanca
+                    <i class="fas fa-map-marker-alt mr-2 text-orange-800"></i>Casablanca
                     <span class="inline-flex items-center justify-center ml-2 w-5 h-5 text-xs bg-[#f5f5f7] rounded-full"><%= tours.filter(tour => tour.startLocation === 'Casablanca').length || '0' %></span>
                 </a>
                 <a href="/tours?city=Fes" class="py-2.5 px-5 rounded-full bg-white border border-[#d2d2d7] text-[#1d1d1f] font-medium text-sm hover:bg-[#f5f5f7] transition-colors">
-                    <i class="fas fa-map-marker-alt mr-2 text-orange-500"></i>Fes
+                    <i class="fas fa-map-marker-alt mr-2 text-orange-800"></i>Fes
                     <span class="inline-flex items-center justify-center ml-2 w-5 h-5 text-xs bg-[#f5f5f7] rounded-full"><%= tours.filter(tour => tour.startLocation === 'Fes').length || '0' %></span>
                 </a>
                 <a href="/tours?city=Tangier" class="py-2.5 px-5 rounded-full bg-white border border-[#d2d2d7] text-[#1d1d1f] font-medium text-sm hover:bg-[#f5f5f7] transition-colors">
-                    <i class="fas fa-map-marker-alt mr-2 text-orange-500"></i>Tangier
+                    <i class="fas fa-map-marker-alt mr-2 text-orange-800"></i>Tangier
                     <span class="inline-flex items-center justify-center ml-2 w-5 h-5 text-xs bg-[#f5f5f7] rounded-full"><%= tours.filter(tour => tour.startLocation === 'Tangier').length || '0' %></span>
                 </a>
                 <a href="/tours?city=Chefchaouen" class="py-2.5 px-5 rounded-full bg-white border border-[#d2d2d7] text-[#1d1d1f] font-medium text-sm hover:bg-[#f5f5f7] transition-colors">
-                    <i class="fas fa-map-marker-alt mr-2 text-orange-500"></i>Chefchaouen
+                    <i class="fas fa-map-marker-alt mr-2 text-orange-800"></i>Chefchaouen
                     <span class="inline-flex items-center justify-center ml-2 w-5 h-5 text-xs bg-[#f5f5f7] rounded-full"><%= tours.filter(tour => tour.startLocation === 'Chefchaouen').length || '0' %></span>
                 </a>
             </div>
@@ -206,18 +210,21 @@
                                     src="<%= tour.mainImage %>" 
                                     alt="<%= tour.title %> - Morocco Tour" 
                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                    width="400" 
+                                    height="240"
                                     loading="lazy"
+                                    decoding="async"
                                 >
                                 <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/30 to-transparent"></div>
                                 <div class="absolute top-4 right-4 flex gap-2">
                                     <span class="glass-effect px-4 py-1.5 rounded-full text-sm font-medium text-[#1d1d1f] flex items-center">
-                                        <i class="far fa-clock text-orange-500 mr-2"></i>
+                                        <i class="far fa-clock text-orange-800 mr-2"></i>
                                         <%= tour.duration %> Days
                                     </span>
                                 </div>
                                 <% if (tour.featured) { %>
                                     <div class="absolute top-4 left-4">
-                                        <span class="px-4 py-1.5 bg-orange-500 text-white rounded-full text-sm font-medium">
+                                        <span class="px-4 py-1.5 bg-orange-800 text-white rounded-full text-sm font-medium">
                                             Featured
                                         </span>
                                     </div>
@@ -226,16 +233,16 @@
                             
                             <div class="p-6 flex flex-col flex-grow">
                                 <div class="flex items-center mb-3 text-[#86868b]">
-                                    <i class="fas fa-map-marker-alt text-orange-500 mr-2"></i>
+                                    <i class="fas fa-map-marker-alt text-orange-800 mr-2"></i>
                                     <span class="text-sm font-medium"><%= tour.startLocation %></span>
                                 </div>
                                 
-                                <h3 class="text-xl font-semibold text-[#1d1d1f] mb-3 group-hover:text-orange-500 transition-colors">
+                                <h3 class="text-xl font-semibold text-[#1d1d1f] mb-3 group-hover:text-orange-800 transition-colors">
                                     <%= tour.title %>
                                 </h3>
                                 
                                 <div class="mt-auto pt-3 border-t border-[#E8E8ED]">
-                                    <span class="inline-flex items-center text-orange-500 font-medium group-hover:translate-x-1 transition-transform duration-300">
+                                    <span class="inline-flex items-center text-orange-800 font-medium group-hover:translate-x-1 transition-transform duration-300">
                                         View Details
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -261,12 +268,15 @@
                                                 src="<%= tour.mainImage %>" 
                                                 alt="<%= tour.title %> - Morocco Tour" 
                                                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                                width="300" 
+                                                height="192"
                                                 loading="lazy"
+                                                decoding="async"
                                             >
                                             <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/30 to-transparent"></div>
                                             <div class="absolute top-3 right-3">
                                                 <span class="glass-effect px-3 py-1 rounded-full text-xs font-medium text-[#1d1d1f]">
-                                                    <i class="far fa-clock text-orange-500 mr-1"></i>
+                                                    <i class="far fa-clock text-orange-800 mr-1"></i>
                                                     <%= tour.duration %> Days
                                                 </span>
                                             </div>
@@ -274,16 +284,16 @@
                                         
                                         <div class="p-4 flex flex-col flex-grow">
                                             <div class="flex items-center mb-2 text-[#86868b]">
-                                                <i class="fas fa-map-marker-alt text-orange-500 mr-1.5"></i>
+                                                <i class="fas fa-map-marker-alt text-orange-800 mr-1.5"></i>
                                                 <span class="text-xs font-medium"><%= tour.startLocation %></span>
                                             </div>
                                             
-                                            <h3 class="text-base font-semibold text-[#1d1d1f] mb-2 group-hover:text-orange-500 transition-colors">
+                                            <h3 class="text-base font-semibold text-[#1d1d1f] mb-2 group-hover:text-orange-800 transition-colors">
                                                 <%= tour.title %>
                                             </h3>
                                             
                                             <div class="mt-auto pt-2 border-t border-[#E8E8ED]">
-                                                <span class="inline-flex items-center text-orange-500 text-sm font-medium">
+                                                <span class="inline-flex items-center text-orange-800 text-sm font-medium">
                                                     View Details
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -310,209 +320,36 @@
         </div>
     </section>
     
-    <!-- Starting Cities Section -->
-    <section class="py-28 bg-white overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6 md:px-10">
-            <div class="text-center mb-16">
-                <div class="glass-effect inline-block py-2 px-5 rounded-full mb-6 animate-fade-in-up">
-                    <span class="text-[#1d1d1f] text-sm font-medium tracking-wide">Departure Points</span>
-                </div>
-                <h2 class="text-3xl md:text-5xl font-semibold text-[#1d1d1f] tracking-tight mb-6">Begin Your Moroccan Journey</h2>
-                <p class="text-[#86868b] text-lg md:text-xl max-w-3xl mx-auto font-light leading-relaxed">
-                    Select your ideal starting location and let us craft a personalized Moroccan adventure for you.
-                </p>
-            </div>
-
-            <!-- Desktop Grid - Apple Style -->
-            <div class="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-10">
-                <% startingCities.slice(0, 6).forEach((city, index) => { %>
-                    <a href="/tours?city=<%= city.city %>" class="group relative rounded-3xl overflow-hidden shadow-lg" data-aos="fade-up" data-aos-delay="<%= index * 100 %>">
-                        <div class="aspect-w-16 aspect-h-10">
-                            <img 
-                                src="<%= city.image %>" 
-                                alt="<%= city.city %> Tours - Starting Point in Morocco" 
-                                class="w-full h-full object-cover transform group-hover:scale-105 transition duration-1000 ease-in-out"
-                                loading="lazy"
-                            >
-                        </div>
-                        <!-- Overlay with Apple-style gradient -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        
-                        <!-- Content with glass effect pill -->
-                        <div class="absolute bottom-0 left-0 p-8">
-                            <div class="flex items-center mb-3">
-                                <div class="glass-effect w-auto h-8 px-4 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center">
-                                    <i class="fas fa-map-marker-alt text-orange-400 mr-2"></i>
-                                    <span class="text-white/90 text-sm font-medium">Starting Point</span>
-                                </div>
-                            </div>
-                            <h3 class="text-2xl font-semibold text-white mb-3 group-hover:text-orange-300 transition-colors">From <%= city.city %></h3>
-                            <p class="text-white/80 text-base mb-5 line-clamp-2 max-w-xs"><%= city.description %></p>
-                            <div class="flex items-center text-orange-300 font-medium transform group-hover:translate-x-2 transition-transform duration-300">
-                                Explore Tours
-                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </a>
-                <% }); %>
-            </div>
-
-            <!-- Mobile Slider - Apple Style -->
-            <div class="md:hidden">
-                <div class="swiper-container cities-swiper overflow-hidden rounded-2xl">
-                    <div class="swiper-wrapper">
-                        <% startingCities.slice(0, 6).forEach(city => { %>
-                            <div class="swiper-slide">
-                                <a href="/tours?city=<%= city.city %>" class="block relative overflow-hidden shadow-md h-64">
-                                    <img 
-                                        src="<%= city.image %>" 
-                                        alt="<%= city.city %>" 
-                                        class="w-full h-full object-cover"
-                                        loading="lazy"
-                                    >
-                                    <!-- Overlay with Apple-style gradient -->
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-                                    
-                                    <!-- Content with glass effect pill -->
-                                    <div class="absolute bottom-0 left-0 p-5">
-                                        <div class="glass-effect w-auto h-7 px-3 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-3">
-                                            <i class="fas fa-map-marker-alt text-orange-400 mr-1.5"></i>
-                                            <span class="text-white/90 text-xs font-medium">Starting Point</span>
-                                        </div>
-                                        <h3 class="text-xl font-semibold text-white mb-1.5">From <%= city.city %></h3>
-                                        <p class="text-white/80 text-sm mb-3 line-clamp-1"><%= city.description %></p>
-                                        <span class="inline-flex items-center text-orange-300 text-sm font-medium">
-                                            Explore Tours
-                                            <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                                            </svg>
-                                        </span>
-                                    </div>
-                                </a>
-                            </div>
-                        <% }); %>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+   
     
-    <!-- Testimonials Section -->
+    <!-- Review Links Section -->
     <section class="py-28 bg-gradient-to-b from-[#F5F5F7] to-[#FAFAFA]">
         <div class="max-w-7xl mx-auto px-6 md:px-10">
             <div class="text-center mb-16">
                 <div class="glass-effect inline-block py-2 px-5 rounded-full mb-6 animate-fade-in-up">
-                    <span class="text-[#1d1d1f] text-sm font-medium tracking-wide">Guest Experiences</span>
+                    <span class="text-[#1d1d1f] text-sm font-medium tracking-wide">Guest Reviews</span>
                 </div>
-                <h2 class="text-3xl md:text-5xl font-semibold text-[#1d1d1f] tracking-tight mb-6">What Our Travelers Say</h2>
+                <h2 class="text-3xl md:text-5xl font-semibold text-[#1d1d1f] tracking-tight mb-6">Read Our Reviews</h2>
                 <p class="text-[#86868b] text-lg md:text-xl max-w-3xl mx-auto font-light leading-relaxed">
-                    Authentic reviews from guests who experienced our carefully crafted Moroccan adventures.
+                    See what our guests are saying about us across different platforms
                 </p>
             </div>
-            
-            <!-- Testimonial Carousel - Apple Style -->
-            <div class="swiper-container testimonial-swiper overflow-visible pb-12" data-aos="fade-up">
-                <div class="swiper-wrapper">
-                    <!-- Testimonial 1 -->
-                    <div class="swiper-slide px-3">
-                        <div class="bg-white rounded-3xl shadow-sm border border-[#E8E8ED] p-8 md:p-10 h-full flex flex-col transition-all duration-300 hover:shadow-md">
-                            <div class="flex-1">
-                                <div class="flex text-orange-500 mb-6">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <p class="text-[#1d1d1f] mb-6 font-light leading-relaxed text-lg">
-                                    "We had the most amazing experience with Morocco Travel Experts. Our guide Hamid was extremely knowledgeable, patient, and went above and beyond to make our trip special. From the busy streets of Marrakech to the peaceful Sahara desert, every moment was perfect."
-                                </p>
-                            </div>
-                            <div class="flex items-center pt-6 border-t border-[#E8E8ED]">
-                                <div class="w-12 h-12 rounded-full overflow-hidden shadow-sm">
-                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Martin" alt="Martin E. Coleman" class="w-full h-full object-cover">
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="font-medium text-[#1d1d1f]">Martin E. Coleman</h4>
-                                    <div class="flex items-center text-sm text-[#86868b]">
-                                        <img src="https://www.google.com/favicon.ico" alt="Google" class="w-4 h-4 mr-1">
-                                        <span>Google Reviews</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Testimonial 2 -->
-                    <div class="swiper-slide px-3">
-                        <div class="bg-white rounded-3xl shadow-sm border border-[#E8E8ED] p-8 md:p-10 h-full flex flex-col transition-all duration-300 hover:shadow-md">
-                            <div class="flex-1">
-                                <div class="flex text-orange-500 mb-6">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <p class="text-[#1d1d1f] mb-6 font-light leading-relaxed text-lg">
-                                    "This was truly the trip of a lifetime! The level of service was exceptional from beginning to end. Our guide had incredible knowledge of the history and culture, plus found us authentic restaurants we never would have discovered on our own. Highly recommended!"
-                                </p>
-                            </div>
-                            <div class="flex items-center pt-6 border-t border-[#E8E8ED]">
-                                <div class="w-12 h-12 rounded-full overflow-hidden shadow-sm">
-                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Harold" alt="Harold Schroeder" class="w-full h-full object-cover">
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="font-medium text-[#1d1d1f]">Harold Schroeder</h4>
-                                    <div class="flex items-center text-sm text-[#86868b]">
-                                        <img src="https://static.tacdn.com/img2/brand_refresh/Tripadvisor_logomark.svg" alt="TripAdvisor" class="w-4 h-4 mr-1">
-                                        <span>TripAdvisor</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Testimonial 3 -->
-                    <div class="swiper-slide px-3">
-                        <div class="bg-white rounded-3xl shadow-sm border border-[#E8E8ED] p-8 md:p-10 h-full flex flex-col transition-all duration-300 hover:shadow-md">
-                            <div class="flex-1">
-                                <div class="flex text-orange-500 mb-6">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <p class="text-[#1d1d1f] mb-6 font-light leading-relaxed text-lg">
-                                    "Hamid is an outstanding guide who made our Morocco trip unforgettable. The night in the desert camp was magical, watching the sunset over the dunes and stargazing at night. Every detail was perfectly arranged, and we felt safe and well-cared for throughout the journey."
-                                </p>
-                            </div>
-                            <div class="flex items-center pt-6 border-t border-[#E8E8ED]">
-                                <div class="w-12 h-12 rounded-full overflow-hidden shadow-sm">
-                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Iwona" alt="Iwona Wiśniewska" class="w-full h-full object-cover">
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="font-medium text-[#1d1d1f]">Iwona Wiśniewska</h4>
-                                    <div class="flex items-center text-sm text-[#86868b]">
-                                        <img src="https://www.google.com/favicon.ico" alt="Google" class="w-4 h-4 mr-1">
-                                        <span>Google Reviews</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="text-center mt-10">
-                <a href="/reviews" class="apple-button inline-flex items-center px-6 py-3 bg-white border border-[#d2d2d7] text-[#1d1d1f] rounded-full text-base font-medium hover:bg-[#f5f5f7]">
-                    Read more reviews
-                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                    </svg>
+
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-6 items-center justify-items-center">
+                <a href="#" class="hover:opacity-75 transition-opacity">
+                    <img src="https://static.tacdn.com/img2/brand_refresh/Tripadvisor_lockup_horizontal_secondary_registered.svg" alt="TripAdvisor" class="h-12">
+                </a>
+                <a href="#" class="hover:opacity-75 transition-opacity">
+                    <img src="https://images.seeklogo.com/logo-png/33/1/viator-logo-png_seeklogo-335306.png" alt="Viator" class="h-8">
+                </a>
+                <a href="#" class="hover:opacity-75 transition-opacity">
+                    <img src="https://www.klook.com/favicon.ico" alt="Klook" class="h-12">
+                </a>
+                <a href="#" class="hover:opacity-75 transition-opacity">
+                    <img src="https://www.civitatis.com/favicon.ico" alt="Civitatis" class="h-12">
+                </a>
+                <a href="#" class="hover:opacity-75 transition-opacity">
+                    <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google Reviews" class="h-8">
                 </a>
             </div>
         </div>
@@ -535,7 +372,7 @@
                 <!-- Feature 1 - Apple Card Style -->
                 <div class="group bg-white rounded-3xl border border-[#E8E8ED] shadow-sm p-8 hover:shadow-md transition-all duration-300" data-aos="fade-up">
                     <div class="glass-effect w-16 h-16 rounded-full flex items-center justify-center mb-6 bg-orange-100 group-hover:bg-orange-200 transition-colors duration-300">
-                        <i class="fas fa-map-marked-alt text-2xl text-orange-500"></i>
+                        <i class="fas fa-map-marked-alt text-2xl text-orange-800"></i>
                     </div>
                     <h3 class="text-xl font-semibold mb-4 text-[#1d1d1f]">Local Expertise</h3>
                     <p class="text-[#86868b] leading-relaxed font-light">
@@ -546,7 +383,7 @@
                 <!-- Feature 2 - Apple Card Style -->
                 <div class="group bg-white rounded-3xl border border-[#E8E8ED] shadow-sm p-8 hover:shadow-md transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
                     <div class="glass-effect w-16 h-16 rounded-full flex items-center justify-center mb-6 bg-orange-100 group-hover:bg-orange-200 transition-colors duration-300">
-                        <i class="fas fa-user-shield text-2xl text-orange-500"></i>
+                        <i class="fas fa-user-shield text-2xl text-orange-800"></i>
                     </div>
                     <h3 class="text-xl font-semibold mb-4 text-[#1d1d1f]">Personalized Service</h3>
                     <p class="text-[#86868b] leading-relaxed font-light">
@@ -557,7 +394,7 @@
                 <!-- Feature 3 - Apple Card Style -->
                 <div class="group bg-white rounded-3xl border border-[#E8E8ED] shadow-sm p-8 hover:shadow-md transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
                     <div class="glass-effect w-16 h-16 rounded-full flex items-center justify-center mb-6 bg-orange-100 group-hover:bg-orange-200 transition-colors duration-300">
-                        <i class="fas fa-heart text-2xl text-orange-500"></i>
+                        <i class="fas fa-heart text-2xl text-orange-800"></i>
                     </div>
                     <h3 class="text-xl font-semibold mb-4 text-[#1d1d1f]">Authentic Experiences</h3>
                     <p class="text-[#86868b] leading-relaxed font-light">
@@ -579,10 +416,13 @@
                         <!-- Main image with Apple-style shadow and rounded corners -->
                         <div class="relative rounded-3xl overflow-hidden shadow-xl">
                             <img 
-                                src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/4.jpg" 
+                                src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/about/4.webp" 
                                 alt="Sahara Desert Adventure" 
                                 class="w-full h-auto"
+                                width="600" 
+                                height="400"
                                 loading="lazy"
+                                decoding="async"
                             >
                             <!-- Subtle gradient overlay -->
                             <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent mix-blend-overlay"></div>
@@ -591,7 +431,7 @@
                         <!-- Floating review card - Apple style -->
                         <div class="glass-effect absolute -bottom-8 -right-8 md:-right-10 rounded-2xl shadow-lg p-4 backdrop-blur-md bg-white/80 max-w-xs animate-float" style="animation-delay: 0.5s">
                             <div class="flex items-center">
-                                <div class="flex text-orange-500 mr-3">
+                                <div class="flex text-orange-800 mr-3">
                                     <i class="fas fa-star"></i>
                                     <i class="fas fa-star"></i>
                                     <i class="fas fa-star"></i>
@@ -639,7 +479,7 @@
                             <span class="text-[#1d1d1f] font-light">Stargazing in one of the clearest skies in the world</span>
                         </li>
                     </ul>
-                    <a href="/tours?category=desert" class="apple-button inline-flex items-center px-8 py-4 bg-orange-500 text-white rounded-full text-base font-medium hover:bg-orange-600">
+                    <a href="/tours?category=desert" class="apple-button inline-flex items-center px-8 py-4 bg-orange-800 text-white rounded-full text-base font-medium hover:bg-orange-600">
                         Explore Desert Tours
                         <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
@@ -685,7 +525,7 @@
                             <span class="text-[#1d1d1f] font-light">Local music and dance performances</span>
                         </li>
                     </ul>
-                    <a href="/tours?category=cultural" class="apple-button inline-flex items-center px-8 py-4 bg-orange-500 text-white rounded-full text-base font-medium hover:bg-orange-600">
+                    <a href="/tours?category=cultural" class="apple-button inline-flex items-center px-8 py-4 bg-orange-800 text-white rounded-full text-base font-medium hover:bg-orange-600">
                         Explore Cultural Tours
                         <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
@@ -702,7 +542,10 @@
                                 src="https://raw.githubusercontent.com/mohamed-bella/mte-files/refs/heads/main/IMG-20250204-WA0007.webp" 
                                 alt="Cultural Moroccan Experience" 
                                 class="w-full h-auto"
+                                width="600" 
+                                height="400"
                                 loading="lazy"
+                                decoding="async"
                             >
                             <!-- Subtle gradient overlay -->
                             <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent mix-blend-overlay"></div>
@@ -744,10 +587,13 @@
                     <article class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col h-full" data-aos="fade-up" data-aos-delay="<%= index * 100 %>">
                         <a href="/blog/<%= blog.slug %>" class="block overflow-hidden h-48">
                             <img 
-                                src="<%= blog.featuredImage %>" 
+                                src="<%= blog.featuredImage.replace(/\.(jpg|jpeg|png)$/, '.webp') || blog.featuredImage %>" 
                                 alt="<%= blog.title %> - Morocco Travel Guide" 
                                 class="w-full h-full object-cover transform hover:scale-105 transition-all duration-500"
+                                width="400" 
+                                height="192"
                                 loading="lazy"
+                                decoding="async"
                             >
                         </a>
                         <div class="p-5 flex flex-col flex-grow">
@@ -790,10 +636,13 @@
                     <article class="bg-white rounded-lg overflow-hidden shadow-md flex h-28">
                         <a href="/blog/<%= blog.slug %>" class="block w-1/3 relative">
                             <img 
-                                src="<%= blog.featuredImage %>" 
+                                src="<%= blog.featuredImage.replace(/\.(jpg|jpeg|png)$/, '.webp') || blog.featuredImage %>" 
                                 alt="<%= blog.title %>" 
                                 class="w-full h-full object-cover absolute inset-0"
+                                width="120" 
+                                height="112"
                                 loading="lazy"
+                                decoding="async"
                             >
                         </a>
                         <div class="w-2/3 p-3 flex flex-col justify-between overflow-hidden">
@@ -831,7 +680,7 @@
     <section class="relative py-28 overflow-hidden">
         <!-- Background with subtle gradient and shapes -->
         <div class="absolute inset-0 z-0">
-            <div class="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-600"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-orange-800 to-orange-600"></div>
             
             <!-- Abstract floating shapes (Apple style) -->
             <div class="absolute -top-[10%] -right-[5%] w-[40%] h-[40%] bg-orange-400 rounded-full opacity-20 mix-blend-overlay blur-3xl animate-float"></div>
@@ -1319,6 +1168,85 @@
         opacity: 0 !important;
     }
 </style>
+
+<!-- Add this to optimize CSS animations for better performance -->
+<style>
+    /* Optimize animations for better performance */
+    .animate-fade-in-up, .animate-float, .animate-float-slow, .animate-float-medium, .animate-float-fast {
+        will-change: transform, opacity;
+    }
+    
+    /* Use GPU-accelerated properties */
+    .glass-effect {
+        transform: translateZ(0);
+    }
+    
+    /* Remove animations for users who prefer reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+        .animate-fade-in-up, .animate-float, .animate-bounce, .animate-float-slow, 
+        .animate-float-medium, .animate-float-fast, .group-hover\:scale-105, 
+        .group-hover\:translate-x-1, .hover\:scale-105, .transition-transform {
+            animation: none !important;
+            transition: none !important;
+            transform: none !important;
+        }
+    }
+</style>
+
+<!-- Add a resource hints section in the script -->
+<script>
+    // Add resource hints to preload critical resources
+    document.addEventListener('DOMContentLoaded', function() {
+        // Preconnect to external domains
+        const preconnectUrls = [
+            'https://cdn.jsdelivr.net',
+            'https://unpkg.com',
+            'https://raw.githubusercontent.com',
+            'https://api.dicebear.com'
+        ];
+        
+        preconnectUrls.forEach(url => {
+            const link = document.createElement('link');
+            link.rel = 'preconnect';
+            link.href = url;
+            link.crossOrigin = 'anonymous';
+            document.head.appendChild(link);
+        });
+        
+        // Add intersection observer for better image loading
+        if ('IntersectionObserver' in window) {
+            const imgObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        const src = img.getAttribute('data-src');
+                        if (src) {
+                            img.src = src;
+                            img.removeAttribute('data-src');
+                        }
+                        observer.unobserve(img);
+                    }
+                });
+            }, { rootMargin: '200px 0px' });
+            
+            document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+                imgObserver.observe(img);
+            });
+        }
+        
+        // Initialize AOS with reduced motion checks
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        
+        AOS.init({
+            duration: prefersReducedMotion ? 0 : 800,
+            once: true,
+            offset: 100,
+            disable: prefersReducedMotion
+        });
+        
+        // Rest of the original code...
+    });
+</script>
 
 </body>
 </html>
