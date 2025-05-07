@@ -84,6 +84,10 @@ const tourSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    hidden: {
+        type: Boolean,
+        default: false
+    },
     rating: {
         type: Number,
         min: 0,

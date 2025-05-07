@@ -50,6 +50,9 @@
                                                                       <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                                                            Status
                                                                       </th>
+                                                                      <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                                           Visibility
+                                                                      </th>
                                                                       <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                                                                            <span class="sr-only">Actions</span>
                                                                       </th>
@@ -87,6 +90,11 @@
                                                                                      <%= tour.featured ? 'Featured' : 'Standard' %>
                                                                                 </span>
                                                                            </td>
+                                                                           <td class="whitespace-nowrap px-3 py-4 text-sm">
+                                                                                <span class="inline-flex rounded-full px-2 text-xs font-semibold leading-5 <%= tour.hidden ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' %>">
+                                                                                     <%= tour.hidden ? 'Hidden' : 'Visible' %>
+                                                                                </span>
+                                                                           </td>
                                                                            <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                                                                 <div class="flex justify-end space-x-2">
                                                                                      <!-- View Button -->
@@ -111,6 +119,12 @@
                                                                                      <form action="/admin/tours/<%= tour._id %>/toggle-featured" method="POST" class="inline">
                                                                                           <button type="submit" class="text-gray-600 hover:text-gray-900">
                                                                                                <%= tour.featured ? 'Unfeature' : 'Feature' %>
+                                                                                          </button>
+                                                                                     </form>
+                                                                                     <!-- Toggle Visibility Status -->
+                                                                                     <form action="/admin/tours/<%= tour._id %>/toggle-visibility" method="POST" class="inline">
+                                                                                          <button type="submit" class="<%= tour.hidden ? 'text-green-600 hover:text-green-900' : 'text-red-600 hover:text-red-900' %>">
+                                                                                               <%= tour.hidden ? 'Show' : 'Hide' %>
                                                                                           </button>
                                                                                      </form>
                                                                                 </div>

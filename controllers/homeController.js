@@ -9,7 +9,7 @@ exports.getHomePage = async (req, res) => {
     try {
         // Fetch tours, starting cities, and reviews in parallel
         const [tours, startingCities, settings, recentBlogs] = await Promise.all([
-            Tour.find().limit(6).sort({ createdAt: -1 }),
+            Tour.find({ hidden: { $ne: true } }).limit(6).sort({ createdAt: -1 }),
             StartingCity.find().sort({ name: 1 }),
             Setting.findOne(),
             Blog.find({ isPublished: true }).sort({ publishedAt: -1 }).limit(3)

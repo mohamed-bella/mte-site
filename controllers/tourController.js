@@ -387,4 +387,28 @@ exports.toggleFeatured = async (req, res) => {
         req.flash('error', 'Error updating tour');
         res.redirect('/admin/tours');
     }
+};
+
+/**
+ * Toggle visibility status of a tour
+ */
+exports.toggleHidden = async (req, res) => {
+    try {
+        const tour = await Tour.findById(req.params.id);
+        
+        if (!tour) {
+            req.flash('error', 'Tour not found');
+            return res.redirect('/admin/tours');
+        }
+        
+        tour.hidden = !tour.hidden;
+        await tour.save();
+        
+        req.flash('success', `Tour ${tour.hidden ? 'hidden from public view' : 'made visible to public'} successfully`);
+        res.redirect('/admin/tours');
+    } catch (error) {
+        console.error('Error toggling tour visibility:', error);
+        req.flash('error', 'Error updating tour');
+        res.redirect('/admin/tours');
+    }
 }; 

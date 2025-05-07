@@ -207,6 +207,7 @@ router.post('/tours/:id/update-price', async (req, res) => {
 
 router.post('/tours/:id/delete', TourController.deleteTour);
 router.post('/tours/:id/toggle-featured', TourController.toggleFeatured);
+router.post('/tours/:id/toggle-visibility', TourController.toggleHidden);
 
 // Bookings Management Routes
 router.get('/bookings', async (req, res) => {

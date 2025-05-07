@@ -84,6 +84,7 @@ router.get('/api/search', async (req, res) => {
         const [tours, excursions, blogs] = await Promise.all([
             // Search tours
             Tour.find({
+                hidden: { $ne: true }, // Exclude hidden tours
                 $or: [
                     { title: searchRegex },
                     { description: searchRegex },
@@ -258,7 +259,10 @@ router.get('/destinations/marrakech', async (req, res) => {
         // Fetch data needed for the page: tours that start in Marrakech and city info
         const [marrakechCity, toursFromMarrakech, settings] = await Promise.all([
             StartingCity.findOne({ city: 'Marrakech' }),
-            Tour.find({ startLocation: { $regex: 'Marrakech', $options: 'i' } }).limit(6).sort({ createdAt: -1 }),
+            Tour.find({ 
+                startLocation: { $regex: 'Marrakech', $options: 'i' },
+                hidden: { $ne: true } 
+            }).limit(6).sort({ createdAt: -1 }),
             Setting.findOne()
         ]);
 
@@ -449,7 +453,9 @@ router.get('/tours', async (req, res) => {
         const maxPrice = req.query.maxPrice ? parseInt(req.query.maxPrice) : 100000;
         
         // Build query object
-        const query = {};
+        const query = {
+            hidden: { $ne: true } // Exclude hidden tours
+        };
         
         if (city) {
             // Find tours associated with this city by checking the StartingCity model
@@ -521,14 +527,15 @@ router.get('/tours/:slug', async (req, res, next) => {
             ] 
         });
 
-          if (!tour) {
+        if (!tour || tour.hidden) {
             return next(); // Pass to 404 handler
         }
         
-        // Get related tours from same starting city
+        // Get related tours from same starting city that are not hidden
         const relatedTours = await Tour.find({ 
             _id: { $ne: tour._id },
-            startLocation: tour.startLocation 
+            startLocation: tour.startLocation,
+            hidden: { $ne: true }
         }).limit(3);
 
           res.render('pages/tour-detail', {
